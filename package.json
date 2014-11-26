@@ -1,19 +1,26 @@
 {
-  "name": "SickSync",
+  "name": "sicksync",
   "version": "1.0.0",
-  "description": "Sync your code to a devbox and update that browser.",
+  "description": "Don’t accept the available as the preferable. Go extra mile with extra speed.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
+    "sicksync",
     "sync",
     "sick",
-    "livereload",
-    "hbui",
-    "lr",
-    "devtools"
+    "browser-sync",
+    "rsync",
+    "scp",
+    "cli"
   ],
+  "homepage": "https://github.com/adnexus/sicksync",
+  "bugs": "https://github.com/adnexus/sicksync/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adnexus/sicksync.git"
+  },
   "author": "jgriffith",
   "license": "MIT",
   "dependencies": {
