@@ -41,8 +41,9 @@
     "sicksync-remote": "./bin/remote.js"
   },
   "devDependencies": {
+    "chai": "^1.10.0",
+    "mocha": "^2.0.1",
     "rewire": "^2.1.0",
-    "sinon": "^1.10.3",
-    "tape": "^3.0.0"
+    "sinon": "^1.12.1"
   }
 }

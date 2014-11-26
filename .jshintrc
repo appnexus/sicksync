@@ -14,6 +14,7 @@
     "notypeof": true,
     "trailing": true,
     "undef": true,
+    "expr": true,
     "unused": true,
     "globals": {
         "angular": false,
