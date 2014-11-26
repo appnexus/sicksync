@@ -8,14 +8,14 @@ crypt.__set__('config', {
     secret: 'some-secret'
 });
 
-describe('Crypt', function() {
+describe('crypt', function() {
     it('should be an object', function() {
-        expect(crypt).to.be.an.object;
+        expect(crypt).to.be.an('object');
     });
 
     ['encrypt', 'decrypt', 'stringifyAndEncrypt', 'decrypt'].forEach(function(method) {
         it('should have a #' + method + ' property', function() {
-            expect(crypt[method]).to.be.a.function;
+            expect(crypt[method]).to.be.a('function');
         });
     });
 
@@ -41,7 +41,7 @@ describe('Crypt', function() {
         };
 
         it('should serialize and encrypt an object', function() {
-            expect(crypt.stringifyAndEncrypt(testObject)).to.be.a.string;
+            expect(crypt.stringifyAndEncrypt(testObject)).to.be.a('string');
         });
 
         it('should throw an error when trying to JSON.parse this value', function() {
@@ -61,7 +61,7 @@ describe('Crypt', function() {
                 JSON.parse(encryptedObject);
             }).to.not.throw;
 
-            expect(JSON.parse(encryptedObject)).to.be.an.object;
+            expect(JSON.parse(encryptedObject)).to.be.an('object');
         });
     });
 
@@ -70,7 +70,7 @@ describe('Crypt', function() {
             crypt.__set__('config', { prefersEncrypted: false });
 
             it('should simply JSON.parse the message passed to it', function() {
-                expect(crypt.decryptAndParse('{}')).to.be.an.object;
+                expect(crypt.decryptAndParse('{}')).to.be.an('object');
             });
 
             it('should throw an error if passed a non-stringified object', function() {
