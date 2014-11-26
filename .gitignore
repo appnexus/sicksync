@@ -1,0 +1,12 @@
+# Ignore built code
+build/
+
+# Ignore temp
+temp/
+
+# Node Modules
+node_modules
+
+# Logs and system
+npm-debug.log
+.DS_STORE

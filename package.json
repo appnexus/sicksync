@@ -1,0 +1,41 @@
+{
+  "name": "SickSync",
+  "version": "1.0.0",
+  "description": "Sync your code to a devbox and update that browser.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "sync",
+    "sick",
+    "livereload",
+    "hbui",
+    "lr",
+    "devtools"
+  ],
+  "author": "jgriffith",
+  "license": "MIT",
+  "dependencies": {
+    "browser-sync": "^1.7.1",
+    "chokidar": "^0.10.3",
+    "clui": "^0.3.1",
+    "colors": "^1.0.3",
+    "commander": "^2.5.0",
+    "fs-extra": "^0.12.0",
+    "merge": "^1.2.0",
+    "prompt": "^0.2.14",
+    "rsync": "^0.3.0",
+    "ws": "^0.4.32"
+  },
+  "bin": {
+    "sicksync": "./index.js",
+    "sicksync-local": "./bin/local.js",
+    "sicksync-remote": "./bin/remote.js"
+  },
+  "devDependencies": {
+    "rewire": "^2.1.0",
+    "sinon": "^1.10.3",
+    "tape": "^3.0.0"
+  }
+}
