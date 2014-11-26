@@ -4,7 +4,7 @@
   "description": "Don’t accept the available as the preferable. Go extra mile with extra speed.",
   "main": "index.js",
   "scripts": {
-    "test": "node ./node_modules/mocha/bin/_mocha test/*.mspec.js"
+    "test": "node ./node_modules/mocha/bin/mocha test/*.mspec.js"
   },
   "keywords": [
     "sicksync",
