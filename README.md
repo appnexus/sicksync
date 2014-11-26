@@ -1,4 +1,4 @@
-# sicksync
+![sicksync](https://raw.githubusercontent.com/adnexus/sicksync/master/img/sicksync.png)
 `npm install -g sicksync`
 
 Has scp got you down? rsync just not fast enough? Well, we hear your pain, and that's why there's sicksync.
