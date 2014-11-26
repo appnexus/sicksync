@@ -11,7 +11,7 @@ var fs = require('fs-extra'),
     bsync = require('browser-sync'),
     Server = require('../lib/ws-server'),
     util = require('../lib/util'),
-    config = require(util.getConfigPath()),
+    config = util.getConfig(),
     destinationLocation = config.destinationLocation,
     server = new Server({
         port: config.websocketPort
