@@ -39,7 +39,7 @@ This file is a simple JSON config object, so feel free to change it whenever (th
 
 Turns debug messages on/off when sicksync is running. Valid options are `true`, `false`, `yes`, `no`, `y` and `n`. Once complete, it will attempt to copy the config file to the remote machine.
 
-- `sikcysnc -e, --encrypt {boolean}`
+- `sicksync -e, --encrypt {boolean}`
 
 Turns on or off encryption when sicksync sends file changes. Large changes will use `rsync`, which is already secure. Once complete, it will attempt to copy the config file to the remote machine.
 
