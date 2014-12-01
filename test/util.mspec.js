@@ -379,8 +379,14 @@ describe('util', function() {
         });
 
         describe('default behaviour', function() {
+            var callbackStub = sinon.spy();
+
             beforeEach(function() {
-                util.wakeDevBox('someDevLocation');
+                util.wakeDevBox('someDevLocation', callbackStub);
+            });
+
+            afterEach(function() {
+                callbackStub.reset();
             });
 
             it('should fork the process', function() {
@@ -398,6 +404,31 @@ describe('util', function() {
             it('should pass an object as the last parameter', function() {
                 expect(forkSpy.getCall(0).args[2]).to.be.a('object');
             });
+
+            it('should invoke the callback for every message receieved', function() {
+                expect(onStub.getCall(0).args[0]).to.equal('message');
+                expect(onStub.getCall(0).args[1]).to.equal(callbackStub);
+            });
+        });
+    });
+
+    describe('#setupPrompter', function() {
+        var promptMock = {
+            start: sinon.spy()
+        };
+
+        it('should set the `message` property to an empty string', function() {
+            util.setupPrompter(promptMock);
+            expect(promptMock.message).to.equal('');
+        });
+
+        it('should set the `delimiter` property to an empty string', function() {
+            util.setupPrompter(promptMock);
+            expect(promptMock.delimiter).to.equal('');
+        });
+
+        it('should call the `start` method', function() {
+            expect(promptMock.start.called).to.be.true();
         });
     });
 });
