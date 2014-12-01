@@ -26,7 +26,6 @@
   "dependencies": {
     "browser-sync": "^1.7.1",
     "chokidar": "^0.10.3",
-    "clui": "^0.3.1",
     "colors": "^1.0.3",
     "commander": "^2.5.0",
     "fs-extra": "^0.12.0",

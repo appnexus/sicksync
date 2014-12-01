@@ -8,7 +8,6 @@
  */
 var fs = require('fs-extra'),
     program = require('commander'),
-    Spinner = require('clui').Spinner,
     util = require('./lib/util'),
     package = require('./package.json'),
     bigSync = require('./lib/big-sync'),
@@ -49,10 +48,8 @@ if (hasSetup) {
     }
 
     if (program.copy) {
-        var countdown = new Spinner('Syncing...');
-        countdown.start();
+        console.log('Syncing...');
         return bigSync(function() {
-            countdown.stop();
             console.log('Finished!'.green);
         });
     }
