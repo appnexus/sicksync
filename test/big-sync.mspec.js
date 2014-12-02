@@ -29,15 +29,38 @@ function RsyncMockConstructor() {
 }
 
 describe('bigSync', function() {
+
     it('should be a function', function() {
         expect(bigSync).to.be.a.function;
     });
 
+    describe('when config is empty', function() {
+        var oldConsole = bigSync.__get__('console');
+        var consoleSpy = {
+            log: sinon.spy()
+        };
+
+        beforeEach(function() {
+            bigSync.__set__('console', consoleSpy);
+            bigSync.__set__('config', {});
+        });
+
+        afterEach(function() {
+            bigSync.__set__('console', oldConsole);
+        });
+
+        it('should log a message to run `sicksync --setup`', function() {
+            bigSync();
+            expect(consoleSpy.log.called).to.be.true();
+            expect(consoleSpy.log.getCall(0).args[0]).to.contain('--setup');
+        });
+    });
+
     describe('when executed', function() {
-        bigSync.__set__('Rsync', RsyncMockConstructor);
-        bigSync.__set__('config', mockConfig);
 
         beforeEach(function(done) {
+            bigSync.__set__('Rsync', RsyncMockConstructor);
+            bigSync.__set__('config', mockConfig);
             bigSync(done);
         });
 

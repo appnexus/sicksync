@@ -3,9 +3,9 @@ var expect = require('chai').expect,
     crypt = rewire('../lib/crypt');
 
 // Mocking Config
+crypt.__set__('secret', 'some-secret');
 crypt.__set__('config', {
-    prefersEncrypted: true,
-    secret: 'some-secret'
+    prefersEncrypted: false
 });
 
 describe('crypt', function() {
@@ -40,6 +40,10 @@ describe('crypt', function() {
             type: 'message'
         };
 
+        beforeEach(function() {
+            crypt.__set__('config', { prefersEncrypted: true });
+        });
+
         it('should serialize and encrypt an object', function() {
             expect(crypt.stringifyAndEncrypt(testObject)).to.be.a('string');
         });
@@ -67,7 +71,9 @@ describe('crypt', function() {
 
     describe('#decryptAndParse', function() {
         describe('when `prefersEncrypted` is false', function() {
-            crypt.__set__('config', { prefersEncrypted: false });
+            beforeEach(function() {
+                crypt.__set__('config', { prefersEncrypted: false });
+            });
 
             it('should simply JSON.parse the message passed to it', function() {
                 expect(crypt.decryptAndParse('{}')).to.be.an('object');
@@ -81,20 +87,23 @@ describe('crypt', function() {
         });
 
         describe('when `prefersEncrypted` is true', function() {
-            crypt.__set__('config', { prefersEncrypted: true });
             var testObject = {
                 message: 'secret!',
                 type: 'message'
             };
 
+            beforeEach(function() {
+                crypt.__set__('config', { prefersEncrypted: true });
+            });
+
             it('should return the original object that was encrpyted', function() {
-                var encryptedObject = crypt.stringifyAndEncrypt(testObject);
+                var encryptedObject = crypt.encrypt(JSON.stringify(testObject));
 
                 expect(testObject).to.deep.equal(crypt.decryptAndParse(encryptedObject));
             });
 
             it('should throw an error if the message isn\'t serialized JSON', function() {
-                var encryptedMessage = crypt.encrypt('wat');
+                var encryptedMessage = 123;
 
                 expect(function() {
                     crypt.decryptAndParse(encryptedMessage);

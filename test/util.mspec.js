@@ -9,8 +9,37 @@ describe('util', function() {
     });
 
     describe('#getHome', function() {
-        it('should return a string', function() {
-            expect(util.getHome()).to.be.a('string');
+        var oldProcess = util.__get__('process');
+        var mockProcess = {
+            env: {}
+        };
+
+        afterEach(function() {
+            delete mockProcess.env.HOME;
+            delete mockProcess.env.HOMEPATH;
+            delete mockProcess.env.USERPROFILE;
+            util.__set__('process', oldProcess);
+        });
+
+        it('should return process.env.HOME if it exists', function() {
+            mockProcess.env.HOME = 'where the heart is';
+            util.__set__('process', mockProcess);
+
+            expect(util.getHome()).to.contain(mockProcess.env.HOME);
+        });
+
+        it('should return process.env.HOMEPATH if it exists', function() {
+            mockProcess.env.HOMEPATH = 'where the heart is';
+            util.__set__('process', mockProcess);
+
+            expect(util.getHome()).to.contain(mockProcess.env.HOMEPATH);
+        });
+
+        it('should return process.env.USERPROFILE if it exists', function() {
+            mockProcess.env.USERPROFILE = 'where the heart is';
+            util.__set__('process', mockProcess);
+
+            expect(util.getHome()).to.contain(mockProcess.env.USERPROFILE);
         });
 
         it('should append a trailing slash', function() {
@@ -31,8 +60,20 @@ describe('util', function() {
     });
 
     describe('#getConfig', function() {
+        var oldFs = util.__get__('fs');
+
+        afterEach(function() {
+            util.__set__('fs', oldFs);
+        });
+
         it('should return an object', function() {
             expect(util.getConfig()).to.be.an('object');
+        });
+
+        it('should return an empty object if the file doesn\'t exist', function() {
+            util.__set__('fs', { existsSync: function() { return false; } });
+
+            expect(util.getConfig()).to.deep.equal({});
         });
     });
 
@@ -259,6 +300,7 @@ describe('util', function() {
 
             it('should not call `fallbackFn` after another call to the rebounced function', function() {
                 rebouncedFn();
+                expect(rebouncedFn()).to.be.a('undefined');
                 expect(fallbackFn.calledTwice).to.be.false();
             });
 
@@ -354,6 +396,11 @@ describe('util', function() {
 
         it('should conver the string `false` to `false`', function() {
             expect(util.toBoolean('false')).to.be.false();
+        });
+
+        it('should return false for all other strings', function() {
+            expect(util.toBoolean('')).to.be.false();
+            expect(util.toBoolean('possible')).to.be.false();
         });
     });
 
