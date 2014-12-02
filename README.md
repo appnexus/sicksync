@@ -1,6 +1,8 @@
 ![sicksync](https://raw.githubusercontent.com/adnexus/sicksync/master/img/sicksync.png)
 `npm install -g sicksync`
 
+[![Build Status](https://travis-ci.org/adnexus/sicksync.svg?branch=tests)](https://travis-ci.org/adnexus/sicksync)
+
 Has scp got you down? rsync just not fast enough? Well, we hear your pain, and that's why there's sicksync.
 
 sicksync is a CLI to sync your projects code to a remote machine. If you work in an environment where you edit files locally, then push them to a development machine, then sicksync is the tool for you. It even comes with some fun goodies, like browser-sync, baked right in.
