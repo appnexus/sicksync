@@ -4,7 +4,7 @@
   "description": "Don’t accept the available as the preferable. Go extra mile with extra speed.",
   "main": "index.js",
   "scripts": {
-    "test": "node ./node_modules/mocha/bin/mocha test/*.mspec.js --reporter=dot"
+    "test": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha --reporter=dot"
   },
   "keywords": [
     "sicksync",
@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "chai": "^1.10.0",
+    "istanbul": "^0.3.2",
     "mocha": "^2.0.1",
     "rewire": "^2.1.0",
     "sinon": "^1.12.1"

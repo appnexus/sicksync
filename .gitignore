@@ -1,5 +1,6 @@
 # Ignore built code
 build/
+coverage/
 
 # Ignore temp
 temp/
