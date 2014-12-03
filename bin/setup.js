@@ -4,7 +4,7 @@
  *  Asks some questions, gets some answers and saves them
  */
 var prompter = require('prompt'),
-    util = require('../util');
+    util = require('../lib/util');
 
 require('colors');
 util.setupPrompter(prompter);

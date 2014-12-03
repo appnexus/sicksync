@@ -27,7 +27,7 @@ program
     .parse(process.argv);
 
 if (program.setup || !hasSetup) {
-    return require('./lib/setup/index');
+    return require('./bin/setup.js');
 }
 
 if (hasSetup) {

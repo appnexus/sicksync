@@ -1,5 +1,5 @@
 var spawn = require('child_process').spawn,
-    util = require('./util'),
+    util = require('../lib/util'),
     config = util.getConfig(),
     server = spawn('ssh', [config.userName + '@' + config.hostname, '"sicksync-remote"']);
 
