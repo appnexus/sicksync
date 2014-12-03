@@ -2,6 +2,8 @@
 `npm install -g sicksync`
 
 [![Build Status](https://travis-ci.org/adnexus/sicksync.svg?branch=tests)](https://travis-ci.org/adnexus/sicksync)
+[![Code Climate](https://codeclimate.com/github/adnexus/sicksync/badges/gpa.svg)](https://codeclimate.com/github/adnexus/sicksync)
+![Build Dependencies](https://david-dm.org/adnexus/sicksync.png)
 
 Has scp got you down? rsync just not fast enough? Well, we hear your pain, and that's why there's sicksync.
 
