@@ -6,7 +6,7 @@ var spawn = require('child_process').spawn,
 server.stdout.pipe(process.stdout);
 
 server.on('close', function (code) {
-    console.log('[' + config.hostname + '] Closed: ' + code);
+    console.log('[' + config.hostname + '] Closed with code: ' + code);
 });
 
 server.stdout.on('data', function(buf) {
