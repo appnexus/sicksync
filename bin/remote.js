@@ -8,7 +8,6 @@
  *  you shouldn't need this file at all
  */
 var fs = require('fs-extra'),
-    bsync = require('browser-sync'),
     Server = require('../lib/ws-server'),
     util = require('../lib/util'),
     config = util.getConfig(),
@@ -18,13 +17,6 @@ var fs = require('fs-extra'),
     });
 
 require('colors');
-
-bsync({
-    injectChanges: false,
-    proxy: 'localhost:80',
-    notifications: false,
-    logPrefix: config.hostname
-});
 
 function addFile(message) {
     fs.outputFile(destinationLocation + message.location, message.contents);
@@ -60,6 +52,4 @@ server.on('file-change', function(message) {
         default:
             break;
     }
-
-    bsync.reload();
 });

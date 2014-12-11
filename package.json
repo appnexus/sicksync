@@ -24,15 +24,14 @@
   "author": "jgriffith",
   "license": "MIT",
   "dependencies": {
-    "browser-sync": "^1.7.1",
-    "chokidar": "^0.10.3",
+    "chokidar": "^0.12.1",
     "colors": "^1.0.3",
     "commander": "^2.5.0",
-    "fs-extra": "^0.12.0",
+    "fs-extra": "^0.13.0",
     "merge": "^1.2.0",
     "prompt": "^0.2.14",
     "rsync": "^0.3.0",
-    "ws": "^0.4.32"
+    "ws": "^0.6.3"
   },
   "bin": {
     "sicksync": "./index.js",

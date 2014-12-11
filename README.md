@@ -8,7 +8,7 @@
 
 Has scp got you down? rsync just not fast enough? Well, we hear your pain, and that's why there's sicksync.
 
-sicksync is a CLI to sync your projects code to a remote machine. If you work in an environment where you edit files locally, then push them to a development machine, then sicksync is the tool for you. It even comes with some fun goodies, like browser-sync, baked right in.
+sicksync is a CLI to sync your projects code to a remote machine. If you work in an environment where you edit files locally, then push them to a development machine, then sicksync is the tool for you.
 
 ## Requirements
 
@@ -25,8 +25,6 @@ sicksync needs to be installed globally on both your remote and local machines.
 
 ## Overview
 sicksync, at it's core, is a simple websocket service that sends small file changes to a remote machine. If it get's hammered with changes (ie, a `git checkout some-massive-branch`), it will defer to rsync to transfer these large deltas. This makes it a stupendous tool when you need a short feedback-loop, but still need the flexibility to send large files. It also includes an encryption layer if you're worried about sending files plain-text.
-
-Alongside all of this, sicksync utilizes [browser-sync](http://www.browsersync.io/) to facilitate live-reload. Once setup, browser-sync creates a proxy layer on port `3000` to port `80` of your remote machine. All this means, is that you don't need to add any scripts to your website, and instead of visiting `yoursite.com` you'd visit `yoursite.com:3000` to use live-reload.
 
 ## Command Line Options
 
@@ -93,6 +91,12 @@ Flag that will turn on or off encrypted sync messages.
 - `debug: {boolean}`
 
 Flag that will turn on or off debug messages during the syncing process.
+
+## Upcoming
+
+- LiveReload
+
+### MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
