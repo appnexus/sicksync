@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/adnexus/sicksync.svg?branch=tests)](https://travis-ci.org/adnexus/sicksync)
 [![Code Climate](https://codeclimate.com/github/adnexus/sicksync/badges/gpa.svg)](https://codeclimate.com/github/adnexus/sicksync)
 [![Test Coverage](https://codeclimate.com/github/adnexus/sicksync/badges/coverage.svg)](https://codeclimate.com/github/adnexus/sicksync)
-![Build Dependencies](https://david-dm.org/adnexus/sicksync.png)
+[![Build Dependencies](https://david-dm.org/adnexus/sicksync.png)](https://david-dm.org/adnexus/sicksync)
 
 Has scp got you down? rsync just not fast enough? Well, we hear your pain, and that's why there's sicksync.
 
