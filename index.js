@@ -22,8 +22,8 @@ program
     .option('-s, --setup', 'Runs the sicksync setup wizard (happens automatically the first time)')
     .option('-d, --debug <boolean>', 'Turns on debug messages during sicksyncs', util.toBoolean)
     .option('-e, --encrypt <boolean>', 'Turns on encryption for sicksync messages', util.toBoolean)
-    .option('-C, --configure', 'Opens the config file in your chosen editor')
-    .option('-c, --copy', 'Runs a one-time sync')
+    .option('-c, --config', 'Opens the config file in your chosen editor')
+    .option('-o, --Once', 'Runs a one-time sync')
     .parse(process.argv);
 
 if (program.setup || !hasSetup) {
@@ -43,11 +43,11 @@ if (hasSetup) {
         return util.writeConfig(config);
     }
 
-    if (program.configure) {
+    if (program.config) {
         return util.open(configPath);
     }
 
-    if (program.copy) {
+    if (program.Once) {
         console.log('Syncing...');
         return bigSync(function() {
             console.log('Finished!'.green);

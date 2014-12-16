@@ -213,7 +213,7 @@ describe('util', function() {
         it('should return true if the filepath contains text in the excluded array', function() {
             var fileToExclude = 'some/file/path';
             var pathsToExclude = [
-                'some'
+                'some/**'
             ];
 
             expect(util.isExcluded(fileToExclude, pathsToExclude)).to.be.true();

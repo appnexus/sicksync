@@ -28,67 +28,67 @@ sicksync, at it's core, is a simple websocket service that sends small file chan
 
 ## Command Line Options
 
-- `sicksync -h, --help`
+`sicksync -h, --help`
 
 Outputs the help information as well as the version number.
 
-- `sicksync -s, --setup`
+`sicksync -s, --setup`
 
 Runs the setup wizard, which will create a `.sicksync-config.json` in your home directory. Once complete, it `scp`'s that file to your remote machine.
 
 This file is a simple JSON config object, so feel free to change it whenever (though you'll have to copy it to your remote machine manually).
 
-- `sicksync -d, --debug {boolean}`
+`sicksync -d, --debug {boolean}`
 
 Turns debug messages on/off when sicksync is running. Valid options are `true`, `false`, `yes`, `no`, `y` and `n`. Once complete, it will attempt to copy the config file to the remote machine.
 
-- `sicksync -e, --encrypt {boolean}`
+`sicksync -e, --encrypt {boolean}`
 
 Turns on or off encryption when sicksync sends file changes. Large changes will use `rsync`, which is already secure. Once complete, it will attempt to copy the config file to the remote machine.
 
-- `sicksync -C, --configure`
+`sicksync -c, --config`
 
 Opens the config file in your editor of choice.
 
-- `sicksync -c, --copy`
+`sicksync -o, --Once`
 
 Runs a one-time sync, which is a `rsync` under-the-hood.
 
 ## Configuration Options
 
-- `sourceLocation: {filepath}`
+`sourceLocation: {absolute filepath}`
 
 The *absolute* file-path you want to watch and sync with. Cannot have any `~` as sicksync doesn't yet understand the home shorthand. sicksync will also watch any nested file-changes (recursively) and update the remote machine with changes.
 
-- `excludes: {array of filepaths}`
+`excludes: {array of relative filepaths or globs}`
 
 An array of file(s) or filepath(s) that, when matched, sicksync will ignore and not send changes. Editor configuration files and `.git` files are generally ok to ignore.
 
-- `websocketPort: {number}`
+`websocketPort: {number}`
 
 The port number which you want BOTH the local and remote machines to use for websocket-syncing.
 
-- `secret: {string}`
+`secret: {string}`
 
 The secret used for encrpyted messages as well as the initial handshake for the websocket syncs. If there is a mis-match between the local and remote machine's secret, sicksync will not work. This get's automatically generated in the wizard, so it's not necessary to change it unless some bad happens.
 
-- `userName: {string}`
+`userName: {string}`
 
 The username you use to log into the remote machine with. sicksync will use this to start the syncing process, as well as copy files over.
 
-- `hostname: {string}`
+`hostname: {string}`
 
 The hostname or ip address of the remote machine you wish to sync with.
 
-- `destinationLocation: {filepath}`
+`destinationLocation: {filepath}`
 
 The location on your remote machine you wish to apply changes to. Again, this must be the *absolute* path in your local machine.
 
-- `prefersEncrypted: {boolean}`
+`prefersEncrypted: {boolean}`
 
 Flag that will turn on or off encrypted sync messages.
 
-- `debug: {boolean}`
+`debug: {boolean}`
 
 Flag that will turn on or off debug messages during the syncing process.
 

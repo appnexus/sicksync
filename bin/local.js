@@ -38,7 +38,10 @@ function onBigTransferDone() {
 }
 
 function filterAndRebounce(evt, filepath) {
-    if (util.isExcluded(filepath, ignored) || isPaused) return false;
+    var relativePath = filepath.replace(config.sourceLocation, '');
+    
+    if (util.isExcluded(relativePath, ignored) || isPaused) return false;
+    
     rebouncedFileChange(evt, filepath);
 }
 
