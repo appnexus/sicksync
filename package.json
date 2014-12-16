@@ -1,6 +1,6 @@
 {
   "name": "sicksync",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Don’t accept the available as the preferable. Go extra mile with extra speed.",
   "main": "index.js",
   "scripts": {
