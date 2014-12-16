@@ -7,13 +7,6 @@
 [![Test Coverage](https://codeclimate.com/github/adnexus/sicksync/badges/coverage.svg)](https://codeclimate.com/github/adnexus/sicksync)
 [![Build Dependencies](https://david-dm.org/adnexus/sicksync.png)](https://david-dm.org/adnexus/sicksync)
 
-## Old Syncing :(
-![sicksync](https://raw.githubusercontent.com/adnexus/sicksync/master/img/old-sync.gif)
-
-## sicksync'n :)
-![sicksync](https://raw.githubusercontent.com/adnexus/sicksync/master/img/sicksync.gif)
-
-
 Has scp got you down? rsync just not fast enough? Well, we hear your pain, and that's why there's sicksync.
 
 sicksync is a CLI to sync your projects code to a remote machine. If you work in an environment where you edit files locally, then push them to a development machine, then sicksync is the tool for you.
