@@ -1,6 +1,7 @@
 ![sicksync](https://raw.githubusercontent.com/adnexus/sicksync/master/img/sicksync.png)
 `npm install -g sicksync`
 
+[![npm version](https://badge.fury.io/js/sicksync.svg)](http://badge.fury.io/js/sicksync)
 [![Build Status](https://travis-ci.org/adnexus/sicksync.svg?branch=tests)](https://travis-ci.org/adnexus/sicksync)
 [![Code Climate](https://codeclimate.com/github/adnexus/sicksync/badges/gpa.svg)](https://codeclimate.com/github/adnexus/sicksync)
 [![Test Coverage](https://codeclimate.com/github/adnexus/sicksync/badges/coverage.svg)](https://codeclimate.com/github/adnexus/sicksync)
