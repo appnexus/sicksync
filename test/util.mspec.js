@@ -210,6 +210,28 @@ describe('util', function() {
             expect(util.isExcluded(fileToExclude, pathsToExclude)).to.be.true();
         });
 
+        it('exlcudes directories without *s with relative paths', function() {
+            // .git/index .git false
+            // /Users/jdelamotte/dev/appnexus/hbui/.git/index public/bundles false
+            var fileToExclude = '.git/index';
+            var pathsToExclude = [
+                '.git'
+            ];
+
+            expect(util.isExcluded(fileToExclude, pathsToExclude)).to.be.true();
+        });
+
+        it('exlcudes directories without *s with absolute paths', function() {
+            // .git/index .git false
+            // /Users/jdelamotte/dev/appnexus/hbui/.git/index public/bundles false
+            var fileToExclude = '/Users/blimey-mate/dev/appnexus/hbui/.git/index';
+            var pathsToExclude = [
+                '.git'
+            ];
+
+            expect(util.isExcluded(fileToExclude, pathsToExclude)).to.be.true();
+        });
+
         it('should return true if the filepath contains text in the excluded array', function() {
             var fileToExclude = 'some/file/path';
             var pathsToExclude = [
