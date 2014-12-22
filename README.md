@@ -63,7 +63,7 @@ The *absolute* file-path you want to watch and sync with. Cannot have any `~` as
 
 `excludes: {array of relative filepaths or globs}`
 
-An array of file(s) or filepath(s) that, when matched, sicksync will ignore and not send changes. Editor configuration files and `.git` files are generally ok to ignore.
+An array of file(s) or filepath(s) that, when matched, sicksync will ignore and not send changes. Editor configuration and `.git/*` files are generally ok to ignore. Uses [`minimatch`](https://github.com/isaacs/minimatch) for globbing.
 
 `websocketPort: {number}`
 
