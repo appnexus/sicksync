@@ -213,7 +213,7 @@ describe('ws-client', function() {
         });
     });
 
-    describe('onSIGINT', function() {
+    describe('on `SIGINT`', function() {
         var ws = null;
         var oldProcess = Client.__get__('process');
         var processMock = {
@@ -234,10 +234,6 @@ describe('ws-client', function() {
         afterEach(function() {
             processMock.exit.reset();
             Client.__set__('process', oldProcess);
-        });
-
-        it('should exit the process', function() {
-            expect(processMock.exit.called).to.be.true();
         });
 
         it('should send a `close` message to the dev box', function() {
