@@ -8,6 +8,7 @@
  *  you shouldn't need this file at all
  */
 var fs = require('fs-extra'),
+    sys = require('sys'),
     Server = require('../lib/ws-server'),
     util = require('../lib/util'),
     config = util.getConfig(),
@@ -17,6 +18,11 @@ var fs = require('fs-extra'),
     });
 
 require('colors');
+
+function serverLog(message) {
+    var prefix = '[' + config.hostname + '] ';
+    sys.puts(prefix + message);
+}
 
 function addFile(message) {
     fs.outputFile(destinationLocation + message.location, message.contents);
@@ -31,7 +37,7 @@ function removePath(message) {
 }
 
 server.on('file-change', function(message) {
-    if (config.debug) console.log('[' + config.hostname + '] < ' + message.changeType + ' ' + message.location);
+    if (config.debug) serverLog('< ' + message.changeType + ' ' + message.location);
 
     switch (message.changeType) {
         case 'add':
@@ -52,4 +58,9 @@ server.on('file-change', function(message) {
         default:
             break;
     }
+});
+
+server.on('connection-closed', function() {
+    serverLog('Connection closed. Stopping server.');
+    process.exit();
 });
