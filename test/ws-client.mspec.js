@@ -213,33 +213,4 @@ describe('ws-client', function() {
         });
     });
 
-    describe('on `SIGINT`', function() {
-        var ws = null;
-        var oldProcess = Client.__get__('process');
-        var processMock = {
-            exit: sinon.spy(),
-            on: sinon.spy()
-        };
-
-        beforeEach(function() {
-            Client.__set__('process', processMock);
-            ws = new Client({
-                url: 'ws://somewebsocket'
-            });
-
-            // Trigger SIGINT
-            processMock.on.getCall(0).args[1]();
-        });
-
-        afterEach(function() {
-            processMock.exit.reset();
-            Client.__set__('process', oldProcess);
-        });
-
-        it('should send a `close` message to the dev box', function() {
-            var sendArgs = JSON.parse(wsMock.send.getCall(0).args[0]);
-            expect(wsMock.send.called).to.be.true();
-            expect(sendArgs.subject).to.equal('close');
-        });
-    });
 });

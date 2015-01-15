@@ -85,6 +85,14 @@ describe('ws-server', function() {
                 expect(_wsMock.on.getCall(0).args[1]).to.be.a('function');
             });
 
+            it('should emit a connection-closed event when a client disconnects', function(done) {
+                wsserver.on('connection-closed', function() {
+                    expect(true).to.be.ok;
+                    done();
+                });
+                _wsMock.on.getCall(1).args[1](_wsMock);
+            });
+
             describe('and sends an invalid message', function() {
                 beforeEach(function() {
                     var invalidHandshake = JSON.stringify({
