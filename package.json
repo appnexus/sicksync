@@ -22,7 +22,7 @@
     "url": "https://github.com/adnexus/sicksync.git"
   },
   "author": "jgriffith",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "chokidar": "^0.12.1",
     "colors": "^1.0.3",
