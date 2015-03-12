@@ -1,3 +1,6 @@
+## 1.1.7
+- Moved to the Official AppNexus Repo for better visibility.
+
 ## 1.1.0
 - **Command-line API change**: Use `-c` or `--config` to open the `config` file. Use `-o` or `--Once` to do a one-time sync.
 - Added support for globbing patterns

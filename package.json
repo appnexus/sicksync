@@ -15,11 +15,11 @@
     "scp",
     "cli"
   ],
-  "homepage": "https://github.com/adnexus/sicksync",
-  "bugs": "https://github.com/adnexus/sicksync/issues",
+  "homepage": "https://github.com/appnexus/sicksync",
+  "bugs": "https://github.com/appnexus/sicksync/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/adnexus/sicksync.git"
+    "url": "https://github.com/appnexus/sicksync.git"
   },
   "author": "jgriffith",
   "license": "Apache-2.0",
