@@ -2,7 +2,7 @@
 `npm install -g sicksync`
 
 [![npm version](https://badge.fury.io/js/sicksync.svg)](http://badge.fury.io/js/sicksync)
-[![Build Status](https://travis-ci.org/adnexus/sicksync.svg?branch=tests)](https://travis-ci.org/adnexus/sicksync)
+[![Build Status](https://travis-ci.org/appnexus/sicksync.svg?branch=master)](https://travis-ci.org/appnexus/sicksync)
 [![Code Climate](https://codeclimate.com/github/appnexus/sicksync/badges/gpa.svg)](https://codeclimate.com/github/appnexus/sicksync)
 [![Build Dependencies](https://david-dm.org/appnexus/sicksync.png)](https://david-dm.org/appnexus/sicksync)
 
