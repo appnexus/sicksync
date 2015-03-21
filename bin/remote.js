@@ -25,15 +25,18 @@ function serverLog(message) {
 }
 
 function addFile(message) {
-    fs.outputFile(destinationLocation + message.location, message.contents);
+    console.log(destinationLocation[message.destinationIndex] + message.location);
+    fs.outputFile(destinationLocation[message.destinationIndex] + message.location, message.contents);
 }
 
 function addDir(message) {
-    fs.mkdirs(destinationLocation + message.location);
+    console.log(destinationLocation[message.destinationIndex] + message.location);
+    fs.mkdirs(destinationLocation[message.destinationIndex] + message.location);
 }
 
 function removePath(message) {
-    fs.delete(destinationLocation + message.location);
+    console.log(destinationLocation[message.destinationIndex] + message.location);
+    fs.delete(destinationLocation[message.destinationIndex] + message.location);
 }
 
 server.on('file-change', function(message) {

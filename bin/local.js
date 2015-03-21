@@ -14,7 +14,8 @@ var fs = require('fs'),
     config = util.getConfig(),
     ignored = config.excludes,
     isPaused = false,
-    devbox = null;
+    devbox = null,
+    sourceLocation = config.sourceLocation;
 
 require('colors');
 
@@ -38,17 +39,31 @@ function onBigTransferDone() {
 }
 
 function filterAndRebounce(evt, filepath) {
-    var relativePath = filepath.replace(config.sourceLocation, '');
+    var sourceIndex = findSourceLocation(filepath);
+
+    if (!isFinite(sourceIndex)) throw new Error('No matching source location was found for the file ' + filepath);
+
+    // console.log('Source index: ' + sourceIndex);
+
+    var relativePath = filepath.replace(sourceLocation[sourceIndex], '');
     
-    if (util.isExcluded(relativePath, ignored) || isPaused) return false;
+    if (util.isExcluded(relativePath, ignored) || util.isExcluded(filepath, ignored) || isPaused) return false;
     
-    rebouncedFileChange(evt, filepath);
+    rebouncedFileChange(evt, filepath, sourceIndex);
 }
 
-function onFileChange(evt, filepath) {
-    if (util.isExcluded(filepath, ignored) || isPaused) return false;
+// returns the index of the first sourceLocation that is a substring of the filepath
+function findSourceLocation(filepath) {
+    for (var i = 0, len = sourceLocation.length; i < len; i++) {
+        if (filepath.search(sourceLocation[i]) !== -1) {
+            return i;
+        }
+    }
+}
+
+function onFileChange(evt, filepath, sourceIndex) {
     var fileContents = null;
-    var localPath = filepath.replace(config.sourceLocation, '');
+    var localPath = filepath.replace(sourceLocation[sourceIndex], '');
 
     if (evt === 'add' || evt === 'change') {
         fileContents = fs.readFileSync(filepath).toString();
@@ -58,12 +73,16 @@ function onFileChange(evt, filepath) {
         console.log('[local] > ' + evt + ' ' + localPath);
     }
 
+    console.log('Client file path ' + filepath);
+    console.log('Local file path ' + localPath);
+
     devbox.send({
         subject: 'file',
         changeType: evt,
         location: localPath,
         contents: fileContents ? fileContents : null,
-        name: path.basename(filepath)
+        name: path.basename(filepath),
+        destinationIndex: sourceIndex
     });
 }
 
