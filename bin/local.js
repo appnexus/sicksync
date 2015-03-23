@@ -43,8 +43,6 @@ function filterAndRebounce(evt, filepath) {
 
     if (!isFinite(sourceIndex)) throw new Error('No matching source location was found for the file ' + filepath);
 
-    // console.log('Source index: ' + sourceIndex);
-
     var relativePath = filepath.replace(sourceLocation[sourceIndex], '');
     
     if (util.isExcluded(relativePath, ignored) || util.isExcluded(filepath, ignored) || isPaused) return false;
@@ -72,9 +70,6 @@ function onFileChange(evt, filepath, sourceIndex) {
     if (config.debug) {
         console.log('[local] > ' + evt + ' ' + localPath);
     }
-
-    console.log('Client file path ' + filepath);
-    console.log('Local file path ' + localPath);
 
     devbox.send({
         subject: 'file',
