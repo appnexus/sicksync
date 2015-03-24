@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "chai": "^1.10.0",
+    "gulp": "^3.8.11",
     "istanbul": "^0.3.2",
     "mocha": "^2.0.1",
     "rewire": "^2.1.0",
