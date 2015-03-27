@@ -44,6 +44,7 @@
     "istanbul": "^0.3.2",
     "mocha": "^2.0.1",
     "rewire": "^2.1.0",
+    "segfault-handler": "^0.2.4",
     "sinon": "^1.12.1"
   }
 }

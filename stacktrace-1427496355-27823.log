@@ -1,0 +1,10 @@
+PID 27823 received SIGSEGV for address: 0x10
+0   segfault-handler.node               0x00000001008de47f _ZL16segfault_handleriP9__siginfoPv + 287
+1   libsystem_platform.dylib            0x00007fff8f2d9f1a _sigtramp + 26
+2   node                                0x00000001002242e7 _ZN2v88internal10FixedArray8CopySizeEi + 53
+3   node                                0x0000000100389a48 uv__async_event + 62
+4   node                                0x0000000100389bbb uv__async_io + 136
+5   node                                0x0000000100396619 uv__io_poll + 1542
+6   node                                0x000000010038a001 uv_run + 239
+7   node                                0x0000000100342870 _ZN4node5StartEiPPc + 365
+8   node                                0x00000001000038f4 start + 52
