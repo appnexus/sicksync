@@ -11,3 +11,4 @@ node_modules
 # Logs and system
 npm-debug.log
 .DS_STORE
+stacktrace*.log
