@@ -11,14 +11,11 @@ var fs = require('fs-extra'),
     util = require('./lib/util'),
     package = require('./package.json'),
     bigSync = require('./lib/big-sync'),
-    SegfaultHandler = require('segfault-handler'),
     configPath = util.getConfigPath(),
     hasSetup = fs.existsSync(configPath),
     config = null;
 
 require('colors');
-
-SegfaultHandler.registerHandler();
 
 program
     .version(package.version)

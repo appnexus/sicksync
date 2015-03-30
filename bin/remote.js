@@ -11,11 +11,16 @@ var fs = require('fs-extra'),
     sys = require('sys'),
     Server = require('../lib/ws-server'),
     util = require('../lib/util'),
+    SegfaultHandler = require('segfault-handler'),
     config = util.getConfig(),
     destinationLocation = config.destinationLocation,
     server = new Server({
         port: config.websocketPort
     });
+
+if (config.debug) {
+    SegfaultHandler.registerHandler();
+}
 
 require('colors');
 

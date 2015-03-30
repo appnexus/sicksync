@@ -1,3 +1,9 @@
+## 1.1.11
+- Makes segfault handling depend on debug mode
+
+## 1.1.10
+- Adds segfault handling
+
 ## 1.1.7
 - Moved to the Official AppNexus Repo for better visibility.
 
