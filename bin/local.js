@@ -11,12 +11,17 @@ var fs = require('fs'),
     util = require('../lib/util'),
     WebSocketClient = require('../lib/ws-client'),
     bigSync = require('../lib/big-sync'),
+    SegfaultHandler = require('segfault-handler'),
     config = util.getConfig(),
     ignored = config.excludes,
     isPaused = false,
     devbox = null;
 
 require('colors');
+
+if (config.debug) {
+    SegfaultHandler.registerHandler();
+}
 
 var NUM_FILES_FOR_LARGE_SEND = 10;
 var FILE_CHANGE_COOLDOWN_TIME = 10;
