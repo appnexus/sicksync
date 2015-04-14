@@ -1,3 +1,6 @@
+## 1.1.12
+- New config flag `retryOnDisconnect` for when your remote machine closes.
+
 ## 1.1.11
 - Makes segfault handling depend on debug mode
 
