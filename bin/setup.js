@@ -52,6 +52,11 @@ prompter.get({
         websocketPort: {
             description: 'What port should sicksync use?:',
             default: 8888
+        },
+        retryOnDisconnect: {
+            description: 'Would you like sicksync to retry connecting if it gets disconnected?',
+            default: true,
+            before: util.toBoolean,
         }
     }
 }, function(err, result) {
