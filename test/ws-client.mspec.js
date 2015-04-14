@@ -23,7 +23,8 @@ var utilMock = {
 
 var configMock = {
     hostname: 'somehost',
-    secret: 'keepitsafe'
+    secret: 'keepitsafe',
+    retryOnDisconnect: true
 };
 
 Client.__set__('config', configMock);
@@ -164,7 +165,23 @@ describe('ws-client', function() {
             expect(consoleMock.log.getCall(0).args[0]).to.contain('closed the connection. Shutting down.');
         });
 
-        it('should close the process', function() {
+        it('should attempt to awaken the devbox', function() {
+            expect(utilMock.wakeDevBox.called).to.be.true();
+        });
+
+        it('when the `retryOnDisconnect` flag is set to `false` should exit the process', function() {
+            Client.__set__('config', {
+                hostname: 'somehost',
+                secret: 'keepitsafe',
+                retryOnDisconnect: false
+            });
+
+            ws = new Client({
+                url: 'ws://somewebsocket'
+            });
+
+            // Trigger `close`
+            wsMock.on.getCall(2).args[1]();
             expect(processMock.exit.called).to.be.true();
         });
     });
