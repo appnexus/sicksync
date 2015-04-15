@@ -20,6 +20,13 @@ var rsyncSpies = (function() {
     BuildSpies.prototype.source = sinon.stub().returns(BuildSpies.prototype);
     BuildSpies.prototype.destination = sinon.stub().returns(BuildSpies.prototype);
     BuildSpies.prototype.execute = function(cb) { cb(); };
+    BuildSpies.prototype.resetAll = function() {
+        BuildSpies.prototype.shell.reset();
+        BuildSpies.prototype.flags.reset();
+        BuildSpies.prototype.exclude.reset();
+        BuildSpies.prototype.source.reset();
+        BuildSpies.prototype.destination.reset();
+    }
 
     return new BuildSpies();
 })();
@@ -65,7 +72,7 @@ describe('bigSync', function() {
         });
 
         afterEach(function() {
-            testUtils.resetSpies(rsyncSpies);
+            rsyncSpies.resetAll();
         });
 
         it('should set the `shell` property to `ssh`', function() {
