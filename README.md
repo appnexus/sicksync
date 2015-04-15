@@ -103,13 +103,17 @@ When true, this will tell `sicksync` to re-attempt to connect when the server di
 ## Troubleshooting
 
 Q: I'm seeing `[ERR] command not found: sicksync-remote` when starting sicksync locally, what gives?
+
 A: This likely has to do with `sicksync-remote` not being in your `$PATH` when `sicksync` ssh's into your remote machine to start the process. If you are using ZSH, try moving your $PATH definitions to `.zshenv`.
 
 Q: I'm seeing `Error: Module did not self-register.` when running sicksync.
+
 A: If you've recently updated `node` or changed versions, you'll need to recompile the binaries that go along with `sicksync`. Run `npm install -g sicksync` again, or if you've forked/cloned the repo then remove the associated `node_modules` folder and run `npm install`.
 
 Q: `sicksync -o` is taking a long time to run, is that ok?
+
 A: Depends. If there are a lot of changes, the one-time-sync can take a bit to run. Can `scp` or `rsync` be ran effectively?
 
 Q: I'm having an issue, and I need help.
+
 A: Send a PR with the problem and we'll give it a gander!
