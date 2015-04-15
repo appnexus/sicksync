@@ -27,16 +27,20 @@ var configMock = {
     retryOnDisconnect: true
 };
 
+var bigSyncMock = sinon.spy();
+
 Client.__set__('config', configMock);
 Client.__set__('util', utilMock);
 Client.__set__('crypt', cryptMock);
 Client.__set__('WebSocket', WsMock);
+Client.__set__('bigSync', bigSyncMock);
 
 describe('ws-client', function() {
 
     afterEach(function() {
         testUtils.resetSpies(wsMock);
         utilMock.wakeDevBox.reset();
+        bigSyncMock.reset();
     });
 
     describe('connection', function() {
@@ -165,7 +169,12 @@ describe('ws-client', function() {
             expect(consoleMock.log.getCall(0).args[0]).to.contain('closed the connection. Shutting down.');
         });
 
-        it('should attempt to awaken the devbox', function() {
+        it('should get the remote machine back up to date with a `bigSync` call', function() {
+            expect(bigSyncMock.called).to.be.true();
+        });
+
+        it('should attempt to awaken the devbox after the `bigSync` call', function() {
+            bigSyncMock.getCall(0).args[0](); // Execute the bigSync callback function
             expect(utilMock.wakeDevBox.called).to.be.true();
         });
 
@@ -216,15 +225,22 @@ describe('ws-client', function() {
             Client.__set__('console', oldConsole);
         });
 
-        it('should log the problem, and try to wake the dev box', function() {
-            expect(consoleMock.log.getCall(0).args[0]).to.contain('Starting syncer with ');
+        it('should trigger a `bigSync` to bring remote up to date', function() {
+            expect(bigSyncMock.called).to.be.true();
+        });
+
+        it('should log the problem, and try to wake the dev box after a `bigSync`', function() {
+            bigSyncMock.getCall(0).args[0](); // Execute the bigSync callback function
+            expect(consoleMock.log.getCall(0).args[0]).to.contain('up to date..');
         });
 
         it('should call util#wakeDevBox', function() {
+            bigSyncMock.getCall(0).args[0](); // Execute the bigSync callback function
             expect(utilMock.wakeDevBox.called).to.be.true();
         });
 
         it('should pass in the hostname and callback function into the #wakeDevBox call', function() {
+            bigSyncMock.getCall(0).args[0](); // Execute the bigSync callback function
             expect(utilMock.wakeDevBox.getCall(0).args[0]).to.equal(configMock.hostname);
             expect(utilMock.wakeDevBox.getCall(0).args[1]).to.be.a('function');
         });
