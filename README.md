@@ -28,6 +28,10 @@ sicksync, at it's core, is a simple websocket service that sends small file chan
 
 ## Command Line Options
 
+`sicksync`
+
+This command will ensure your remote path is up to date and start the syncing process. I you haven't already setup `sicksync`, it'll walk you through the setup wizard.
+
 `sicksync -h, --help`
 
 Outputs the help information as well as the version number.
@@ -52,7 +56,7 @@ Opens the config file in your editor of choice.
 
 `sicksync -o, --Once`
 
-Runs a one-time sync, which is a `rsync` under-the-hood.
+Runs a one-time sync, which is a `rsync` under-the-hood. This happens automatically everytime you run `sicksync`, and if you have the `retryOnDisconnect` flag, will run on disconnect.
 
 ## Configuration Options
 
@@ -92,6 +96,20 @@ Flag that will turn on or off encrypted sync messages.
 
 Flag that will turn on or off debug messages during the syncing process.
 
-## Upcoming
+`retryOnDisconnect: {boolean}`
 
-- LiveReload
+When true, this will tell `sicksync` to re-attempt to connect when the server disconnects. Using `CTRL+C` will not trigger a retry locally. Also runs a one-time sync beforehand to ensure any lost changes find their way home.
+
+## Troubleshooting
+
+Q: I'm seeing `[ERR] command not found: sicksync-remote` when starting sicksync locally, what gives?
+A: This likely has to do with `sicksync-remote` not being in your `$PATH` when `sicksync` ssh's into your remote machine to start the process. If you are using ZSH, try moving your $PATH definitions to `.zshenv`.
+
+Q: I'm seeing `Error: Module did not self-register.` when running sicksync.
+A: If you've recently updated `node` or changed versions, you'll need to recompile the binaries that go along with `sicksync`. Run `npm install -g sicksync` again, or if you've forked/cloned the repo then remove the associated `node_modules` folder and run `npm install`.
+
+Q: `sicksync -o` is taking a long time to run, is that ok?
+A: Depends. If there are a lot of changes, the one-time-sync can take a bit to run. Can `scp` or `rsync` be ran effectively?
+
+Q: I'm having an issue, and I need help.
+A: Send a PR with the problem and we'll give it a gander!

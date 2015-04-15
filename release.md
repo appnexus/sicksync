@@ -1,3 +1,6 @@
+## 1.1.14
+- Runs a one-time-sync on start, and when `retryOnDisconnect` is true it'll run it before attempting to reconnect to the remote machine.
+
 ## 1.1.12
 - New config flag `retryOnDisconnect` for when your remote machine closes.
 
