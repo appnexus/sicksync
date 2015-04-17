@@ -41,7 +41,7 @@
     "sicksync-remote": "./bin/remote.js"
   },
   "devDependencies": {
-    "chai": "^1.10.0",
+    "chai": "^2.2.0",
     "istanbul": "^0.3.2",
     "segfault-handler": "^0.2.4",
     "mocha": "^2.0.1",
