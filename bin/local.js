@@ -11,17 +11,12 @@ var fs = require('fs'),
     util = require('../lib/util'),
     WebSocketClient = require('../lib/ws-client'),
     bigSync = require('../lib/big-sync'),
-    SegfaultHandler = require('segfault-handler'),
     config = util.getConfig(),
     ignored = config.excludes,
     isPaused = false,
     devbox = null;
 
 require('colors');
-
-if (config.debug) {
-    SegfaultHandler.registerHandler();
-}
 
 var NUM_FILES_FOR_LARGE_SEND = 10;
 var FILE_CHANGE_COOLDOWN_TIME = 10;
@@ -44,9 +39,9 @@ function onBigTransferDone() {
 
 function filterAndRebounce(evt, filepath) {
     var relativePath = filepath.replace(config.sourceLocation, '');
-    
+
     if (util.isExcluded(relativePath, ignored) || isPaused) return false;
-    
+
     rebouncedFileChange(evt, filepath);
 }
 
@@ -76,6 +71,7 @@ function startFileWatch() {
     watcher.watch(config.sourceLocation, {
         ignored: ignored,
         persistent: true,
+        followSymlinks: false,
         ignoreInitial: true
     }).on('all', filterAndRebounce);
 }

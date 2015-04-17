@@ -8,25 +8,19 @@
  *  you shouldn't need this file at all
  */
 var fs = require('fs-extra'),
-    sys = require('sys'),
     Server = require('../lib/ws-server'),
     util = require('../lib/util'),
-    SegfaultHandler = require('segfault-handler'),
     config = util.getConfig(),
     destinationLocation = config.destinationLocation,
     server = new Server({
         port: config.websocketPort
     });
 
-if (config.debug) {
-    SegfaultHandler.registerHandler();
-}
-
 require('colors');
 
 function serverLog(message) {
     var prefix = '[' + config.hostname + '] ';
-    sys.puts(prefix + message);
+    console.log(prefix + message);
 }
 
 function addFile(message) {
