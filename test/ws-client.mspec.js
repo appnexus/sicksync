@@ -53,7 +53,7 @@ describe('ws-client', function() {
         });
 
         it('should register callbacks via the `on` method', function() {
-            expect(wsMock.on.called).to.be.true();
+            expect(wsMock.on.called).to.be.true;
         });
 
         it('should register a callback for the `open` message', function() {
@@ -90,7 +90,7 @@ describe('ws-client', function() {
         });
 
         it('should send a message to the web-socket', function() {
-            expect(wsMock.send.called).to.be.true();
+            expect(wsMock.send.called).to.be.true;
         });
 
         it('should send a `subject` and `token` property in the payload', function() {
@@ -129,7 +129,7 @@ describe('ws-client', function() {
             triggerMessage({isAllowed: false});
 
             setTimeout(function() {
-                expect(authorizedSpy.called).to.be.false();
+                expect(authorizedSpy.called).to.be.false;
                 done();
             }, 10);
         });
@@ -170,12 +170,12 @@ describe('ws-client', function() {
         });
 
         it('should get the remote machine back up to date with a `bigSync` call', function() {
-            expect(bigSyncMock.called).to.be.true();
+            expect(bigSyncMock.called).to.be.true;
         });
 
         it('should attempt to awaken the devbox after the `bigSync` call', function() {
             bigSyncMock.getCall(0).args[0](); // Execute the bigSync callback function
-            expect(utilMock.wakeDevBox.called).to.be.true();
+            expect(utilMock.wakeDevBox.called).to.be.true;
         });
 
         it('when the `retryOnDisconnect` flag is set to `false` should exit the process', function() {
@@ -191,7 +191,7 @@ describe('ws-client', function() {
 
             // Trigger `close`
             wsMock.on.getCall(2).args[1]();
-            expect(processMock.exit.called).to.be.true();
+            expect(processMock.exit.called).to.be.true;
         });
     });
 
@@ -226,7 +226,7 @@ describe('ws-client', function() {
         });
 
         it('should trigger a `bigSync` to bring remote up to date', function() {
-            expect(bigSyncMock.called).to.be.true();
+            expect(bigSyncMock.called).to.be.true;
         });
 
         it('should log the problem, and try to wake the dev box after a `bigSync`', function() {
@@ -236,7 +236,7 @@ describe('ws-client', function() {
 
         it('should call util#wakeDevBox', function() {
             bigSyncMock.getCall(0).args[0](); // Execute the bigSync callback function
-            expect(utilMock.wakeDevBox.called).to.be.true();
+            expect(utilMock.wakeDevBox.called).to.be.true;
         });
 
         it('should pass in the hostname and callback function into the #wakeDevBox call', function() {

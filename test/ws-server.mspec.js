@@ -68,7 +68,7 @@ describe('ws-server', function() {
         });
 
         it('should log that the server is up', function() {
-            expect(consoleMock.called).to.be.true();
+            expect(consoleMock.called).to.be.true;
         });
 
         describe('when a client connects', function() {
@@ -104,7 +104,7 @@ describe('ws-server', function() {
                 });
 
                 it('should kill the process', function() {
-                    expect(processSpy.exit.called).to.be.true();
+                    expect(processSpy.exit.called).to.be.true;
                 });
 
                 it('should log the message', function() {
@@ -123,7 +123,7 @@ describe('ws-server', function() {
                 });
 
                 it('should kill the process', function() {
-                    expect(processSpy.exit.called).to.be.true();
+                    expect(processSpy.exit.called).to.be.true;
                 });
 
                 it('should log the message', function() {
@@ -143,7 +143,7 @@ describe('ws-server', function() {
                 });
 
                 it('should close the connection', function() {
-                    expect(_wsMock.close.called).to.be.true();
+                    expect(_wsMock.close.called).to.be.true;
                 });
             });
 
@@ -159,7 +159,7 @@ describe('ws-server', function() {
                 });
 
                 it('should send a response back', function() {
-                    expect(_wsMock.send.called).to.be.true();
+                    expect(_wsMock.send.called).to.be.true;
                 });
 
                 it('should contain a `subject` of `handshake`', function() {
@@ -169,7 +169,7 @@ describe('ws-server', function() {
 
                 it('should contain an `isAllowed` parameter of `true`', function() {
                     var handshakeRes = _wsMock.send.getCall(0).args;
-                    expect(JSON.parse(handshakeRes).isAllowed).to.be.true();
+                    expect(JSON.parse(handshakeRes).isAllowed).to.be.true;
                 });
             });
 

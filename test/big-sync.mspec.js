@@ -1,8 +1,7 @@
 var expect = require('chai').expect,
     rewire = require('rewire'),
     sinon = require('sinon'),
-    bigSync = rewire('../lib/big-sync'),
-    testUtils = require('./utils');
+    bigSync = rewire('../lib/big-sync');
 
 var mockConfig = {
     excludes: ['one', 'two', 'three'],
@@ -26,7 +25,7 @@ var rsyncSpies = (function() {
         BuildSpies.prototype.exclude.reset();
         BuildSpies.prototype.source.reset();
         BuildSpies.prototype.destination.reset();
-    }
+    };
 
     return new BuildSpies();
 })();
@@ -58,7 +57,6 @@ describe('bigSync', function() {
 
         it('should log a message to run `sicksync --setup`', function() {
             bigSync();
-            expect(consoleSpy.log.called).to.be.true();
             expect(consoleSpy.log.getCall(0).args[0]).to.contain('--setup');
         });
     });

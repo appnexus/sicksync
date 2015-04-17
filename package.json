@@ -24,15 +24,15 @@
   "author": "jgriffith",
   "license": "Apache-2.0",
   "dependencies": {
-    "chokidar": "^0.12.1",
+    "chokidar": "^1.0.1",
     "colors": "^1.0.3",
     "commander": "^2.5.0",
-    "fs-extra": "^0.16.3",
+    "fs-extra": "^0.18.2",
+    "lodash": "^3.7.0",
     "merge": "^1.2.0",
     "minimatch": "^2.0.1",
     "prompt": "^0.2.14",
     "rsync": "^0.4.0",
-    "segfault-handler": "^0.2.4",
     "ws": "^0.7.1"
   },
   "bin": {
@@ -41,7 +41,7 @@
     "sicksync-remote": "./bin/remote.js"
   },
   "devDependencies": {
-    "chai": "^1.10.0",
+    "chai": "^2.2.0",
     "istanbul": "^0.3.2",
     "mocha": "^2.0.1",
     "rewire": "^2.1.0",

@@ -55,7 +55,7 @@ describe('util', function() {
         });
 
         it('should contain `json` in it\'s path', function() {
-            expect(util.getConfigPath().indexOf('json') > -1).to.be.true();
+            expect(util.getConfigPath().indexOf('json') > -1).to.be.true;
         });
     });
 
@@ -74,18 +74,6 @@ describe('util', function() {
             util.__set__('fs', { existsSync: function() { return false; } });
 
             expect(util.getConfig()).to.deep.equal({});
-        });
-    });
-
-    describe('#isEmpty', function() {
-        it('should return true if it\'s passed an empty object', function() {
-            expect(util.isEmpty({})).to.be.true();
-        });
-
-        it('should return false if it\'s passed a non-empty object', function() {
-            expect(util.isEmpty({
-                'wat': 'wat'
-            })).to.be.false();
         });
     });
 
@@ -121,7 +109,7 @@ describe('util', function() {
                 some: 'object',
                 syncsRemotely: false
             });
-            expect(outputFileSyncSpy.called).to.be.true();
+            expect(outputFileSyncSpy.called).to.be.true;
         });
 
         it('should call `fs.outputFileSyncSpy` with the right arguments', function() {
@@ -144,7 +132,7 @@ describe('util', function() {
                 some: 'object',
                 syncsRemotely: true
             });
-            expect(util.writeConfigToDev.called).to.be.true();
+            expect(util.writeConfigToDev.called).to.be.true;
         });
     });
 
@@ -163,7 +151,7 @@ describe('util', function() {
 
         it('should call `exec`', function() {
             util.writeConfigToDev({});
-            expect(execSpy.called).to.be.true();
+            expect(execSpy.called).to.be.true;
         });
 
         it('should call `exec` with the appropriate parameters', function() {
@@ -187,7 +175,7 @@ describe('util', function() {
                 util.writeConfigToDev({});
                 execSpy.getCall(0).args[1](null);
 
-                expect(console.log.called).to.be.true();
+                expect(console.log.called).to.be.true;
                 console.log.restore();
             });
 
@@ -207,7 +195,7 @@ describe('util', function() {
                 'some/file/path'
             ];
 
-            expect(util.isExcluded(fileToExclude, pathsToExclude)).to.be.true();
+            expect(util.isExcluded(fileToExclude, pathsToExclude)).to.be.true;
         });
 
         it('should return true if the filepath contains text in the excluded array', function() {
@@ -216,7 +204,7 @@ describe('util', function() {
                 'some/**'
             ];
 
-            expect(util.isExcluded(fileToExclude, pathsToExclude)).to.be.true();
+            expect(util.isExcluded(fileToExclude, pathsToExclude)).to.be.true;
         });
 
         it('should return false if the filepath isn\'t excluded', function() {
@@ -225,7 +213,7 @@ describe('util', function() {
                 'another/file/path'
             ];
 
-            expect(util.isExcluded(fileToExclude, pathsToExclude)).to.be.false();
+            expect(util.isExcluded(fileToExclude, pathsToExclude)).to.be.false;
         });
     });
 
@@ -253,7 +241,7 @@ describe('util', function() {
             });
 
             it('should call `desiredFn` the amount of times it was invoked', function() {
-                expect(desiredFn.calledThrice).to.be.true();
+                expect(desiredFn.calledThrice).to.be.true;
             });
 
             it('should called the `desiredFn` with the right arguments', function() {
@@ -282,32 +270,32 @@ describe('util', function() {
             });
 
             it('should not call `desiredFn`', function() {
-                expect(desiredFn.called).to.be.false();
+                expect(desiredFn.called).to.be.false;
             });
 
             it('should call the `fallbackFn', function() {
-                expect(fallbackFn.called).to.be.true();
+                expect(fallbackFn.called).to.be.true;
             });
 
             it('should not call `fallbackFn` more than once', function() {
-                expect(fallbackFn.calledTwice).to.be.false();
+                expect(fallbackFn.calledTwice).to.be.false;
             });
 
             it('should not call `desiredFn` after `fallbackFn` is called', function() {
                 rebouncedFn();
-                expect(desiredFn.called).to.be.false();
+                expect(desiredFn.called).to.be.false;
             });
 
             it('should not call `fallbackFn` after another call to the rebounced function', function() {
                 rebouncedFn();
                 expect(rebouncedFn()).to.be.a('undefined');
-                expect(fallbackFn.calledTwice).to.be.false();
+                expect(fallbackFn.calledTwice).to.be.false;
             });
 
             it('should call the `desiredFn` again after the cool-down is complete', function(done) {
                 function afterCoolDown() {
                     setTimeout(function() {
-                        expect(desiredFn.called).to.be.true();
+                        expect(desiredFn.called).to.be.true;
                         done();
                     }, 11);
                 }
@@ -333,7 +321,7 @@ describe('util', function() {
             });
 
             it('should call `desiredFn` the number of times it was invoked', function() {
-                expect(desiredFn.calledThrice).to.be.true();
+                expect(desiredFn.calledThrice).to.be.true;
             });
         });
     });
@@ -363,7 +351,7 @@ describe('util', function() {
 
         it('should call `exec`', function() {
             util.open('somefile');
-            expect(execSpy.called).to.be.true();
+            expect(execSpy.called).to.be.true;
         });
 
         it('should pass in parameters to the `exec` call', function() {
@@ -375,32 +363,32 @@ describe('util', function() {
 
     describe('#toBoolean', function() {
         it('should convert `yes` to `true`', function() {
-            expect(util.toBoolean('yes')).to.be.true();
+            expect(util.toBoolean('yes')).to.be.true;
         });
 
         it('should convert `y` to `true`', function() {
-            expect(util.toBoolean('y')).to.be.true();
+            expect(util.toBoolean('y')).to.be.true;
         });
 
         it('should conver the string `true` to `true`', function() {
-            expect(util.toBoolean('true')).to.be.true();
+            expect(util.toBoolean('true')).to.be.true;
         });
 
         it('should convert `no` to `false`', function() {
-            expect(util.toBoolean('no')).to.be.false();
+            expect(util.toBoolean('no')).to.be.false;
         });
 
         it('should convert `n` to `false`', function() {
-            expect(util.toBoolean('n')).to.be.false();
+            expect(util.toBoolean('n')).to.be.false;
         });
 
         it('should conver the string `false` to `false`', function() {
-            expect(util.toBoolean('false')).to.be.false();
+            expect(util.toBoolean('false')).to.be.false;
         });
 
         it('should return false for all other strings', function() {
-            expect(util.toBoolean('')).to.be.false();
-            expect(util.toBoolean('possible')).to.be.false();
+            expect(util.toBoolean('')).to.be.false;
+            expect(util.toBoolean('possible')).to.be.false;
         });
     });
 
@@ -437,7 +425,7 @@ describe('util', function() {
             });
 
             it('should fork the process', function() {
-                expect(forkSpy.called).to.be.true();
+                expect(forkSpy.called).to.be.true;
             });
 
             it('should pass in the location of the start-script', function() {
@@ -475,7 +463,7 @@ describe('util', function() {
         });
 
         it('should call the `start` method', function() {
-            expect(promptMock.start.called).to.be.true();
+            expect(promptMock.start.called).to.be.true;
         });
     });
 });
