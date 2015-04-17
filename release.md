@@ -1,3 +1,7 @@
+## 1.1.15
+- Removes the segfault handler as it's causing some linux distros to freak out. Go figure.
+- Updates `chokidar` and `chai` dependencies.
+
 ## 1.1.14
 - Runs a one-time-sync on start, and when `retryOnDisconnect` is true it'll run it before attempting to reconnect to the remote machine.
 
