@@ -55,7 +55,7 @@ describe('util', function() {
         });
 
         it('should contain `json` in it\'s path', function() {
-            expect(util.getConfigPath().indexOf('json') > -1).to.be.true();
+            expect(util.getConfigPath().indexOf('json') > -1).to.be.true;
         });
     });
 
@@ -74,18 +74,6 @@ describe('util', function() {
             util.__set__('fs', { existsSync: function() { return false; } });
 
             expect(util.getConfig()).to.deep.equal({});
-        });
-    });
-
-    describe('#isEmpty', function() {
-        it('should return true if it\'s passed an empty object', function() {
-            expect(util.isEmpty({})).to.be.true();
-        });
-
-        it('should return false if it\'s passed a non-empty object', function() {
-            expect(util.isEmpty({
-                'wat': 'wat'
-            })).to.be.false();
         });
     });
 
@@ -121,7 +109,7 @@ describe('util', function() {
                 some: 'object',
                 syncsRemotely: false
             });
-            expect(outputFileSyncSpy.called).to.be.true();
+            expect(outputFileSyncSpy.called).to.be.true;
         });
 
         it('should call `fs.outputFileSyncSpy` with the right arguments', function() {
@@ -144,7 +132,7 @@ describe('util', function() {
                 some: 'object',
                 syncsRemotely: true
             });
-            expect(util.writeConfigToDev.called).to.be.true();
+            expect(util.writeConfigToDev.called).to.be.true;
         });
     });
 
@@ -163,7 +151,7 @@ describe('util', function() {
 
         it('should call `exec`', function() {
             util.writeConfigToDev({});
-            expect(execSpy.called).to.be.true();
+            expect(execSpy.called).to.be.true;
         });
 
         it('should call `exec` with the appropriate parameters', function() {

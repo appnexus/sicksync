@@ -28,6 +28,7 @@
     "colors": "^1.0.3",
     "commander": "^2.5.0",
     "fs-extra": "^0.18.2",
+    "lodash": "^3.7.0",
     "merge": "^1.2.0",
     "minimatch": "^2.0.1",
     "prompt": "^0.2.14",
@@ -40,7 +41,7 @@
     "sicksync-remote": "./bin/remote.js"
   },
   "devDependencies": {
-    "chai": "^2.2.0",
+    "chai": "^1.10.0",
     "istanbul": "^0.3.2",
     "segfault-handler": "^0.2.4",
     "mocha": "^2.0.1",
