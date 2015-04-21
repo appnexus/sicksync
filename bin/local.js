@@ -77,8 +77,12 @@ function startFileWatch() {
 }
 
 function onAuthorized() {
-    startFileWatch();
-    console.log(('Connected to ' + config.hostname + (config.prefersEncrypted ? ' using' : ' not using') + ' encryption').green);
+    console.log('Bringing', config.hostname, 'up to date...');
+
+    bigSync(function() {
+        console.log(('Connected to ' + config.hostname + (config.prefersEncrypted ? ' using' : ' not using') + ' encryption').green);
+        startFileWatch();
+    });
 }
 
 devbox = new WebSocketClient({
