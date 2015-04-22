@@ -1,3 +1,6 @@
+## 1.1.16
+- Fixes an issue where sicksync may try to awaken the remote devbox twice, resuling in an EADDINUSE error.
+
 ## 1.1.15
 - Removes the segfault handler as it's causing some linux distros to freak out. Go figure.
 - Updates `chokidar` and `chai` dependencies.
