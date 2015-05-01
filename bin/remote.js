@@ -24,15 +24,15 @@ function serverLog(message) {
 }
 
 function addFile(message) {
-    fs.outputFile(destinationLocation + message.location, message.contents);
+    fs.outputFile(message.location, message.contents);
 }
 
 function addDir(message) {
-    fs.mkdirs(destinationLocation + message.location);
+    fs.mkdirs(message.location);
 }
 
 function removePath(message) {
-    fs.delete(destinationLocation + message.location);
+    fs.delete(message.location);
 }
 
 server.on('file-change', function(message) {

@@ -48,6 +48,7 @@ function filterAndRebounce(evt, filepath) {
 function onFileChange(evt, filepath) {
     if (util.isExcluded(filepath, ignored) || isPaused) return false;
     var fileContents = null;
+    var remotePath = filepath.replace(config.sourceLocation, config.destinationLocation);
     var localPath = filepath.replace(config.sourceLocation, '');
 
     if (evt === 'add' || evt === 'change') {
@@ -61,7 +62,7 @@ function onFileChange(evt, filepath) {
     devbox.send({
         subject: 'file',
         changeType: evt,
-        location: localPath,
+        location: remotePath,
         contents: fileContents ? fileContents : null,
         name: path.basename(filepath)
     });
