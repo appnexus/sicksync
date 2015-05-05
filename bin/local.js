@@ -14,7 +14,8 @@ var fs = require('fs'),
     config = util.getConfig(),
     ignored = config.excludes,
     isPaused = false,
-    devbox = null;
+    devbox = null,
+    fswatcher = null;
 
 require('colors');
 
@@ -68,7 +69,10 @@ function onFileChange(evt, filepath) {
 }
 
 function startFileWatch() {
-    watcher.watch(config.sourceLocation, {
+    if (fswatcher){
+        fswatcher.close();
+    }
+    fswatcher = watcher.watch(config.sourceLocation, {
         ignored: ignored,
         persistent: true,
         followSymlinks: false,
