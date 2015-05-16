@@ -1,65 +1,30 @@
 #! /usr/bin/env node
 
 /**
- *  SERVER
+ *  Bootstrapper for remote-daemon.js
  *
+ *  Triggered by first run of sicksync client, through ssh connection
  *  This file should only run on your devbox, (IE, in the data center).
- *  If you are planning on remotely working (shelling into the box), then
- *  you shouldn't need this file at all
+ *  
  */
-var fs = require('fs-extra'),
-    Server = require('../lib/ws-server'),
-    util = require('../lib/util'),
-    config = util.getConfig(),
-    destinationLocation = config.destinationLocation,
-    server = new Server({
-        port: config.websocketPort
-    });
 
-require('colors');
+ console.log('starting daemon');
 
-function serverLog(message) {
-    var prefix = '[' + config.hostname + '] ';
-    console.log(prefix + message);
-}
+var forever = require('forever'),
+    daemonFilePath = './sicksync-dev/lib/remote-daemon.js';
 
-function addFile(message) {
-    fs.outputFile(message.location, message.contents);
-}
-
-function addDir(message) {
-    fs.mkdirs(message.location);
-}
-
-function removePath(message) {
-    fs.delete(message.location);
-}
-
-server.on('file-change', function(message) {
-    if (config.debug) serverLog('< ' + message.changeType + ' ' + message.location);
-
-    switch (message.changeType) {
-        case 'add':
-            addFile(message);
-            break;
-        case 'addDir':
-            addDir(message);
-            break;
-        case 'change':
-            addFile(message);
-            break;
-        case 'unlink':
-            removePath(message);
-            break;
-        case 'unlinkDir':
-            removePath(message);
-            break;
-        default:
-            break;
+// TODO: change these files paths, right now they output to user's home location on remote server
+// due to the fact that the process.cwd() is /home/cdopuch
+var daemon = forever.startDaemon(
+    daemonFilePath,
+    {
+        // NOTE: these log files are truncated on each new run
+        // TODO: rotate the logs so we can save old logs
+        'logFile': 'new-remote-daemon.log',
+        'outFile': 'new-remote-daemon-stdout.log',
+        'errFile': 'new-remote-daemon-stderr.log',
+        'max': 1,
+        'uid': 'remote-daemon'
     }
-});
-
-server.on('connection-closed', function() {
-    serverLog('Connection closed. Stopping server.');
-    process.exit();
-});
+);
+var server = forever.startServer(daemon);
