@@ -100,6 +100,10 @@ Flag that will turn on or off debug messages during the syncing process.
 
 When true, this will tell `sicksync` to re-attempt to connect when the server disconnects. Using `CTRL+C` will not trigger a retry locally. Also runs a one-time sync beforehand to ensure any lost changes find their way home.
 
+`followSymLinks: {boolean}`
+
+When true, this will tell `sicksync` to follow and sync files and folders that are symlinked. Defaults to `false` in setup.
+
 ## Troubleshooting
 
 Q: I'm seeing `[ERR] command not found: sicksync-remote` when starting sicksync locally, what gives?

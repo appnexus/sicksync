@@ -57,6 +57,11 @@ prompter.get({
             description: 'Would you like sicksync to retry connecting if it gets disconnected?',
             default: true,
             before: util.toBoolean,
+        },
+        followSymLinks: {
+            destinationLocation: 'Should sicksync follow symlinks?',
+            default: false,
+            before: util.toBoolean
         }
     }
 }, function(err, result) {
