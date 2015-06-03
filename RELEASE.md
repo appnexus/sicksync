@@ -1,3 +1,6 @@
+## 1.1.18
+- New config parameter: `followSymLinks`. When true, will follow and sync files/folders that are symlinked. Defaults to false
+
 ## 1.1.16
 - Fixes an issue where sicksync may try to awaken the remote devbox twice, resuling in an EADDINUSE error.
 
