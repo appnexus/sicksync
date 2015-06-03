@@ -75,7 +75,7 @@ function startFileWatch() {
     fswatcher = watcher.watch(config.sourceLocation, {
         ignored: ignored,
         persistent: true,
-        followSymlinks: false,
+        followSymlinks: config.followSymlinks,
         ignoreInitial: true
     }).on('all', filterAndRebounce);
 }
