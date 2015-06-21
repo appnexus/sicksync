@@ -28,3 +28,6 @@ var daemon = forever.startDaemon(
     }
 );
 var server = forever.startServer(daemon);
+
+// process.stdout.write('[remote.js] up and waiting');
+console.log('[remote.js] up and waiting');
