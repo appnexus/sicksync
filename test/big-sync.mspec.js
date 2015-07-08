@@ -18,6 +18,7 @@ var rsyncSpies = (function() {
     BuildSpies.prototype.exclude = sinon.stub().returns(BuildSpies.prototype);
     BuildSpies.prototype.source = sinon.stub().returns(BuildSpies.prototype);
     BuildSpies.prototype.destination = sinon.stub().returns(BuildSpies.prototype);
+    BuildSpies.prototype.set = sinon.stub().returns(BuildSpies.prototype);
     BuildSpies.prototype.execute = function(cb) { cb(); };
     BuildSpies.prototype.resetAll = function() {
         BuildSpies.prototype.shell.reset();
@@ -25,6 +26,7 @@ var rsyncSpies = (function() {
         BuildSpies.prototype.exclude.reset();
         BuildSpies.prototype.source.reset();
         BuildSpies.prototype.destination.reset();
+        BuildSpies.prototype.set.reset();
     };
 
     return new BuildSpies();
@@ -92,6 +94,32 @@ describe('bigSync', function() {
         it('should set the `destination` property to match the on one in the config', function() {
             var destination = mockConfig.hostname + ':' + mockConfig.destinationLocation;
             expect(destination).to.equal(rsyncSpies.destination.getCall(0).args[0]);
+        });
+
+        it('should set the deletion flag', function() {
+            expect('delete').to.equal(rsyncSpies.set.getCall(0).args[0]);
+        });
+    });
+
+    describe('when `debug` is true', function () {
+        function runBigSyncWithConfig(config) {
+            bigSync.__set__('Rsync', RsyncMockConstructor);
+            bigSync.__set__('config', config);
+            bigSync(function() {});
+        }
+
+        it('should set the `progress` flag', function() {
+            var config = {
+                excludes: ['one', 'two', 'three'],
+                sourceLocation: '/some/file/path',
+                hostname: 'myCoolHost',
+                destinationLocation: '/some/where/out/there',
+                debug: true
+            };
+
+            runBigSyncWithConfig(config);
+
+            expect('progress').to.equal(rsyncSpies.set.getCall(1).args[0]);
         });
     });
 });
