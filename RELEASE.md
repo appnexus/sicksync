@@ -1,3 +1,7 @@
+## 1.2.0
+- *BREAKING* `big-sync` will now DELETE files in the remote location that aren't found in the local location. Please be ensure that, after upgrading, caution is ran when running either `sicksync` or `sicksync -o`.
+- *MINOR* `big-sync` will now print it's progress when the `debug` flag is true in `sicksync` config.
+
 ## 1.1.18
 - New config parameter: `followSymLinks`. When true, will follow and sync files/folders that are symlinked. Defaults to false
 
