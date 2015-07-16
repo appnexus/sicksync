@@ -25,7 +25,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "chokidar": "^1.0.1",
-    "colors": "^1.0.3",
+    "cli-color": "^1.0.0",
     "commander": "^2.5.0",
     "fs-extra": "^0.18.2",
     "lodash": "^3.7.0",
@@ -36,9 +36,7 @@
     "ws": "^0.7.1"
   },
   "bin": {
-    "sicksync": "./index.js",
-    "sicksync-local": "./bin/local.js",
-    "sicksync-remote": "./bin/remote.js"
+    "sicksync": "./bin/sicksync.js"
   },
   "devDependencies": {
     "chai": "^2.2.0",
