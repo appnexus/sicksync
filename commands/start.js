@@ -1,5 +1,4 @@
-var local = require('../lib/local'),
-    remotem = require('../lib/remote');
+var local = require('../lib/local');
 
 module.exports = function sicksyncStartCommand(program) {
     program
