@@ -36,7 +36,11 @@
     "ws": "^0.7.1"
   },
   "bin": {
-    "sicksync": "./bin/sicksync.js"
+    "sicksync": "./bin/sicksync.js",
+    "sicksync-start": "./bin/sicksync.js",
+    "sicksync-remote": "./bin/sicksync.js",
+    "sicksync-once": "./bin/sicksync.js",
+    "sicksync-setup": "./bin/sicksync.js"
   },
   "devDependencies": {
     "chai": "^2.2.0",

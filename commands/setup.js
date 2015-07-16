@@ -63,6 +63,9 @@ module.exports = function setupSicksyncCommand(program) {
             }, function sicksyncWriteResults(err, result) {
                 if (err) return console.log('\nLooks we had a problem setting up: ' + err);
 
+                // Generate a random secret for securely talking to the host
+                result.secret = util.getId();
+                
                 // Write
                 util.writeConfig(result);
             });
