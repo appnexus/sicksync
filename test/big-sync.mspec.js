@@ -110,37 +110,58 @@ describe('bigSync', function() {
         });
     });
 
-    describe('when `debug` is true', function () {
-        beforeEach(function(done) {
+    describe('optional params', function () {
+        beforeEach(function() {
             bigSync.__set__('Rsync', RsyncMockConstructor);
             bigSync.__set__('config', debugConfig);
-            bigSync(done);
         });
 
-        it('should set the `progress` flag', function() {
-            expect(rsyncSpies.progress.called).to.be.true;
+        describe('when debug is `true`', function () {
+            beforeEach(function(done) {
+                bigSync({ debug: true }, done);
+            });
+
+            it('should set the `progress` flag', function() {
+                expect(rsyncSpies.progress.called).to.be.true;
+            });
+
+            it('should pass in a function to log the status messages', function() {
+                expect(rsyncSpies.output.lastCall.args[0]).to.be.a('function');
+            });
+
+            it('should pass in a function to log the error messages', function() {
+                expect(rsyncSpies.output.lastCall.args[1]).to.be.a('function');
+            });
+
+            it('should output the status messages', function() {
+                var message = 'Processing';
+                rsyncSpies.output.lastCall.args[0](new Buffer(message));
+
+                expect(utilSpy.log.lastCall.args[0]).to.contain(message);
+            });
+
+            it('should output the error messages', function() {
+                var message = 'Processing';
+                rsyncSpies.output.lastCall.args[1](new Buffer(message));
+
+                expect(utilSpy.log.lastCall.args[0]).to.contain(message);
+            });
         });
 
-        it('should pass in a function to log the status messages', function() {
-            expect(rsyncSpies.output.lastCall.args[0]).to.be.a('function');
+        describe('when `isDryRun` is true', function () {
+            beforeEach(function(done) {
+                bigSync({ isDryRun: true }, done);
+            });
+
+            it('should set the rsync command to run dry', function() {
+                expect(rsyncSpies.dry.called).to.be.true;
+            });
         });
 
-        it('should pass in a function to log the error messages', function() {
-            expect(rsyncSpies.output.lastCall.args[1]).to.be.a('function');
-        });
-
-        it('should output the status messages', function() {
-            var message = 'Processing';
-            rsyncSpies.output.lastCall.args[0](new Buffer(message));
-
-            expect(utilSpy.log.lastCall.args[0]).to.contain(message);
-        });
-
-        it('should output the error messages', function() {
-            var message = 'Processing';
-            rsyncSpies.output.lastCall.args[1](new Buffer(message));
-
-            expect(utilSpy.log.lastCall.args[0]).to.contain(message);
+        describe('when no callback is handed', function () {
+            it('should still function properly', function() {
+                expect(bigSync).to.not.throw(Error);
+            });
         });
     });
 });

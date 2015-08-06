@@ -1,13 +1,10 @@
 var expect = require('chai').expect,
+    hostname = require('os').hostname(),
     rewire = require('rewire'),
     sinon = require('sinon'),
     util = rewire('../lib/util');
 
 describe('util', function() {
-    it('should export an object', function() {
-        expect(util).to.be.an.object;
-    });
-
     describe('#getHome', function() {
         var oldProcess = util.__get__('process');
         var mockProcess = {
@@ -54,14 +51,28 @@ describe('util', function() {
     });
 
     describe('#getConfig', function() {
+        var configName = 'iShouldntBeHereHopefully';
+        var cachedConfigFile = util.__get__('CONFIG_FILE');
         var oldFs = util.__get__('fs');
+        var cachedConfig = util.__get__('configCache');
+
+        beforeEach(function() {
+            util.__set__('configCache', null);
+        });
 
         afterEach(function() {
             util.__set__('fs', oldFs);
+            util.__set__('configCache', cachedConfig);
+            util.__set__('CONFIG_FILE', cachedConfigFile);
         });
 
         it('should return an object', function() {
             expect(util.getConfig()).to.be.an('object');
+        });
+
+        it('should return an empty object if the config doesn\'t exist', function() {
+            util.__set__('CONFIG_FILE', configName);
+            expect(util.getConfig()).to.eql({});
         });
     });
 
@@ -334,6 +345,36 @@ describe('util', function() {
 
         it('should call the `start` method', function() {
             expect(promptMock.start.called).to.be.true;
+        });
+    });
+
+    describe('#log', function () {
+        var cachedConsole = console;
+        var consoleMock = { log: sinon.spy() };
+
+        beforeEach(function () {
+            util.__set__('console', consoleMock);
+        });
+
+        afterEach(function() {
+            util.__set__('console', cachedConsole);
+            consoleMock.log.reset();
+        });
+
+        it('should log messages to the console', function() {
+            var message = 'hello there!';
+
+            util.log(message);
+
+            expect(consoleMock.log.lastCall.args[1]).to.contain(message);
+        });
+
+        it('should pre-pend the hostname to the query', function() {
+            var message = 'hello there!';
+
+            util.log(message);
+
+            expect(consoleMock.log.lastCall.args[0]).to.contain(hostname);
         });
     });
 });

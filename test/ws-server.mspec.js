@@ -79,6 +79,21 @@ describe('ws-server', function() {
                 _wsMock.on.getCall(1).args[1](_wsMock);
             });
 
+            describe('when the secret does not match', function () {
+                var badMessage = {
+                    subject: 'file',
+                    contents: 'some-contents',
+                    secret: 'i dont match!'
+                };
+
+                it('should emit an `unauthorized` event', function(done) {
+                    wsserver.on('unauthorized', done);
+
+                    // Invoke the message handler
+                    _wsMock.on.getCall(0).args[1](JSON.stringify(badMessage));
+                });
+            });
+
             describe('and sends a `file` message', function() {
                 var fileMessage = {
                     subject: 'file',
@@ -94,7 +109,7 @@ describe('ws-server', function() {
                         done();
                     });
 
-                    // Invoke the handshake handler
+                    // Invoke the message handler
                     _wsMock.on.getCall(0).args[1](JSON.stringify(fileMessage));
                 });
 
