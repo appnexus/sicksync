@@ -41,12 +41,6 @@ describe('util', function() {
 
             expect(util.getHome()).to.contain(mockProcess.env.USERPROFILE);
         });
-
-        it('should append a trailing slash', function() {
-            var path = util.getHome();
-            var lastChar = path.substring(path.length - 1);
-            expect(lastChar).to.equal('/');
-        });
     });
 
     describe('#getConfigPath', function() {
@@ -69,12 +63,6 @@ describe('util', function() {
         it('should return an object', function() {
             expect(util.getConfig()).to.be.an('object');
         });
-
-        it('should return an empty object if the file doesn\'t exist', function() {
-            util.__set__('fs', { existsSync: function() { return false; } });
-
-            expect(util.getConfig()).to.deep.equal({});
-        });
     });
 
     describe('#getId', function() {
@@ -88,20 +76,17 @@ describe('util', function() {
     });
 
     describe('#writeConfig', function() {
-        var oldWriteConfigToDev = util.writeConfigToDev;
         var outputFileSyncSpy = null;
         var consoleSpy = null;
 
         beforeEach(function() {
             outputFileSyncSpy = sinon.stub(util.__get__('fs'), 'outputFileSync');
-            util.writeConfigToDev = sinon.stub();
             consoleSpy = sinon.stub(console, 'log');
         });
 
         afterEach(function() {
             outputFileSyncSpy.restore();
             consoleSpy.restore();
-            util.writeConfigToDev = oldWriteConfigToDev;
         });
 
         it('should call `fs.outputFileSync`', function() {
@@ -125,66 +110,6 @@ describe('util', function() {
             expect(parsedFsCall).to.be.an('object');
             expect(parsedFsCall).to.deep.equal(configObject);
             expect(outputFileSyncSpy.getCall(0).args[0]).to.contain('.sicksync-config.json');
-        });
-
-        it('should call `fs.writeConfigToDev` if `syncsRemotely` is true', function() {
-            util.writeConfig({
-                some: 'object',
-                syncsRemotely: true
-            });
-            expect(util.writeConfigToDev.called).to.be.true;
-        });
-    });
-
-    describe('#writeConfigToDev', function() {
-        var oldExec = util.__get__('exec');
-        var execSpy = null;
-
-        beforeEach(function() {
-            util.__set__('exec', sinon.stub());
-            execSpy = util.__get__('exec');
-        });
-
-        afterEach(function() {
-            util.__set__('exec', oldExec);
-        });
-
-        it('should call `exec`', function() {
-            util.writeConfigToDev({});
-            expect(execSpy.called).to.be.true;
-        });
-
-        it('should call `exec` with the appropriate parameters', function() {
-            var configObject = {
-                userName: 'joel',
-                hostname: 'myCoolHost'
-            };
-
-            util.writeConfigToDev(configObject);
-
-            expect(execSpy.getCall(0).args[0]).to.contain(configObject.userName);
-            expect(execSpy.getCall(0).args[0]).to.contain(configObject.hostname);
-            expect(execSpy.getCall(0).args[0]).to.contain('scp');
-            expect(execSpy.getCall(0).args[0]).to.contain('@');
-            expect(execSpy.getCall(0).args[1]).to.be.a('function');
-        });
-
-        describe('callback', function() {
-            it('should log the success when the callback is invoked', function() {
-                sinon.stub(console, 'log');
-                util.writeConfigToDev({});
-                execSpy.getCall(0).args[1](null);
-
-                expect(console.log.called).to.be.true;
-                console.log.restore();
-            });
-
-            it('should throw an error if something happens', function() {
-                util.writeConfigToDev({});
-                expect(function() {
-                    execSpy.getCall(0).args[1]('some error');
-                }).to.throw(Error);
-            });
         });
     });
 
@@ -389,61 +314,6 @@ describe('util', function() {
         it('should return false for all other strings', function() {
             expect(util.toBoolean('')).to.be.false;
             expect(util.toBoolean('possible')).to.be.false;
-        });
-    });
-
-    describe('#wakeDevBox', function() {
-        var onStub = sinon.stub();
-        var oldFork = util.__get__('fork');
-        var forkSpy = null;
-
-        beforeEach(function() {
-            util.__set__('fork', sinon.stub().returns({
-                on: onStub
-            }));
-            forkSpy = util.__get__('fork');
-        });
-
-        afterEach(function() {
-            util.__set__('fork', oldFork);
-            onStub.reset();
-        });
-
-        it('should throw an error when not passed a `host` parameter', function() {
-            expect(util.wakeDevBox).to.throw(Error);
-        });
-
-        describe('default behaviour', function() {
-            var callbackStub = sinon.spy();
-
-            beforeEach(function() {
-                util.wakeDevBox('someDevLocation', callbackStub);
-            });
-
-            afterEach(function() {
-                callbackStub.reset();
-            });
-
-            it('should fork the process', function() {
-                expect(forkSpy.called).to.be.true;
-            });
-
-            it('should pass in the location of the start-script', function() {
-                expect(forkSpy.getCall(0).args[0]).to.contain('/server-start');
-            });
-
-            it('should pass `null` as the 2nd parameter', function() {
-                expect(forkSpy.getCall(0).args[1]).to.be.a('null');
-            });
-
-            it('should pass an object as the last parameter', function() {
-                expect(forkSpy.getCall(0).args[2]).to.be.a('object');
-            });
-
-            it('should invoke the callback for every message receieved', function() {
-                expect(onStub.getCall(0).args[0]).to.equal('message');
-                expect(onStub.getCall(0).args[1]).to.equal(callbackStub);
-            });
         });
     });
 

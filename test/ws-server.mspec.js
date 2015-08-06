@@ -2,7 +2,7 @@ var rewire = require('rewire'),
     sinon = require('sinon'),
     expect = require('chai').expect,
     utils = require('./utils'),
-    WSServer = rewire('../lib/ws-server');
+    WSServer = rewire('../lib/remote/ws-server');
 
 // Mocks
 var consoleMock = sinon.spy();
