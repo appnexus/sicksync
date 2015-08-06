@@ -109,7 +109,7 @@ describe('util', function() {
 
             expect(parsedFsCall).to.be.an('object');
             expect(parsedFsCall).to.deep.equal(configObject);
-            expect(outputFileSyncSpy.getCall(0).args[0]).to.contain('.sicksync-config.json');
+            expect(outputFileSyncSpy.getCall(0).args[0]).to.contain('.sicksync/config.json');
         });
     });
 

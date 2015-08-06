@@ -23,6 +23,8 @@ var rsyncSpies = (function() {
     BuildSpies.prototype.destination = sinon.stub().returns(BuildSpies.prototype);
     BuildSpies.prototype.output = sinon.stub().returns(BuildSpies.prototype);
     BuildSpies.prototype.set = sinon.stub().returns(BuildSpies.prototype);
+    BuildSpies.prototype.progress = sinon.stub().returns(BuildSpies.prototype);
+    BuildSpies.prototype.dry = sinon.stub().returns(BuildSpies.prototype);
     BuildSpies.prototype.execute = function(cb) { cb(); };
     BuildSpies.prototype.resetAll = function() {
         BuildSpies.prototype.shell.reset();
@@ -32,6 +34,8 @@ var rsyncSpies = (function() {
         BuildSpies.prototype.destination.reset();
         BuildSpies.prototype.set.reset();
         BuildSpies.prototype.output.reset();
+        BuildSpies.prototype.dry.reset();
+        BuildSpies.prototype.progress.reset();
     };
 
     return new BuildSpies();
@@ -42,19 +46,19 @@ function RsyncMockConstructor() {
 }
 
 describe('bigSync', function() {
-    var oldConsole = bigSync.__get__('console');
-    var consoleSpy = {
+    var oldUtil = bigSync.__get__('util');
+    var utilSpy = {
         log: sinon.spy()
     };
 
     beforeEach(function() {
-        bigSync.__set__('console', consoleSpy);
+        bigSync.__set__('util', utilSpy);
     });
 
     afterEach(function() {
-        bigSync.__set__('console', oldConsole);
+        bigSync.__set__('util', oldUtil);
         rsyncSpies.resetAll();
-        consoleSpy.log.reset();
+        utilSpy.log.reset();
     });
 
     it('should be a function', function() {
@@ -66,9 +70,9 @@ describe('bigSync', function() {
             bigSync.__set__('config', {});
         });
 
-        it('should log a message to run `sicksync --setup`', function() {
+        it('should log a message to run `sicksync setup`', function() {
             bigSync();
-            expect(consoleSpy.log.lastCall.args[0]).to.contain('--setup');
+            expect(utilSpy.log.lastCall.args[0]).to.contain('sicksync setup');
         });
     });
 
@@ -114,7 +118,7 @@ describe('bigSync', function() {
         });
 
         it('should set the `progress` flag', function() {
-            expect('progress').to.equal(rsyncSpies.set.getCall(1).args[0]);
+            expect(rsyncSpies.progress.called).to.be.true;
         });
 
         it('should pass in a function to log the status messages', function() {
@@ -129,14 +133,14 @@ describe('bigSync', function() {
             var message = 'Processing';
             rsyncSpies.output.lastCall.args[0](new Buffer(message));
 
-            expect(consoleSpy.log.lastCall.args[0]).to.equal(message);
+            expect(utilSpy.log.lastCall.args[0]).to.contain(message);
         });
 
         it('should output the error messages', function() {
             var message = 'Processing';
             rsyncSpies.output.lastCall.args[1](new Buffer(message));
 
-            expect(consoleSpy.log.lastCall.args[0]).to.equal(message);
+            expect(utilSpy.log.lastCall.args[0]).to.contain(message);
         });
     });
 });
