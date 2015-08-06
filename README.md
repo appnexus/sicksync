@@ -28,35 +28,27 @@ sicksync, at it's core, is a simple websocket service that sends small file chan
 
 ## Command Line Options
 
-`sicksync`
-
-This command will ensure your remote path is up to date and start the syncing process. I you haven't already setup `sicksync`, it'll walk you through the setup wizard.
-
 `sicksync -h, --help`
 
 Outputs the help information as well as the version number.
 
-`sicksync -s, --setup`
+`sicksync start`
 
-Runs the setup wizard, which will create a `.sicksync-config.json` in your home directory. Once complete, it `scp`'s that file to your remote machine.
+Runs the continuous syncing process, taking care of both the remote and local machines (process management wise). This will toggle back and forth between web-sockets or rsync depending on the size of changes, and is nearly immediate.
 
-This file is a simple JSON config object, so feel free to change it whenever (though you'll have to copy it to your remote machine manually).
+`sicksync setup`
 
-`sicksync -d, --debug {boolean}`
+Runs the setup wizard, which will create a `.sicksync/config.json` in your home directory.
 
-Turns debug messages on/off when sicksync is running. Valid options are `true`, `false`, `yes`, `no`, `y` and `n`. Once complete, it will attempt to copy the config file to the remote machine.
+This file is a simple JSON config object, so feel free to change it whenever.
 
-`sicksync -e, --encrypt {boolean}`
+`sicksync once`
 
-Turns on or off encryption when sicksync sends file changes. Large changes will use `rsync`, which is already secure. Once complete, it will attempt to copy the config file to the remote machine.
+Runs a one-time sync, which is simply `rsync` under-the-hood. This happens automatically everytime you run `sicksync start`, and if you have the `retryOnDisconnect` flag will run on reconnect.
 
-`sicksync -c, --config`
+`sicksync remote`
 
-Opens the config file in your editor of choice.
-
-`sicksync -o, --Once`
-
-Runs a one-time sync, which is a `rsync` under-the-hood. This happens automatically everytime you run `sicksync`, and if you have the `retryOnDisconnect` flag, will run on disconnect.
+Starts the remote process for continous syncing. This likely does not need to be called directly since `sicksync start` takes care of that for you. 
 
 ## Configuration Options
 
