@@ -1,9 +1,3 @@
-/**
- *  Sick Sync
- *
- *  Entry point for the syncin' script. This will run
- *  EVERYTIME a sync is kicked off.
- */
 var program = require('commander'),
     package = require('./package.json');
 
