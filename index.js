@@ -8,3 +8,7 @@ program
     .version(package.version)
     .usage('<command> [options]')
     .parse(process.argv);
+
+if (!process.argv.slice(2).length) {
+    program.outputHelp();
+}
