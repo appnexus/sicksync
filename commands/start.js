@@ -1,4 +1,4 @@
-var local = require('../lib/local');
+var local = require('../lib/local/index.js');
 
 module.exports = function sicksyncStartCommand(program) {
     program
