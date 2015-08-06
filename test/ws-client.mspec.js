@@ -61,19 +61,14 @@ describe('ws-client', function() {
             expect(wsMock.on.getCall(0).args[1]).to.be.a('function');
         });
 
-        it('should register a callback for the `message` message', function() {
-            expect(wsMock.on.getCall(1).args[0]).to.equal('message');
+        it('should register a callback for the `close` message', function() {
+            expect(wsMock.on.getCall(1).args[0]).to.equal('close');
             expect(wsMock.on.getCall(1).args[1]).to.be.a('function');
         });
 
-        it('should register a callback for the `close` message', function() {
-            expect(wsMock.on.getCall(2).args[0]).to.equal('close');
-            expect(wsMock.on.getCall(2).args[1]).to.be.a('function');
-        });
-
         it('should register a callback for the `error` message', function() {
-            expect(wsMock.on.getCall(3).args[0]).to.equal('error');
-            expect(wsMock.on.getCall(3).args[1]).to.be.a('function');
+            expect(wsMock.on.getCall(2).args[0]).to.equal('error');
+            expect(wsMock.on.getCall(2).args[1]).to.be.a('function');
         });
     });
 
@@ -89,58 +84,20 @@ describe('ws-client', function() {
             wsMock.on.getCall(0).args[1]();
         });
 
-        it('should send a message to the web-socket', function() {
-            expect(wsMock.send.called).to.be.true;
-        });
-
-        it('should send a `subject` and `token` property in the payload', function() {
-            var sendCall = JSON.parse(wsMock.send.getCall(0).args[0]);
-
-            expect(sendCall.subject).to.equal('handshake');
-            expect(sendCall.token).to.equal(configMock.secret);
-        });
-    });
-
-    describe('onMessage', function() {
-        var ws = null;
-
-        function triggerMessage(obj) {
-            wsMock.on.getCall(1).args[1](JSON.stringify(obj));
-        }
-
-        beforeEach(function() {
-            ws = new Client({
-                url: 'ws://somewebsocket'
-            });
-        });
-
-        it('should emit an `authorized` event when the message subject is `handshake` and `isAllowed` is true', function(done) {
-            ws.on('authorized', function() {
-                done();
-            });
-            triggerMessage({subject: 'handshake', isAllowed: true});
-        });
-
-        it('should ignore all other messages', function(done) {
-            var authorizedSpy = sinon.spy();
-
-            ws.on('authorized', authorizedSpy);
-            triggerMessage({subject: 'handshake', isAllowed: false});
-            triggerMessage({isAllowed: false});
-
-            setTimeout(function() {
-                expect(authorizedSpy.called).to.be.false;
-                done();
-            }, 10);
+        it('should emit a `ready` event', function(done) {
+            ws.on('ready', done);
+            wsMock.on.getCall(0).args[1]();
         });
     });
 
     describe('onClose', function() {
         var ws = null;
         var oldProcess = Client.__get__('process');
-        var oldConsole = Client.__get__('console');
-        var consoleMock = {
-            log: sinon.spy()
+        var remoteHelper = Client.__get__('remoteHelper');
+        var devboxMock = {
+            start: sinon.stub().returns({
+                on: sinon.spy()
+            })
         };
         var processMock = {
             exit: sinon.spy(),
@@ -148,29 +105,33 @@ describe('ws-client', function() {
         };
 
         beforeEach(function() {
-            Client.__set__('console', consoleMock);
+            Client.__set__('remoteHelper', devboxMock);
             Client.__set__('process', processMock);
             ws = new Client({
                 url: 'ws://somewebsocket'
             });
 
             // Trigger `close`
-            wsMock.on.getCall(2).args[1]();
+            wsMock.on.getCall(1).args[1]();
         });
 
         afterEach(function() {
             processMock.exit.reset();
-            consoleMock.log.reset();
+            devboxMock.start().on.reset();
+            devboxMock.start.reset();
             Client.__set__('process', oldProcess);
-            Client.__set__('console', oldConsole);
+            Client.__set__('remoteHelper', remoteHelper);
         });
 
-        it('should log the result', function() {
-            expect(consoleMock.log.getCall(0).args[0]).to.contain('closed the connection. Shutting down.');
+        it('should emit a `disconnected` event', function(done) {
+            ws.on('disconnected', done);
+
+            // Trigger `close`
+            wsMock.on.getCall(1).args[1]();
         });
 
         it('should attempt to awaken the devbox after the `bigSync` call', function() {
-            expect(utilMock.wakeDevBox.called).to.be.true;
+            expect(devboxMock.start.called).to.be.true;
         });
 
         it('when the `retryOnDisconnect` flag is set to `false` should exit the process', function() {
@@ -185,7 +146,7 @@ describe('ws-client', function() {
             });
 
             // Trigger `close`
-            wsMock.on.getCall(2).args[1]();
+            wsMock.on.getCall(1).args[1]();
             expect(processMock.exit.called).to.be.true;
         });
     });
@@ -193,9 +154,11 @@ describe('ws-client', function() {
     describe('onError', function() {
         var ws = null;
         var oldProcess = Client.__get__('process');
-        var oldConsole = Client.__get__('console');
-        var consoleMock = {
-            log: sinon.spy()
+        var remoteHelper = Client.__get__('remoteHelper');
+        var devboxMock = {
+            start: sinon.stub().returns({
+                on: sinon.spy()
+            })
         };
         var processMock = {
             exit: sinon.spy(),
@@ -203,34 +166,41 @@ describe('ws-client', function() {
         };
 
         beforeEach(function() {
-            Client.__set__('console', consoleMock);
+            Client.__set__('remoteHelper', devboxMock);
             Client.__set__('process', processMock);
             ws = new Client({
                 url: 'ws://somewebsocket'
             });
 
             // Trigger `error`
-            wsMock.on.getCall(3).args[1]();
+            wsMock.on.getCall(2).args[1]();
         });
 
         afterEach(function() {
             processMock.exit.reset();
-            consoleMock.log.reset();
             Client.__set__('process', oldProcess);
-            Client.__set__('console', oldConsole);
+            Client.__set__('remoteHelper', remoteHelper);
         });
 
-        it('should log the problem, and try to wake the dev box', function() {
-            expect(consoleMock.log.getCall(0).args[0]).to.contain('Resuming sicksync');
+        it('should emit an `reconnecting` event', function(done) {
+            ws.on('reconnecting', done);
+
+            // Trigger `error`
+            wsMock.on.getCall(2).args[1]();
         });
 
-        it('should call util#wakeDevBox', function() {
-            expect(utilMock.wakeDevBox.called).to.be.true;
+        it('should start the remote devbox', function() {
+            expect(devboxMock.start.called).to.be.true;
         });
 
-        it('should pass in the hostname and callback function into the #wakeDevBox call', function() {
-            expect(utilMock.wakeDevBox.getCall(0).args[0]).to.equal(configMock.hostname);
-            expect(utilMock.wakeDevBox.getCall(0).args[1]).to.be.a('function');
+        it('should listen for the `ready` message from the devbox', function() {
+            expect(devboxMock.start().on.getCall(0).args[0]).to.equal('ready');
+            expect(devboxMock.start().on.getCall(0).args[1]).to.be.a('function');
+        });
+
+        it('should listen for the `message` message from the devbox', function() {
+            expect(devboxMock.start().on.getCall(1).args[0]).to.equal('message');
+            expect(devboxMock.start().on.getCall(1).args[1]).to.be.a('function');
         });
     });
 
