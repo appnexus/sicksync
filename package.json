@@ -1,6 +1,6 @@
 {
   "name": "sicksync",
-  "version": "2.0.0",
+  "version": "2.0.0-alpha",
   "description": "Don’t accept the available as the preferable. Go extra mile with extra speed.",
   "main": "index.js",
   "scripts": {
@@ -33,6 +33,7 @@
     "minimatch": "^2.0.1",
     "prompt": "^0.2.14",
     "rsync": "^0.4.0",
+    "update-notifier": "^0.5.0",
     "ws": "^0.7.1"
   },
   "bin": {

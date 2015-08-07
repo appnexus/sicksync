@@ -14,7 +14,6 @@ sicksync is a CLI to sync your projects code to a remote machine. If you work in
 
 - NodeJS with npm
 - You can just `ssh to-your-remote-machine` without using a password (ie, ssh keys)
-- Some available port!
 
 ## Install
 sicksync needs to be installed globally on both your remote and local machines.
@@ -34,7 +33,7 @@ Outputs the help information as well as the version number.
 
 `sicksync start`
 
-Runs the continuous syncing process, taking care of both the remote and local machines (process management wise). This will toggle back and forth between web-sockets or rsync depending on the size of changes, and is nearly immediate.
+Runs the continuous syncing process, taking care of both the remote and local machines (process management wise). Small, iterative changes use a blazing-fast WebSocket connection to send file information, while larger changes trigger a rsync update. This ensures both speed in rapid changes and confidence in larger ones.
 
 `sicksync setup`
 
@@ -46,9 +45,9 @@ This file is a simple JSON config object, so feel free to change it whenever.
 
 Runs a one-time sync, which is simply `rsync` under-the-hood. This happens automatically everytime you run `sicksync start`, and if you have the `retryOnDisconnect` flag will run on reconnect.
 
-`sicksync remote`
+`sicksync remote [--port | -p <port>] [--secret | -s <secret>]`
 
-Starts the remote process for continous syncing. This likely does not need to be called directly since `sicksync start` takes care of that for you. 
+Starts the remote process for continous syncing. This likely does not need to be called directly since `sicksync start` takes care of that for you. Since the remote end of sicksync is "dumb", you'll have to manually supply the port number and secret key. 
 
 ## Configuration Options
 
@@ -98,15 +97,15 @@ When true, this will tell `sicksync` to follow and sync files and folders that a
 
 ## Troubleshooting
 
-Q: I'm seeing `[ERR] command not found: sicksync-remote` when starting sicksync locally, what gives?
+Q: I'm seeing `[ERR] command not found: sicksync remote` when starting sicksync locally, what gives?
 
-A: This likely has to do with `sicksync-remote` not being in your `$PATH` when `sicksync` ssh's into your remote machine to start the process. If you are using ZSH, try moving your $PATH definitions to `.zshenv`.
+A: This likely has to do with `sicksync remote` not being in your `$PATH` when `sicksync` ssh's into your remote machine to start the process. If you are using ZSH, try moving your $PATH definitions to `.zshenv`.
 
 Q: I'm seeing `Error: Module did not self-register.` when running sicksync.
 
 A: If you've recently updated `node` or changed versions, you'll need to recompile the binaries that go along with `sicksync`. Run `npm install -g sicksync` again, or if you've forked/cloned the repo then remove the associated `node_modules` folder and run `npm install`.
 
-Q: `sicksync -o` is taking a long time to run, is that ok?
+Q: `sicksync once` is taking a long time to run, is that ok?
 
 A: Depends. If there are a lot of changes, the one-time-sync can take a bit to run. Can `scp` or `rsync` be ran effectively?
 
