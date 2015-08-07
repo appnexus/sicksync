@@ -1,6 +1,6 @@
 var program = require('commander'),
     package = require('./package.json'),
-    updates = require('./lib/update-notify');
+    updates = require('./lib/update');
 
 // Inject our commands
 require('./commands/index.js')(program);
