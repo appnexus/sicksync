@@ -1,12 +1,12 @@
 var program = require('commander'),
     package = require('./package.json'),
-    updateNotifier = require('update-notifier');
+    updates = require('./lib/update-notify');
 
 // Inject our commands
 require('./commands/index.js')(program);
 
-// Notify any updates
-updateNotifier({pkg: package}).notify();
+// Check for updates (async)
+updates.checkForUpdates();
 
 // Mount our comand
 program
@@ -18,3 +18,6 @@ program
 if (!process.argv.slice(2).length) {
     program.outputHelp();
 }
+
+// Print any updates
+updates.notifyUpdates();
