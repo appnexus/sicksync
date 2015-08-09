@@ -1,6 +1,7 @@
 var program = require('commander'),
     package = require('./package.json'),
-    updates = require('./lib/update');
+    updates = require('./lib/update'),
+    util = require('./lib/util');
 
 // Inject our commands
 require('./commands/index.js')(program);
