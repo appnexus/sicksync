@@ -25,5 +25,5 @@ if (!process.argv.slice(2).length) {
 }
 
 // Run/Display update notifications
-updates.checkForUpdates();
-updates.notifyUpdates();
+updates.check();
+updates.notify();
