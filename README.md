@@ -31,7 +31,7 @@ sicksync, at it's core, is a simple websocket service that sends small file chan
 
 Outputs the help information as well as the version number.
 
-`sicksync start`
+`sicksync` | `sicksync start`
 
 Runs the continuous syncing process, taking care of both the remote and local machines (process management wise). Small, iterative changes use a blazing-fast WebSocket connection to send file information, while larger changes trigger a rsync update. This ensures both speed in rapid changes and confidence in larger ones.
 
@@ -41,13 +41,17 @@ Runs the setup wizard, which will create a `.sicksync/config.json` in your home 
 
 This file is a simple JSON config object, so feel free to change it whenever.
 
-`sicksync once`
+`sicksync once [-n | --dry-run]`
 
 Runs a one-time sync, which is simply `rsync` under-the-hood. This happens automatically everytime you run `sicksync start`, and if you have the `retryOnDisconnect` flag will run on reconnect.
 
-`sicksync remote [--port | -p <port>] [--secret | -s <secret>]`
+`sicksync remote [--port | -p <port>] [--secret | -s <secret>] [--encryption | -e] [--debug | -d]`
 
-Starts the remote process for continous syncing. This likely does not need to be called directly since `sicksync start` takes care of that for you. Since the remote end of sicksync is "dumb", you'll have to manually supply the port number and secret key. 
+Starts the remote process for continous syncing. This likely does not need to be called directly since `sicksync start` takes care of that for you. Since the remote end of sicksync is "dumb", you'll have to manually supply the port number and secret key.
+
+`sicksync config`
+
+Opens the sicksync config file in the editor of your choice.
 
 ## Configuration Options
 
@@ -94,6 +98,17 @@ When true, this will tell `sicksync` to re-attempt to connect when the server di
 `followSymLinks: {boolean}`
 
 When true, this will tell `sicksync` to follow and sync files and folders that are symlinked. Defaults to `false` in setup.
+
+## Migrating to from 1.x to 2.x
+
+2.x introduces a number of new and breaking changes. It's worthwhile to upgrade, as sicksync now has better reliabitiliy and extensibility in 2.x.
+
+1. Move your config file: `mv ~/.sicksync-config.json ~/.sicksync/config.json`. There are no breaking config changes.
+2. Update sicksync locally: `npm i -g sicksync`.
+3. Update sicksync remotely: `ssh username@devbox "npm i -g sicksync"`.
+4. Remove the config file from your remote maching: `rm ~/.sicksync-config.json`
+
+After this, you'll see when updates are available when running sicksync, and can easily update by running `sicksync update`.
 
 ## Troubleshooting
 
