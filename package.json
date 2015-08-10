@@ -4,7 +4,8 @@
   "description": "Don’t accept the available as the preferable. Go extra mile with extra speed.",
   "main": "index.js",
   "scripts": {
-    "test": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha -- --reporter=progress"
+    "test": "istanbul cover _mocha -- --check-leaks test/*.mspec.js test/**/*.mspec.js",
+    "tdd": "npm test -- -w"
   },
   "keywords": [
     "sicksync",

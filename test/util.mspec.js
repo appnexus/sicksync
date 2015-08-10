@@ -51,19 +51,17 @@ describe('util', function() {
     });
 
     describe('#getConfig', function() {
-        var configName = 'iShouldntBeHereHopefully';
-        var cachedConfigFile = util.__get__('CONFIG_FILE');
+        var constants = util.__get__('constants');
+        var constantsMock = {
+            CONFIG_FILE: 'iShouldntBeHereHopefully'
+        };
         var oldFs = util.__get__('fs');
         var cachedConfig = util.__get__('configCache');
-
-        beforeEach(function() {
-            util.__set__('configCache', null);
-        });
 
         afterEach(function() {
             util.__set__('fs', oldFs);
             util.__set__('configCache', cachedConfig);
-            util.__set__('CONFIG_FILE', cachedConfigFile);
+            util.__set__('constants', constants);
         });
 
         it('should return an object', function() {
@@ -71,7 +69,7 @@ describe('util', function() {
         });
 
         it('should return an empty object if the config doesn\'t exist', function() {
-            util.__set__('CONFIG_FILE', configName);
+            util.__set__('constants', constantsMock);
             expect(util.getConfig()).to.eql({});
         });
     });
