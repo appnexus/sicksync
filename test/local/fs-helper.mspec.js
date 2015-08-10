@@ -1,12 +1,11 @@
-var _ = require('lodash'),
-    expect = require('chai').expect,
+var expect = require('chai').expect,
     rewire = require('rewire'),
     sinon = require('sinon'),
     fsHelper = rewire('../../lib/local/fs-helper'),
     config = {
-        sourceLocation: 'my/home',
-        destinationLocation: 'my/remote/box',
-        excludes: ['ignored']
+        sourceLocation: 'my/home/',
+        destinationLocation: 'my/remote/box/',
+        excludes: ['some/ignored/file']
     },
     ignored = config.excludes;
 
@@ -77,13 +76,51 @@ describe('local fs-helper', function() {
         });
 
         describe('fs events', function () {
-            it('should trigger emit an event when a fs change happens', function() {
+            var localPath = 'file/path';
+
+            beforeEach(function () {
                 fsHelper.start();
-                fsHelper.on('file-change', function(data) {
-                    console.log(data);
-                    console.log(fsHelper.__get__('config'))
+            });
+
+            it('should emit an event with the subject of `file`', function(done) {
+                fsHelper.once('file-change', function(data) {
+                    expect(data.subject).to.equal('file');
+                    done();
                 });
-                triggerFsEvent('add', 'my/home/file/path');
+                triggerFsEvent('add', config.sourceLocation + localPath);
+            });
+
+            it('should generate a full path to the file on the remote machine', function(done) {
+                fsHelper.once('file-change', function(data) {
+                    expect(data.filepath).to.contain(config.destinationLocation);
+                    expect(data.filepath).to.contain(localPath);
+                    done();
+                });
+                triggerFsEvent('add', config.sourceLocation + localPath);
+            });
+
+            it('should pass along the file contents', function(done) {
+                fsHelper.once('file-change', function(data) {
+                    expect(data.contents).to.be.a('string');
+                    done();
+                });
+                triggerFsEvent('add', config.sourceLocation + localPath);
+            });
+
+            it('should not pass along the file contents if the event isn\'t add or change', function(done) {
+                fsHelper.once('file-change', function(data) {
+                    expect(data.contents).to.be.null;
+                    done();
+                });
+                triggerFsEvent('unlink', config.sourceLocation + localPath);
+            });
+
+            it('should not emit events for files that are ignored', function() {
+                fsHelper.once('file-change', function() {
+                    console.log(arguments);
+                    throw new Error('`file-change` should not emit messages for ignored files');
+                });
+                triggerFsEvent('unlink', config.sourceLocation + 'some/ignored/file');
             });
         });
     });
