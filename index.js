@@ -1,24 +1,29 @@
-var program = require('commander'),
+var _ = require('lodash'),
+    program = require('commander'),
     package = require('./package.json'),
     updates = require('./lib/update'),
-    util = require('./lib/util');
+    util = require('./lib/util'),
+    start = require('./lib/local'),
+    setup = require('./lib/setup');
 
-// Inject our commands
 require('./commands/index.js')(program);
 
-// Check for updates (async)
-updates.checkForUpdates();
-
-// Mount our comand
 program
     .version(package.version)
     .usage('<command> [options]')
     .parse(process.argv);
 
-// Show help if no sub-command is run
-if (!process.argv.slice(2).length) {
-    program.outputHelp();
+// No config yet
+if (_.isEmpty(util.getConfig())) {
+    util.printLogo();
+    return setup();
 }
 
-// Print any updates
+// Run `sicksync start` if no other command
+if (!process.argv.slice(2).length) {
+    return start();
+}
+
+// Run/Display update notifications
+updates.checkForUpdates();
 updates.notifyUpdates();
