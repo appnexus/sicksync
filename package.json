@@ -24,7 +24,6 @@
   "author": "jgriffith",
   "license": "Apache-2.0",
   "dependencies": {
-    "chai": "^3.2.0",
     "chokidar": "^1.0.1",
     "cli-color": "^1.0.0",
     "commander": "^2.8.1",
@@ -41,7 +40,7 @@
     "sicksync": "./bin/sicksync.js"
   },
   "devDependencies": {
-    "chai": "^2.2.0",
+    "chai": "^3.2.0",
     "istanbul": "^0.3.2",
     "mocha": "^2.0.1",
     "rewire": "^2.1.0",

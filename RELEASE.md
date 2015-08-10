@@ -1,4 +1,4 @@
-## 2.0.0-alpha
+## 2.0.0-rc
 *BREAKING CHANGES*
 - New git-style sub commands: Almost all sicksync commands have been broken out into sub-commands to make management easier and provide a better end-user experience:
 
