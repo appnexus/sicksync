@@ -10,6 +10,12 @@ var cryptMock = {
     decryptAndParse: JSON.parse
 };
 
+var configMock = {
+    hostname: 'somehost',
+    secret: 'keepitsafe',
+    retryOnDisconnect: true
+};
+
 var wsMock = {
     on: sinon.stub(),
     send: sinon.stub()
@@ -17,41 +23,46 @@ var wsMock = {
 
 var WsMock = sinon.stub().returns(wsMock);
 
+var devboxMock = {
+    start: sinon.spy(),
+    on: sinon.spy()
+};
+
+var DevboxMock = sinon.stub().returns(devboxMock);
+
+var processMock = {
+    exit: sinon.spy()
+};
+
 var utilMock = {
-    wakeDevBox: sinon.spy()
+    wakeDevBox: sinon.spy(),
+    getConfig: sinon.stub().returns(configMock)
 };
 
-var configMock = {
-    hostname: 'somehost',
-    secret: 'keepitsafe',
-    retryOnDisconnect: true
-};
-
-var bigSyncMock = sinon.spy();
-
-Client.__set__('config', configMock);
 Client.__set__('util', utilMock);
 Client.__set__('crypt', cryptMock);
 Client.__set__('WebSocket', WsMock);
-Client.__set__('bigSync', bigSyncMock);
+Client.__set__('RemoteHelper', DevboxMock);
+Client.__set__('process', processMock);
 
 describe('ws-client', function() {
+    var ws = null;
+
+    beforeEach(function() {
+        ws = new Client({
+            url: 'ws://somewebsocket'
+        });
+    });
 
     afterEach(function() {
+        processMock.exit.reset();
+        devboxMock.on.reset();
+        devboxMock.start.reset();
         testUtils.resetSpies(wsMock);
         utilMock.wakeDevBox.reset();
-        bigSyncMock.reset();
     });
 
     describe('connection', function() {
-        var ws = null;
-
-        beforeEach(function() {
-            ws = new Client({
-                url: 'ws://somewebsocket'
-            });
-        });
-
         it('should register callbacks via the `on` method', function() {
             expect(wsMock.on.called).to.be.true;
         });
@@ -73,14 +84,6 @@ describe('ws-client', function() {
     });
 
     describe('#send', function () {
-        var ws = null;
-
-        beforeEach(function() {
-            ws = new Client({
-                url: 'ws://somewebsocket'
-            });
-        });
-        
         it('should attach the secret to the passed in object', function() {
             ws.send({some: 'object'});
 
@@ -89,13 +92,7 @@ describe('ws-client', function() {
     });
 
     describe('onOpen', function() {
-        var ws = null;
-
         beforeEach(function() {
-            ws = new Client({
-                url: 'ws://somewebsocket'
-            });
-
             // Trigger `open`
             wsMock.on.getCall(0).args[1]();
         });
@@ -107,36 +104,9 @@ describe('ws-client', function() {
     });
 
     describe('onClose', function() {
-        var ws = null;
-        var oldProcess = Client.__get__('process');
-        var remoteHelper = Client.__get__('remoteHelper');
-        var devboxMock = {
-            start: sinon.stub().returns({
-                on: sinon.spy()
-            })
-        };
-        var processMock = {
-            exit: sinon.spy(),
-            on: sinon.spy()
-        };
-
         beforeEach(function() {
-            Client.__set__('remoteHelper', devboxMock);
-            Client.__set__('process', processMock);
-            ws = new Client({
-                url: 'ws://somewebsocket'
-            });
-
             // Trigger `close`
             wsMock.on.getCall(1).args[1]();
-        });
-
-        afterEach(function() {
-            processMock.exit.reset();
-            devboxMock.start().on.reset();
-            devboxMock.start.reset();
-            Client.__set__('process', oldProcess);
-            Client.__set__('remoteHelper', remoteHelper);
         });
 
         it('should emit a `disconnected` event', function(done) {
@@ -151,15 +121,11 @@ describe('ws-client', function() {
         });
 
         it('when the `retryOnDisconnect` flag is set to `false` should exit the process', function() {
-            Client.__set__('config', {
+            ws._config = {
                 hostname: 'somehost',
                 secret: 'keepitsafe',
                 retryOnDisconnect: false
-            });
-
-            ws = new Client({
-                url: 'ws://somewebsocket'
-            });
+            };
 
             // Trigger `close`
             wsMock.on.getCall(1).args[1]();
@@ -168,34 +134,9 @@ describe('ws-client', function() {
     });
 
     describe('onError', function() {
-        var ws = null;
-        var oldProcess = Client.__get__('process');
-        var remoteHelper = Client.__get__('remoteHelper');
-        var devboxMock = {
-            start: sinon.stub().returns({
-                on: sinon.spy()
-            })
-        };
-        var processMock = {
-            exit: sinon.spy(),
-            on: sinon.spy()
-        };
-
         beforeEach(function() {
-            Client.__set__('remoteHelper', devboxMock);
-            Client.__set__('process', processMock);
-            ws = new Client({
-                url: 'ws://somewebsocket'
-            });
-
             // Trigger `error`
             wsMock.on.getCall(2).args[1]();
-        });
-
-        afterEach(function() {
-            processMock.exit.reset();
-            Client.__set__('process', oldProcess);
-            Client.__set__('remoteHelper', remoteHelper);
         });
 
         it('should emit an `reconnecting` event', function(done) {
@@ -210,13 +151,13 @@ describe('ws-client', function() {
         });
 
         it('should listen for the `ready` message from the devbox', function() {
-            expect(devboxMock.start().on.getCall(0).args[0]).to.equal('ready');
-            expect(devboxMock.start().on.getCall(0).args[1]).to.be.a('function');
+            expect(devboxMock.on.getCall(0).args[0]).to.equal('ready');
+            expect(devboxMock.on.getCall(0).args[1]).to.be.a('function');
         });
 
         it('should listen for the `message` message from the devbox', function() {
-            expect(devboxMock.start().on.getCall(1).args[0]).to.equal('message');
-            expect(devboxMock.start().on.getCall(1).args[1]).to.be.a('function');
+            expect(devboxMock.on.getCall(1).args[0]).to.equal('message');
+            expect(devboxMock.on.getCall(1).args[1]).to.be.a('function');
         });
     });
 

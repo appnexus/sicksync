@@ -1,4 +1,5 @@
-var expect = require('chai').expect,
+var _ = require('lodash'),
+    expect = require('chai').expect,
     rewire = require('rewire'),
     sinon = require('sinon'),
     FSHelper = rewire('../../lib/local/fs-helper'),
@@ -131,9 +132,10 @@ describe('local fs-helper', function() {
                 triggerFsEvent('unlink', config.sourceLocation + localPath);
             });
 
-            it('should emit events when unpaused', function() {
-                fsHelper.once('file-change', function() {
-                    throw new Error('`file-change` should not emit messages for ignored files');
+            it('should emit events when unpaused', function(done) {
+                fsHelper.once('file-change', function(data) {
+                    expect(data.filepath).to.contain(localPath);
+                    done();
                 });
                 fsHelper.pauseWatch();
                 fsHelper.unpauseWatch();
