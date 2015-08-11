@@ -5,9 +5,8 @@ var expect = require('chai').expect,
     config = {
         sourceLocation: 'my/home/',
         destinationLocation: 'my/remote/box/',
-        excludes: ['some/ignored/file']
-    },
-    ignored = config.excludes;
+        excludes: ['.git']
+    };
 
 // Mocks
 var watcherOnMock = sinon.spy(),
@@ -28,7 +27,7 @@ describe('local fs-helper', function() {
         fsHelper.__set__('watcher', watcherMock);
         fsHelper.__set__('fs', fsMock);
         fsHelper.__set__('config', config);
-        fsHelper.__set__('ignored', ignored);
+        fsHelper.__set__('ignored', config.excludes);
     });
 
     afterEach(function() {
@@ -117,10 +116,26 @@ describe('local fs-helper', function() {
 
             it('should not emit events for files that are ignored', function() {
                 fsHelper.once('file-change', function() {
-                    console.log(arguments);
+                    expect.fail('File changes shouldn\'t happen when ignored.');
+                });
+                triggerFsEvent('unlink', config.sourceLocation + '.git');
+            });
+
+            it('should not emit events when the watch is paused', function() {
+                fsHelper.once('file-change', function() {
+                    expect.fail('File changes shouldn\'t happen when paused.');
+                });
+                fsHelper.pauseWatch();
+                triggerFsEvent('unlink', config.sourceLocation + localPath);
+            });
+
+            it('should emit events when unpaused', function() {
+                fsHelper.once('file-change', function() {
                     throw new Error('`file-change` should not emit messages for ignored files');
                 });
-                triggerFsEvent('unlink', config.sourceLocation + 'some/ignored/file');
+                fsHelper.pauseWatch();
+                fsHelper.unpauseWatch();
+                triggerFsEvent('unlink', config.sourceLocation + localPath);
             });
         });
     });
