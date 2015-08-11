@@ -3,7 +3,7 @@ var _ = require('lodash'),
     sinon = require('sinon'),
     rewire = require('rewire'),
     testUtils = require('../utils'),
-    helper = rewire('../../lib/local/remote-helper');
+    Helper = rewire('../../lib/local/remote-helper');
 
 var sshMock = {
     stdout: {
@@ -32,17 +32,17 @@ function triggerStdout(message) {
 }
 
 describe('remote-helper', function () {
-    var configCache = helper.__get__('config');
-    var utilCache = helper.__get__('util');
+    var helper = null;
+    var utilCache = Helper.__get__('util');
 
     beforeEach(function () {
-        helper.__set__('config', configMock);
-        helper.__set__('util', utilMock);
+        Helper.__set__('util', utilMock);
+        helper = new Helper();
+        helper._config = configMock;
     });
 
     afterEach(function() {
-        helper.__set__('config', configCache);
-        helper.__set__('util', utilCache);
+        Helper.__set__('util', utilCache);
         sshMock.stdout.on.reset();
         sshMock.stdin.write.reset();
         testUtils.resetSpies(utilMock);
@@ -61,13 +61,15 @@ describe('remote-helper', function () {
         });
 
         it('should emit a ready flag once the server starts up', function(done) {
-            helper.start().once('ready', done);
+            helper.start();
+            helper.once('ready', done);
             triggerStdout('ready');
         });
 
         it('should emit a message event if the message contains the devbox name', function(done) {
             var message = configMock.destinationLocation + ' some message!';
-            helper.start().once('message', function(data) {
+            helper.start();
+            helper.once('message', function(data) {
                 expect(data).to.equal(message);
                 done();
             });
@@ -76,7 +78,8 @@ describe('remote-helper', function () {
 
         describe('starting the sicksync process', function () {
             it('should happen on the first stdout message', function(done) {
-                helper.start().once('ready', function() {
+                helper.start();
+                helper.once('ready', function() {
                     expect(sshMock.stdin.write.called).to.be.true;
                     done();
                 });
@@ -85,7 +88,8 @@ describe('remote-helper', function () {
 
             it('should only happen once', function(done) {
                 var message = configMock.destinationLocation + ' some message!';
-                helper.start().once('message', function() {
+                helper.start();
+                helper.once('message', function() {
                     expect(sshMock.stdin.write.calledOnce).to.be.true;
                     done();
                 });
@@ -94,7 +98,8 @@ describe('remote-helper', function () {
             });
 
             it('should pass in the config flags when executing', function(done) {
-                helper.start().once('ready', function() {
+                helper.start();
+                helper.once('ready', function() {
                     var remoteCmd = sshMock.stdin.write.lastCall.args[0];
                     expect(remoteCmd).to.contain('-s dirty-little-secret');
                     expect(remoteCmd).to.contain('-p 1234');
@@ -104,8 +109,10 @@ describe('remote-helper', function () {
             });
 
             it('should exclude the `debug` and `encrypt` flags if not present in config', function(done) {
-                helper.__set__('config', _.merge({}, configMock, { prefersEncrypted: true, debug: true }));
-                helper.start().once('ready', function() {
+                helper._config.debug = true;
+                helper._config.prefersEncrypted = true;
+                helper.start();
+                helper.once('ready', function() {
                     var remoteCmd = sshMock.stdin.write.lastCall.args[0];
                     expect(remoteCmd).to.contain('-e');
                     expect(remoteCmd).to.contain('-d');
