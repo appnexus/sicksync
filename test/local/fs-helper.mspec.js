@@ -1,7 +1,7 @@
 var expect = require('chai').expect,
     rewire = require('rewire'),
     sinon = require('sinon'),
-    fsHelper = rewire('../../lib/local/fs-helper'),
+    FSHelper = rewire('../../lib/local/fs-helper'),
     config = {
         sourceLocation: 'my/home/',
         destinationLocation: 'my/remote/box/',
@@ -20,19 +20,21 @@ function triggerFsEvent(event, filepath) {
 }
 
 describe('local fs-helper', function() {
-    var cachedConfig = fsHelper.__get__('config');
-    var cachedIgnore = fsHelper.__get__('ignored');
+    var fsHelper = null;
+    var cachedWatcher = FSHelper.__get__('watcher');
+    var cachedFS = FSHelper.__get__('fs');
 
     beforeEach(function () {
-        fsHelper.__set__('watcher', watcherMock);
-        fsHelper.__set__('fs', fsMock);
-        fsHelper.__set__('config', config);
-        fsHelper.__set__('ignored', config.excludes);
+        // Inject mocks
+        FSHelper.__set__('watcher', watcherMock);
+        FSHelper.__set__('fs', fsMock);
+        fsHelper = new FSHelper();
+        fsHelper._config = config;
     });
 
     afterEach(function() {
-        fsHelper.__set__('config', cachedConfig);
-        fsHelper.__set__('ignored', cachedIgnore);
+        FSHelper.__set__('watcher', cachedWatcher);
+        FSHelper.__set__('fs', cachedFS);
         watcherOnMock.reset();
         watcherMock.reset();
         fsMock.readFileSync.reset();

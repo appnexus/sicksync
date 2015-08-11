@@ -72,6 +72,22 @@ describe('ws-client', function() {
         });
     });
 
+    describe('#send', function () {
+        var ws = null;
+
+        beforeEach(function() {
+            ws = new Client({
+                url: 'ws://somewebsocket'
+            });
+        });
+        
+        it('should attach the secret to the passed in object', function() {
+            ws.send({some: 'object'});
+
+            expect(JSON.parse(wsMock.send.lastCall.args[0]).secret).to.not.be.a('undefined');
+        });
+    });
+
     describe('onOpen', function() {
         var ws = null;
 

@@ -56,11 +56,10 @@ describe('util', function() {
             CONFIG_FILE: 'iShouldntBeHereHopefully'
         };
         var oldFs = util.__get__('fs');
-        var cachedConfig = util.__get__('configCache');
 
         afterEach(function() {
             util.__set__('fs', oldFs);
-            util.__set__('configCache', cachedConfig);
+            util.__set__('configCache', null);
             util.__set__('constants', constants);
         });
 
