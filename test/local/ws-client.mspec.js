@@ -1,8 +1,8 @@
 var expect = require('chai').expect,
     rewire = require('rewire'),
     sinon = require('sinon'),
-    testUtils = require('./utils'),
-    Client = rewire('../lib/local/ws-client');
+    testUtils = require('../utils'),
+    Client = rewire('../../lib/local/ws-client');
 
 // MOCKS
 var cryptMock = {

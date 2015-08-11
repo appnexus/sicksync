@@ -2,8 +2,8 @@ var _ = require('lodash'),
     rewire = require('rewire'),
     sinon = require('sinon'),
     expect = require('chai').expect,
-    utils = require('./utils'),
-    WSServer = rewire('../lib/remote/ws-server');
+    utils = require('../utils'),
+    WSServer = rewire('../../lib/remote/ws-server');
 
 // Mocks
 var secret = 'my-secret';
