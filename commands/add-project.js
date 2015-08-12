@@ -1,8 +1,10 @@
-var addRemote = require('../lib/add-remote');
+var _ = require('lodash'),
+    projectHelper = require('../lib/project-helper');
 
-module.exports = function setupSicksyncCommand(program) {
+module.exports = function setupSicksyncCommand(program, config) {
     program
         .command('add-project')
+        .alias('add')
         .description('Adds a new project to sicksync.')
-        .action(addRemote);
+        .action(_.partial(projectHelper.add, config));
 };

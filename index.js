@@ -4,26 +4,30 @@ var _ = require('lodash'),
     updates = require('./lib/update'),
     util = require('./lib/util'),
     start = require('./lib/local'),
-    addRemote = require('./lib/add-remote');
+    addRemote = require('./lib/project-helper').add;
 
-require('./commands/index.js')(program);
+var config = util.getConfig();
 
-program
-    .version(package.version)
-    .usage('<command> [options]')
-    .parse(process.argv);
+require('./commands/index.js')(program, config);
 
-// No config yet
-if (_.isEmpty(util.getConfig())) {
-    util.printLogo();
-    addRemote();
-}
+module.exports = function() {
+    program
+        .version(package.version)
+        .usage('<command> [options]')
+        .parse(process.argv);
 
-// Run `sicksync start` if no other command
-if (!process.argv.slice(2).length) {
-    start();
-}
+    // No config yet
+    if (_.isEmpty(config) || _.isEmpty(config.projects)) {
+        util.printLogo();
+        return addRemote(config);
+    }
 
-// Run/Display update notifications
-updates.check();
-updates.notify();
+    // Run `sicksync start` if no other command
+    if (!process.argv.slice(2).length) {
+        start();
+    }
+
+    // Run/Display update notifications
+    updates.check();
+    updates.notify();
+};

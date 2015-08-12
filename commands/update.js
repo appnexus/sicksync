@@ -1,7 +1,7 @@
 var update = require('../lib/update'),
     package = require('../package.json');
 
-module.exports = function sicksyncOnceCommand(program) {
+module.exports = function sicksyncOnceCommand(program/*, config */) {
     program
         .command('update')
         .description('Updates sicksync on both your local and remote machines')
