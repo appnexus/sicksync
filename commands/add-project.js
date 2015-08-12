@@ -1,8 +1,8 @@
-var setup = require('../lib/setup');
+var addRemote = require('../lib/add-remote');
 
 module.exports = function setupSicksyncCommand(program) {
     program
         .command('add-project')
         .description('Adds a new project to sicksync.')
-        .action(setup);
+        .action(addRemote);
 };

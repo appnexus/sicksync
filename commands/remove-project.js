@@ -1,4 +1,4 @@
-var setup = require('../lib/setup');
+var setup = require('../lib/add-remote');
 
 module.exports = function setupSicksyncCommand(program) {
     program

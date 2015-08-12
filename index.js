@@ -4,7 +4,7 @@ var _ = require('lodash'),
     updates = require('./lib/update'),
     util = require('./lib/util'),
     start = require('./lib/local'),
-    setup = require('./lib/setup');
+    addRemote = require('./lib/add-remote');
 
 require('./commands/index.js')(program);
 
@@ -16,12 +16,12 @@ program
 // No config yet
 if (_.isEmpty(util.getConfig())) {
     util.printLogo();
-    return setup();
+    addRemote();
 }
 
 // Run `sicksync start` if no other command
 if (!process.argv.slice(2).length) {
-    return start();
+    start();
 }
 
 // Run/Display update notifications
