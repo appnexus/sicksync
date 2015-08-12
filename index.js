@@ -8,7 +8,7 @@ var _ = require('lodash'),
 
 var config = util.getConfig();
 
-require('./commands/index.js')(program, config);
+require('./commands')(program, config);
 
 module.exports = function() {
     program

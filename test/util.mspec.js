@@ -345,7 +345,7 @@ describe('util', function() {
         });
     });
 
-    describe('#log', function () {
+    describe('logging utils', function () {
         var cachedConsole = console;
         var consoleMock = { log: sinon.spy() };
 
@@ -358,20 +358,75 @@ describe('util', function() {
             consoleMock.log.reset();
         });
 
-        it('should log messages to the console', function() {
-            var message = 'hello there!';
+        describe('#log', function () {
 
-            util.log(message);
+            it('should log messages to the console', function() {
+                var message = 'hello there!';
 
-            expect(consoleMock.log.lastCall.args[1]).to.contain(message);
+                util.log(message);
+
+                expect(consoleMock.log.lastCall.args[1]).to.contain(message);
+            });
+
+            it('should pre-pend the hostname to the query', function() {
+                var message = 'hello there!';
+
+                util.log(message);
+
+                expect(consoleMock.log.lastCall.args[0]).to.contain(hostname);
+            });
+        });
+        
+        describe('#printLogo', function () {
+            it('should pring a sweet sweet sweet logo', function() {
+                util.printLogo();
+
+                expect(consoleMock.log.called).to.be.true;
+            });
+        });
+    });
+
+    describe('#uniqInstance', function () {
+        var ConstructorSpy = sinon.spy();
+
+        afterEach(function() {
+            ConstructorSpy.reset();
         });
 
-        it('should pre-pend the hostname to the query', function() {
-            var message = 'hello there!';
+        it('should return copies of an instance if the tokens match', function() {
+            var testConstructor = util.uniqInstance('myToken', ConstructorSpy);
 
-            util.log(message);
+            testConstructor({ myToken: 'isTheSame' });
+            testConstructor({ myToken: 'isTheSame' });
 
-            expect(consoleMock.log.lastCall.args[0]).to.contain(hostname);
+            expect(ConstructorSpy.calledOnce).to.be.true;
+        });
+
+        it('should return copies of an instance if the tokens match and `New` is used', function() {
+            var TestConstructor = util.uniqInstance('myToken', ConstructorSpy);
+
+            new TestConstructor({ myToken: 'isTheSame' });
+            new TestConstructor({ myToken: 'isTheSame' });
+
+            expect(ConstructorSpy.calledOnce).to.be.true;
+        });
+
+        it('should return new instances if the tokens do not match', function() {
+            var testConstructor = util.uniqInstance('myToken', ConstructorSpy);
+
+            testConstructor({ myToken: 'isNot' });
+            testConstructor({ myToken: 'theSame' });
+
+            expect(ConstructorSpy.calledTwice).to.be.true;
+        });
+
+        it('should pass through instances like normal if there are problems storing them', function() {
+            var testConstructor = util.uniqInstance('tokenWontExist', ConstructorSpy);
+
+            testConstructor({ myToken: 'isTheSame' });
+            testConstructor({ myToken: 'isTheSame' });
+
+            expect(ConstructorSpy.calledTwice).to.be.true;
         });
     });
 });
