@@ -16,12 +16,6 @@ module.exports = function() {
         .usage('<command> [options]')
         .parse(process.argv);
 
-    // No config yet
-    if (_.isEmpty(config) || _.isEmpty(config.projects)) {
-        util.printLogo();
-        return addRemote(config);
-    }
-
     // Run `sicksync start` if no other command
     if (!process.argv.slice(2).length) {
         start();
