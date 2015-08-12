@@ -3,7 +3,7 @@ var bigSync = require('../lib/big-sync'),
 
 module.exports = function sicksyncOnceCommand(program) {
     program
-        .command('once')
+        .command('once <project>')
         .description('Runs a one-time sync')
         .option('-n, --dry-run', 'Shows information on what files will be sent without sending them')
         .action(function(cmd) {
