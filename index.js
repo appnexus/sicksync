@@ -1,10 +1,8 @@
-var _ = require('lodash'),
-    program = require('commander'),
+var program = require('commander'),
     package = require('./package.json'),
     updates = require('./lib/update'),
     util = require('./lib/util'),
-    start = require('./lib/local'),
-    addRemote = require('./lib/project-helper').add;
+    start = require('./lib/local');
 
 var config = util.getConfig();
 
