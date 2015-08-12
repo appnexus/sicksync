@@ -6,5 +6,7 @@ module.exports = {
     CRYPT_ALGO: 'aes-128-ctr',
     CONFIG_FILE: 'config.json',
     UPDATE_FILE: 'update.json',
-    SICKSYNC_DIR: '.sicksync'
+    SICKSYNC_DIR: '.sicksync',
+    FS_TOKEN: 'sourceLocation',
+    WS_TOKEN: 'hostUrl'
 };

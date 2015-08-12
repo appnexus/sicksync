@@ -1,6 +1,6 @@
 var _ = require('lodash'),
     clc = require('cli-color'),
-    local = require('../lib/local/index.js');
+    local = require('../lib/local/index.js').start;
 
 module.exports = function sicksyncStartCommand(program, config) {
     program
