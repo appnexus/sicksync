@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-    clc = require('cli-color'),
+    chalk = require('chalk'),
     local = require('../lib/local/index.js').start;
 
 module.exports = function sicksyncStartCommand(program, config) {
@@ -9,7 +9,7 @@ module.exports = function sicksyncStartCommand(program, config) {
         .action(function(projects) {
             var projectsInConfig = _.filter(projects.split(','), function(project) {
                 if (_.isEmpty(config.projects[project])) {
-                    console.log(clc.yellow(project), 'wasn\'t found in your config and can\'t be synced. Add it with `sicksync add-project`');
+                    console.log(chalk.yellow(project), 'wasn\'t found in your config and can\'t be synced. Add it with `sicksync add-project`');
                     return false;
                 }
                 return true;

@@ -25,8 +25,8 @@
   "author": "jgriffith",
   "license": "Apache-2.0",
   "dependencies": {
+    "chalk": "^1.1.0",
     "chokidar": "^1.0.5",
-    "cli-color": "^1.0.0",
     "commander": "^2.8.1",
     "fs-extra": "^0.18.4",
     "latest-version": "^1.0.1",
