@@ -12,7 +12,7 @@ sicksync 2.0.0 Introduces a lot of new features and functionality. These changes
 ### New
 - `sicksync start <projects...>`: Runs the sicksync process for the given space-separated `<projects...>`.
 - `sicksync add-project | add`: Runs the setup wizard for a new project.
-- `sicksync remove-project | rm <projects>`: Removes a project from sicksync.
+- `sicksync remove-project | rm <projects...>`: Removes project(s) from sicksync.
 - `sicksync info [projects...]`: Prints out info for your given project(s).
 - `sicksync update`: Update sicksync both locally and remotely for all projects.
 
@@ -22,6 +22,7 @@ sicksync 2.0.0 Introduces a lot of new features and functionality. These changes
 - `sicksync --setup` is now `sicksync setup`
 - `sicksync-local` is now covered by `sicksync`.
 - `sicksync-remote` is now `sicksync remote`. `sicksync start` does this for you automatically, so this _can_ be ignored.
+- Configs have undergone changes in both structure and location. See below on migrating from sicksync 1.x.
 
 ### Deprecated
 - `sicksync --debug`: use `sicksync config` to enable debug messages.

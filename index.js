@@ -16,7 +16,8 @@ module.exports = function() {
 
     // Run `sicksync start` if no other command
     if (!process.argv.slice(2).length) {
-        start();
+        util.printLogo();
+        program.outputHelp();
     }
 
     // Run/Display update notifications
