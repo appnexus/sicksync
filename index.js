@@ -2,7 +2,7 @@ var program = require('commander'),
     package = require('./package.json'),
     updates = require('./lib/update'),
     util = require('./lib/util'),
-    start = require('./lib/local');
+    start = require('./lib/local').start;
 
 var config = util.getConfig();
 
