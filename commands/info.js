@@ -3,7 +3,7 @@ var _ = require('lodash'),
 
 module.exports = function sicksyncOnceCommand(program, config) {
     program
-        .command('info [project]')
-        .description('Shows the information for a project(s)')
+        .command('info [project...]')
+        .description('Shows the information for the supplied project(s)')
         .action(_.partial(projectHelper.info, config));
 };

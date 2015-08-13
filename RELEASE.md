@@ -1,30 +1,31 @@
 ## 2.0.0-rc
-*BREAKING CHANGES*
-- New git-style sub commands: Almost all sicksync commands have been broken out into sub-commands to make management easier and provide a better end-user experience:
+*Overview*
 
-    ### New commands
-    - `sicksync update`: Update sicksync both locally and remotely.
-    - `sicksync start`: Runs the sicksync process, same as just running `sicksync`.
+sicksync 2.0.0 Introduces a lot of new features and functionality. These changes are detailed further below, but to summarize:
+- Multi-project syncing! You can now add projects to sicksync and easily sync multiple projects at once.
+- Better project management. sicksync now has commands to get project info, add projects, and remove them.
+- Updating is now a lot easier as sicksync will let you know when there's updates, and takes care of updating your remote machines.
+- Stateless remote code. This means that you'll never have to sync up your config files again.
+- Git-style sub commands. No more nasty option hashes and a more extensible CLI.
+- A complete rewrite top-to-bottom. Much easier to read and contribute to.
 
-    ### Updated commands
-    - `sicksync --once` is now `sicksync once`
-    - `sicksync --config` is now `sicksync config`
-    - `sicksync --setup` is now `sicksync setup`
-    - `sicksync-local` is now covered by `sicksync`.
-    - `sicksync-remote` is now `sicksync remote`. `sicksync` does this for you.
+### New
+- `sicksync start <projects...>`: Runs the sicksync process for the given space-separated `<projects...>`.
+- `sicksync add-project | add`: Runs the setup wizard for a new project.
+- `sicksync remove-project | rm <projects>`: Removes a project from sicksync.
+- `sicksync info [projects...]`: Prints out info for your given project(s).
+- `sicksync update`: Update sicksync both locally and remotely for all projects.
 
-    ### Deprecated comands
-    - `sicksync --debug`: use `sicksync config` to enable debug messages.
-    - `sicksync --encrypt`: use `sicksync config` to enable encryption.
+### Breaking
+- `sicksync --once` is now `sicksync once`
+- `sicksync --config` is now `sicksync config`
+- `sicksync --setup` is now `sicksync setup`
+- `sicksync-local` is now covered by `sicksync`.
+- `sicksync-remote` is now `sicksync remote`. `sicksync start` does this for you automatically, so this _can_ be ignored.
 
-- Config: Sicksync now has it's own directory in the users' `$HOME` path. Since the config file has moved feel free to generate a new one with `sicksync setup`, or move your config file: `mv ~/.sicksync-config.json ~/.sicksync/config.json`.
-
-- Stateless Remotes: No more copying configs over to remote machines as remote boxes are now 100% stateless. Running `sicksync start` locally will spawn a the remote process with the necessary parameters.
-
-*NEW FEATURES*
-- Updating: Sicksync will now check once-a-day if there is any new updates, and will non-intrusively inform the user that an update is available. `sicksync update` will take care of updating locally as well as remotely. This runs `npm i -g sicksync` under-the-hood, so care should be taken if `sudo` is required as it's not supported by sicksync.
-
-- Rewrite: While not outward-facing, the rewrite of sicksync has made it much easier to update and test, meaning more features and contributions in the long-term.
+### Deprecated
+- `sicksync --debug`: use `sicksync config` to enable debug messages.
+- `sicksync --encrypt`: use `sicksync config` to enable encryption.
 
 ## 1.2.0
 - *BREAKING* `big-sync` will now DELETE files in the remote location that aren't found in the local location. Please be ensure that, after upgrading, caution is ran when running either `sicksync` or `sicksync -o`.
