@@ -8,5 +8,5 @@ module.exports = {
     UPDATE_FILE: 'update.json',
     SICKSYNC_DIR: '.sicksync',
     FS_TOKEN: 'sourceLocation',
-    WS_TOKEN: 'hostUrl'
+    WS_TOKEN: 'hostname'
 };
