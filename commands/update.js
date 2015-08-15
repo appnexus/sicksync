@@ -2,10 +2,10 @@ var update = require('../lib/update'),
     package = require('../package.json');
 
 // TODO
-module.exports = function sicksyncOnceCommand(program/*, config */) {
+module.exports = function sicksyncOnceCommand(program, config) {
     program
         .command('update')
-        .description('Updates sicksync on both your local and remote machines')
+        .description('Updates sicksync on both your local and remote machine(s)')
         .option('-c, --check, Checks to see the latest version of sicksync')
         .action(function(cmd) {
             if (cmd.check) {
