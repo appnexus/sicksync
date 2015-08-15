@@ -1,6 +1,7 @@
 var update = require('../lib/update'),
     package = require('../package.json');
 
+// TODO
 module.exports = function sicksyncOnceCommand(program/*, config */) {
     program
         .command('update')

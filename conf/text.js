@@ -1,7 +1,7 @@
 var chalk = require('chalk');
 
 module.exports = {
-    PROJECT_NOT_FOUND: chalk.yellow('We couldn\'t find this project in your config:'),
+    PROJECT_NOT_FOUND: chalk.yellow('Sicksync couldn\'t find this project in your config:'),
     SYNC_ON_ONCE: 'Starting a one-time sync',
     SYNC_ON_ONCE_DONE: chalk.green('One-time sync complete!'),
     SYNC_ON_CONNECT: chalk.green('Connected'),

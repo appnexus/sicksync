@@ -1,4 +1,4 @@
-var remote = require('../lib/remote/index');
+var remote = require('../lib/remote');
 
 module.exports = function sicksyncRemoteCommand(program) {
     program
