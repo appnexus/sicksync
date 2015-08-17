@@ -12,7 +12,7 @@ module.exports = {
     SYNC_ON_LARGE_CHANGE_DONE: chalk.green('Large change sent!'),
     SERVER_ON_UNAUTHORIZED: chalk.red('Unauthorized connection, shutting down'),
     SERVER_ON_CONNECTION_CLOSED: chalk.red('Connection closed, shutting down'),
-    SERVER_ON_READY: chalk.green('Sicksync ready'),
+    SERVER_ON_READY: chalk.green('SICKSYNC-READY'),
     REMOTE_MISSING_PORT: chalk.red('--port, -p, is required. See `sicksync remote -h`'),
     REMOTE_MISSING_SECRET: chalk.red('--secret, -s, is required. See `sicksync remote -h`'),
     CONFIG_SAVED: chalk.green('Successfully saved the config!')
