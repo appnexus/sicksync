@@ -1,5 +1,4 @@
-var _ = require('lodash'),
-    expect = require('chai').expect,
+var expect = require('chai').expect,
     sinon = require('sinon'),
     rewire = require('rewire'),
     testUtils = require('../utils'),
@@ -37,8 +36,7 @@ describe('remote-helper', function () {
 
     beforeEach(function () {
         Helper.__set__('util', utilMock);
-        helper = new Helper();
-        helper._config = configMock;
+        helper = new Helper(configMock);
     });
 
     afterEach(function() {

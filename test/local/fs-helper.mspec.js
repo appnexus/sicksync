@@ -29,8 +29,7 @@ describe('local fs-helper', function() {
         // Inject mocks
         FSHelper.__set__('watcher', watcherMock);
         FSHelper.__set__('fs', fsMock);
-        fsHelper = new FSHelper();
-        fsHelper._config = config;
+        fsHelper = new FSHelper(config);
     });
 
     afterEach(function() {
@@ -42,30 +41,30 @@ describe('local fs-helper', function() {
         watcherMock.reset();
     });
 
-    describe('#start', function () {
+    describe('#watch', function () {
         it('should watch the source directory', function() {
-            fsHelper.start();
+            fsHelper.watch();
             expect(watcherMock.lastCall.args[0]).to.equal(config.sourceLocation);
         });
 
         it('should pass a list of ignored files to the watcher', function() {
-            fsHelper.start();
+            fsHelper.watch();
             expect(watcherMock.lastCall.args[1].ignored).to.eql(config.excludes);
         });
 
         it('should persist the watch', function() {
-            fsHelper.start();
+            fsHelper.watch();
             expect(watcherMock.lastCall.args[1].persistent).to.be.true;
         });
 
         it('should pass in a flag for symlinks', function() {
-            fsHelper.start();
+            fsHelper.watch();
             expect(watcherMock.lastCall.args[1].followSymlinks).to.equal(config.followSymlinks);
         });
 
         describe('#on', function () {
             beforeEach(function () {
-                fsHelper.start();
+                fsHelper.watch();
             });
 
             it('should register an `all` callback', function() {
@@ -81,24 +80,7 @@ describe('local fs-helper', function() {
             var localPath = 'file/path';
 
             beforeEach(function () {
-                fsHelper.start();
-            });
-
-            it('should emit an event with the subject of `file`', function(done) {
-                fsHelper.once('file-change', function(data) {
-                    expect(data.subject).to.equal('file');
-                    done();
-                });
-                triggerFsEvent('add', config.sourceLocation + localPath);
-            });
-
-            it('should generate a full path to the file on the remote machine', function(done) {
-                fsHelper.once('file-change', function(data) {
-                    expect(data.filepath).to.contain(config.destinationLocation);
-                    expect(data.filepath).to.contain(localPath);
-                    done();
-                });
-                triggerFsEvent('add', config.sourceLocation + localPath);
+                fsHelper.watch();
             });
 
             it('should pass along the file contents', function(done) {
