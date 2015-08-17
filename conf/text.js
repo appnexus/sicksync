@@ -15,5 +15,8 @@ module.exports = {
     SERVER_ON_READY: chalk.green('|=====SICKSYNC-READY=====|'),
     REMOTE_MISSING_PORT: chalk.red('--port, -p, is required. See `sicksync remote -h`'),
     REMOTE_MISSING_SECRET: chalk.red('--secret, -s, is required. See `sicksync remote -h`'),
-    CONFIG_SAVED: chalk.green('Successfully saved the config!')
+    CONFIG_SAVED: chalk.green('Successfully saved the config!'),
+    UPDATE_SUCCESS: chalk.green('Updated Successfully!'),
+    UPDATE_FAIL: chalk.red('Update failed! Please run manually'),
+    UPDATE_AVAILABLE: chalk.green('Sicksync update available!')
 };
