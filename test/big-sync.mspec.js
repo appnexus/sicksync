@@ -5,41 +5,42 @@ var expect = require('chai').expect,
     bigSync = rewire('../lib/big-sync');
 
 var mockConfig = {
+    username: 'joel',
     excludes: ['one', 'two', 'three'],
     sourceLocation: '/some/file/path',
     hostname: 'myCoolHost',
     destinationLocation: '/some/where/out/there'
 };
 
-var debugConfig = _.merge({}, mockConfig, { debug: true });
+var rsyncSpies = {
+    shell: sinon.stub().returnsThis(),
+    flags: sinon.stub().returnsThis(),
+    exclude: sinon.stub().returnsThis(),
+    source: sinon.stub().returnsThis(),
+    destination: sinon.stub().returnsThis(),
+    output: sinon.stub().returnsThis(),
+    set: sinon.stub().returnsThis(),
+    progress: sinon.stub().returnsThis(),
+    execute: sinon.stub().callsArg(0),
+    resetAll: function() {
+        _.forIn(rsyncSpies, function(method, key) {
+            if (key !== 'resetAll') method.reset();
+        });
+    }
+};
 
-var rsyncSpies = (function() {
-    function BuildSpies() {}
-
-    BuildSpies.prototype.shell = sinon.stub().returns(BuildSpies.prototype);
-    BuildSpies.prototype.flags = sinon.stub().returns(BuildSpies.prototype);
-    BuildSpies.prototype.exclude = sinon.stub().returns(BuildSpies.prototype);
-    BuildSpies.prototype.source = sinon.stub().returns(BuildSpies.prototype);
-    BuildSpies.prototype.destination = sinon.stub().returns(BuildSpies.prototype);
-    BuildSpies.prototype.output = sinon.stub().returns(BuildSpies.prototype);
-    BuildSpies.prototype.set = sinon.stub().returns(BuildSpies.prototype);
-    BuildSpies.prototype.progress = sinon.stub().returns(BuildSpies.prototype);
-    BuildSpies.prototype.dry = sinon.stub().returns(BuildSpies.prototype);
-    BuildSpies.prototype.execute = function(cb) { cb(); };
-    BuildSpies.prototype.resetAll = function() {
-        BuildSpies.prototype.shell.reset();
-        BuildSpies.prototype.flags.reset();
-        BuildSpies.prototype.exclude.reset();
-        BuildSpies.prototype.source.reset();
-        BuildSpies.prototype.destination.reset();
-        BuildSpies.prototype.set.reset();
-        BuildSpies.prototype.output.reset();
-        BuildSpies.prototype.dry.reset();
-        BuildSpies.prototype.progress.reset();
-    };
-
-    return new BuildSpies();
-})();
+var utilSpy = {
+    log: sinon.spy(),
+    generateLog: sinon.stub().returns(function() { 
+        utilSpy.log.apply(null, arguments); 
+    }),
+    ensureTrailingSlash: sinon.stub().returnsArg(0),
+    resetAll: function() {
+        _.forIn(utilSpy, function(method, key) {
+            if (key !== 'resetAll') method.reset();
+        });
+    }
+};
 
 function RsyncMockConstructor() {
     return rsyncSpies;
@@ -47,41 +48,24 @@ function RsyncMockConstructor() {
 
 describe('bigSync', function() {
     var oldUtil = bigSync.__get__('util');
-    var utilSpy = {
-        log: sinon.spy()
-    };
+    var oldRsync = bigSync.__get__('Rsync');
 
     beforeEach(function() {
+        bigSync.__set__('Rsync', RsyncMockConstructor);
         bigSync.__set__('util', utilSpy);
     });
 
     afterEach(function() {
         bigSync.__set__('util', oldUtil);
+        bigSync.__set__('Rsync', oldRsync);
         rsyncSpies.resetAll();
-        utilSpy.log.reset();
-    });
-
-    it('should be a function', function() {
-        expect(bigSync).to.be.a.function;
-    });
-
-    describe('when config is empty', function() {
-        beforeEach(function() {
-            bigSync.__set__('config', {});
-        });
-
-        it('should log a message to run `sicksync setup`', function() {
-            bigSync();
-            expect(utilSpy.log.lastCall.args[0]).to.contain('sicksync setup');
-        });
+        utilSpy.resetAll();
     });
 
     describe('when executed', function() {
 
         beforeEach(function(done) {
-            bigSync.__set__('Rsync', RsyncMockConstructor);
-            bigSync.__set__('config', mockConfig);
-            bigSync(done);
+            bigSync(mockConfig, done);
         });
 
         it('should set the `shell` property to `ssh`', function() {
@@ -101,7 +85,7 @@ describe('bigSync', function() {
         });
 
         it('should set the `destination` property to match the on one in the config', function() {
-            var destination = mockConfig.hostname + ':' + mockConfig.destinationLocation;
+            var destination = mockConfig.username + '@' + mockConfig.hostname + ':' + mockConfig.destinationLocation;
             expect(destination).to.equal(rsyncSpies.destination.lastCall.args[0]);
         });
 
@@ -111,14 +95,9 @@ describe('bigSync', function() {
     });
 
     describe('optional params', function () {
-        beforeEach(function() {
-            bigSync.__set__('Rsync', RsyncMockConstructor);
-            bigSync.__set__('config', debugConfig);
-        });
-
         describe('when debug is `true`', function () {
             beforeEach(function(done) {
-                bigSync({ debug: true }, done);
+                bigSync(mockConfig, { debug: true }, done);
             });
 
             it('should set the `progress` flag', function() {
@@ -150,17 +129,19 @@ describe('bigSync', function() {
 
         describe('when `isDryRun` is true', function () {
             beforeEach(function(done) {
-                bigSync({ isDryRun: true }, done);
+                bigSync(mockConfig, { dry: true }, done);
             });
 
             it('should set the rsync command to run dry', function() {
-                expect(rsyncSpies.dry.called).to.be.true;
+                expect(rsyncSpies.set.lastCall.args[0]).to.equal('dry-run');
             });
         });
 
         describe('when no callback is handed', function () {
             it('should still function properly', function() {
-                expect(bigSync).to.not.throw(Error);
+                expect(function() {
+                    bigSync(mockConfig);
+                }).to.not.throw(Error);
             });
         });
     });
