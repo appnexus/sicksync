@@ -4,16 +4,13 @@ var expect = require('chai').expect,
     sinon = require('sinon'),
     Client = rewire('../../lib/local/ws-client');
 
-// MOCKS
-var cryptMock = {
-    stringifyAndEncrypt: JSON.stringify,
-    decryptAndParse: JSON.parse
-};
-
-var configMock = {
-    hostname: 'somehost',
+var params = {
     secret: 'keepitsafe',
-    retryOnDisconnect: true
+    prefersEncrypted: false,
+    retryOnDisconnect: true,
+    hostname: 'somehost',
+    websocketPort: 1234,
+    username: 'joel'
 };
 
 var wsMock = {
@@ -35,36 +32,20 @@ var devboxMock = {
 
 var DevboxMock = sinon.stub().returns(devboxMock);
 
-var processMock = {
-    exit: sinon.spy()
-};
-
-var utilMock = {
-    wakeDevBox: sinon.spy(),
-    getConfig: sinon.stub().returns(configMock)
-};
-
-Client.__set__('util', utilMock);
-Client.__set__('crypt', cryptMock);
 Client.__set__('WebSocket', WsMock);
 Client.__set__('RemoteHelper', DevboxMock);
-Client.__set__('process', processMock);
 
 describe('ws-client', function() {
     var ws = null;
 
     beforeEach(function() {
-        ws = new Client({
-            url: 'ws://somewebsocket'
-        });
+        ws = new Client(params);
     });
 
     afterEach(function() {
-        processMock.exit.reset();
         devboxMock.on.reset();
         devboxMock.start.reset();
         wsMock.resetAll();
-        utilMock.wakeDevBox.reset();
     });
 
     describe('connection', function() {
@@ -114,27 +95,20 @@ describe('ws-client', function() {
             wsMock.on.getCall(1).args[1]();
         });
 
-        it('should emit a `disconnected` event', function(done) {
-            ws.on('disconnected', done);
-
-            // Trigger `close`
-            wsMock.on.getCall(1).args[1]();
-        });
-
         it('should attempt to awaken the devbox after the `bigSync` call', function() {
             expect(devboxMock.start.called).to.be.true;
         });
+        
+        it('should emit a `disconnected` event when `retryOnDisconnect` is false', function(done) {
+            wsMock.on.reset();
+            var noRetryParams = _.clone(params);
+            noRetryParams.retryOnDisconnect = false;
 
-        it('when the `retryOnDisconnect` flag is set to `false` should exit the process', function() {
-            ws._config = {
-                hostname: 'somehost',
-                secret: 'keepitsafe',
-                retryOnDisconnect: false
-            };
+            var wsNoRetry = new Client(noRetryParams);
+            wsNoRetry.once('disconnected', done);
 
             // Trigger `close`
             wsMock.on.getCall(1).args[1]();
-            expect(processMock.exit.called).to.be.true;
         });
     });
 
@@ -165,5 +139,4 @@ describe('ws-client', function() {
             expect(devboxMock.on.getCall(1).args[1]).to.be.a('function');
         });
     });
-
 });
