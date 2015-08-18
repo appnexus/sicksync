@@ -62,6 +62,15 @@ describe('local fs-helper', function() {
             expect(watcherMock.lastCall.args[1].followSymlinks).to.equal(config.followSymlinks);
         });
 
+        it('should pass in an empty array of ignores if none are there', function() {
+            var noExcludesConfig = _.clone(config);
+            
+            delete noExcludesConfig.excludes;
+
+            fsHelper = new FSHelper(noExcludesConfig);
+            expect(watcherMock.lastCall.args[1].ignored).to.eql([]);
+        });
+
         describe('#on', function () {
             beforeEach(function () {
                 fsHelper.watch();
@@ -86,6 +95,8 @@ describe('local fs-helper', function() {
             it('should pass along the file contents', function(done) {
                 fsHelper.once('file-change', function(data) {
                     expect(data.contents).to.be.a('string');
+                    expect(data.localpath).to.equal(config.sourceLocation + localPath);
+                    expect(data.relativepath).to.equal(localPath);
                     done();
                 });
                 triggerFsEvent('add', config.sourceLocation + localPath);
@@ -116,11 +127,11 @@ describe('local fs-helper', function() {
 
             it('should emit events when unpaused', function(done) {
                 fsHelper.once('file-change', function(data) {
-                    expect(data.filepath).to.contain(localPath);
+                    expect(data.relativepath).to.contain(localPath);
                     done();
                 });
                 fsHelper.pauseWatch();
-                fsHelper.unpauseWatch();
+                fsHelper.watch();
                 triggerFsEvent('unlink', config.sourceLocation + localPath);
             });
         });

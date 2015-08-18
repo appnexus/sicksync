@@ -1,7 +1,7 @@
 var expect = require('chai').expect,
+    _ = require('lodash'),
     rewire = require('rewire'),
     sinon = require('sinon'),
-    testUtils = require('../utils'),
     Client = rewire('../../lib/local/ws-client');
 
 // MOCKS
@@ -18,7 +18,12 @@ var configMock = {
 
 var wsMock = {
     on: sinon.stub(),
-    send: sinon.stub()
+    send: sinon.stub(),
+    resetAll: function() {
+        _.forIn(wsMock, function(method, key) {
+            if (key !== 'resetAll') method.reset();
+        });
+    }
 };
 
 var WsMock = sinon.stub().returns(wsMock);
@@ -58,7 +63,7 @@ describe('ws-client', function() {
         processMock.exit.reset();
         devboxMock.on.reset();
         devboxMock.start.reset();
-        testUtils.resetSpies(wsMock);
+        wsMock.resetAll();
         utilMock.wakeDevBox.reset();
     });
 

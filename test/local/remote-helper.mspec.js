@@ -1,7 +1,6 @@
 var expect = require('chai').expect,
     sinon = require('sinon'),
     rewire = require('rewire'),
-    testUtils = require('../utils'),
     Helper = rewire('../../lib/local/remote-helper');
 
 var sshMock = {

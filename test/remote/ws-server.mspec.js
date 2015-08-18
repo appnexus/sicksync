@@ -2,7 +2,6 @@ var _ = require('lodash'),
     rewire = require('rewire'),
     sinon = require('sinon'),
     expect = require('chai').expect,
-    utils = require('../utils'),
     WSServer = rewire('../../lib/remote/ws-server');
 
 // Mocks
@@ -15,7 +14,12 @@ var mockConfig = {
 var _wsMock = {
     on: sinon.spy(),
     close: sinon.spy(),
-    send: sinon.spy()
+    send: sinon.spy(),
+    resetAll: function() {
+        _.forIn(_wsMock, function(method, key) {
+            if (key !== 'resetAll') method.reset();
+        });
+    }
 };
 var WebSocketServerMock = function() {
     return {
@@ -31,7 +35,7 @@ describe('ws-server', function() {
 
     afterEach(function() {
         wsOnMock.reset();
-        utils.resetSpies(_wsMock);
+        _wsMock.resetAll();
     });
 
     it('should throw an error when not supplying a `params` object', function() {

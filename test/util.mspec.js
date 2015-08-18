@@ -73,6 +73,12 @@ describe('util', function() {
         });
     });
 
+    describe('#getUpdatePath', function () {
+        it('should contain the update.json file', function() {
+            expect(util.getUpdatePath()).to.contain('update.json');
+        });
+    });
+
     describe('#getId', function() {
         it('should return a string', function() {
             expect(util.getId()).to.be.a('string');
@@ -358,22 +364,29 @@ describe('util', function() {
             consoleMock.log.reset();
         });
 
-        describe('#log', function () {
+        describe('#generateLog', function () {
 
-            it('should log messages to the console', function() {
-                var message = 'hello there!';
+            it('should return a logging function that prepends the project name and hostname', function() {
+                var host = 'myhost';
+                var project = 'myproject';
+                var message = 'wat';
+                util.generateLog(project, host)(message);
 
-                util.log(message);
-
-                expect(consoleMock.log.lastCall.args[1]).to.contain(message);
+                expect(consoleMock.log.lastCall.args[0]).to.contain(project);
+                expect(consoleMock.log.lastCall.args[1]).to.contain(host);
+                expect(consoleMock.log.lastCall.args[2]).to.contain(message);
             });
 
-            it('should pre-pend the hostname to the query', function() {
-                var message = 'hello there!';
+            it('should treat only one argument as the hostname', function() {
+                var host = 'myhost';
+                util.generateLog(host)('wat');
+                expect(consoleMock.log.lastCall.args[1]).to.contain(host);
+            });
 
-                util.log(message);
-
-                expect(consoleMock.log.lastCall.args[0]).to.contain(hostname);
+            it('should log message when no hosts or projects are passed in', function() {
+                var message = 'wat';
+                util.generateLog()(message);
+                expect(consoleMock.log.lastCall.args[2]).to.contain(message);
             });
         });
         
@@ -383,6 +396,30 @@ describe('util', function() {
 
                 expect(consoleMock.log.called).to.be.true;
             });
+        });
+    });
+
+    describe('#shellIntoRemote', function () {
+        var spawnSpy = sinon.spy();
+        var cachedSpawn = util.__get__('spawn');
+
+        beforeEach(function() {
+            util.__set__('spawn', spawnSpy);
+        });
+
+        afterEach(function() {
+            util.__set__('spawn', cachedSpawn);
+            spawnSpy.reset();
+        });
+
+        it('should shell into the remote passed and return', function() {
+            var host = 'myhost';
+            
+            util.shellIntoRemote(host);
+
+            expect(spawnSpy.lastCall.args[0]).to.equal('ssh');
+            expect(spawnSpy.lastCall.args[1][0]).to.equal('-tt');
+            expect(spawnSpy.lastCall.args[1][1]).to.equal(host);
         });
     });
 
