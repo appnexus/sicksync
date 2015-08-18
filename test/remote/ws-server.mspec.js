@@ -5,74 +5,63 @@ var _ = require('lodash'),
     WSServer = rewire('../../lib/remote/ws-server');
 
 // Mocks
-var secret = 'my-secret';
-var wsOnMock = sinon.spy();
-var mockConfig = {
+var mockParams = {
+    encrypt: false,
     hostname: 'coolhost',
     secret: 'valid'
 };
-var _wsMock = {
+
+var wsMock = {
     on: sinon.spy(),
-    close: sinon.spy(),
-    send: sinon.spy(),
     resetAll: function() {
-        _.forIn(_wsMock, function(method, key) {
+        _.forIn(wsMock, function(method, key) {
             if (key !== 'resetAll') method.reset();
         });
     }
 };
+
 var WebSocketServerMock = function() {
-    return {
-        on: wsOnMock
-    };
+    return wsMock;
 };
 
 WSServer.__set__('WebSocketServer', WebSocketServerMock);
-WSServer.__set__('config', mockConfig);
-WSServer.__set__('util', { log: _.noop });
+WSServer.__set__('console', { log: _.noop });
 
 describe('ws-server', function() {
 
     afterEach(function() {
-        wsOnMock.reset();
-        _wsMock.resetAll();
+        wsMock.resetAll();
     });
 
     it('should throw an error when not supplying a `params` object', function() {
         expect(WSServer).to.throw();
     });
 
-    it('should return an `on` method', function() {
-        expect(new WSServer({
-            port: 2001
-        }).on).to.be.a('function');
+    it('should return an event-emitter', function() {
+        expect(new WSServer(mockParams).on).to.be.a('function');
     });
 
     describe('default behaviour', function() {
         var wsserver;
-        var port = 2001;
 
         beforeEach(function() {
-            wsserver = new WSServer({
-                port: port,
-                secret: secret
-            });
+            wsserver = new WSServer(mockParams);
         });
 
         it('should register a `connection` handler', function() {
-            expect(wsOnMock.getCall(0).args[0]).to.equal('connection');
-            expect(wsOnMock.getCall(0).args[1]).to.be.a('function');
+            expect(wsMock.on.getCall(0).args[0]).to.equal('connection');
+            expect(wsMock.on.getCall(0).args[1]).to.be.a('function');
         });
 
         describe('when a client connects', function() {
             beforeEach(function() {
                 // Invoke the `connection` handler
-                wsOnMock.getCall(0).args[1](_wsMock);
+                wsMock.on.getCall(0).args[1](wsMock);
             });
 
             it('should register a `message` handler', function() {
-                expect(_wsMock.on.getCall(0).args[0]).to.equal('message');
-                expect(_wsMock.on.getCall(0).args[1]).to.be.a('function');
+                expect(wsMock.on.getCall(1).args[0]).to.equal('message');
+                expect(wsMock.on.getCall(1).args[1]).to.be.a('function');
             });
 
             it('should emit a connection-closed event when a client disconnects', function(done) {
@@ -80,7 +69,7 @@ describe('ws-server', function() {
                     expect(true).to.be.ok;
                     done();
                 });
-                _wsMock.on.getCall(1).args[1](_wsMock);
+                wsMock.on.getCall(2).args[1]();
             });
 
             describe('when the secret does not match', function () {
@@ -94,17 +83,17 @@ describe('ws-server', function() {
                     wsserver.on('unauthorized', done);
 
                     // Invoke the message handler
-                    _wsMock.on.getCall(0).args[1](JSON.stringify(badMessage));
+                    wsMock.on.getCall(1).args[1](JSON.stringify(badMessage));
                 });
             });
 
             describe('and sends a `file` message', function() {
+                var emittedMessage = null;
                 var fileMessage = {
                     subject: 'file',
                     contents: 'some-contents',
-                    secret: secret
+                    secret: mockParams.secret
                 };
-                var emittedMessage = null;
 
                 beforeEach(function(done) {
                     // Register the file-event
@@ -114,7 +103,7 @@ describe('ws-server', function() {
                     });
 
                     // Invoke the message handler
-                    _wsMock.on.getCall(0).args[1](JSON.stringify(fileMessage));
+                    wsMock.on.getCall(1).args[1](JSON.stringify(fileMessage));
                 });
 
                 afterEach(function() {
