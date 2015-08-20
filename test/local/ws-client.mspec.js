@@ -95,7 +95,7 @@ describe('ws-client', function() {
             wsMock.on.getCall(1).args[1]();
         });
 
-        it('should attempt to awaken the devbox after the `bigSync` call', function() {
+        it('should attempt to re-awaken the devbox if `retryOnDisconnect` is true', function() {
             expect(devboxMock.start.called).to.be.true;
         });
         
