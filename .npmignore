@@ -2,6 +2,7 @@
 test/
 coverage/
 src/
+img/
 
 # Linters/helpers
 .editorconfig
