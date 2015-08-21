@@ -1,4 +1,4 @@
-var _ = require('lodash'),
+let _ = require('lodash'),
     once = require('../local').once;
 
 module.exports = function sicksyncOnceCommand(program, config) {

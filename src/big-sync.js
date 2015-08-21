@@ -1,24 +1,24 @@
-var Rsync = require('rsync'),
+let Rsync = require('rsync'),
     _ = require('lodash'),
     hostname = require('os').hostname(),
     util = require('./util');
 
 module.exports = function bigSync(project) {
-    var log = util.generateLog(project.project, hostname);
+    let log = util.generateLog(project.project, hostname);
 
     function consoleLogFromBuffer(buffer) {
         log(buffer.toString());
     }
 
-    var params = _.isPlainObject(_.get(arguments, 1)) ?
+    let params = _.isPlainObject(_.get(arguments, 1)) ?
         _.get(arguments, 1) :
         {};
 
-    var onComplete = _.isFunction(_.last(arguments)) ?
+    let onComplete = _.isFunction(_.last(arguments)) ?
         _.last(arguments) :
         _.noop;
 
-    var rsync = new Rsync()
+    let rsync = new Rsync()
         .shell('ssh')
         .flags('az')
         .exclude(project.excludes)

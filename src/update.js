@@ -1,4 +1,4 @@
-var _ = require('lodash'),
+let _ = require('lodash'),
     latestVersion = require('latest-version'),
     fs = require('fs-extra'),
     exec = require('child_process').exec,
@@ -17,16 +17,16 @@ var _ = require('lodash'),
 
 module.exports = {
     getLatestVersion: _.partial(latestVersion, 'sicksync'),
-    updateRemote: function(project) {
-        var ssh = util.shellIntoRemote(project.username + '@' + project.hostname);
+    updateRemote (project) {
+        let ssh = util.shellIntoRemote(project.username + '@' + project.hostname);
 
-        var updateRemoteOnce = _.once(function(stdin){
+        let updateRemoteOnce = _.once(function(stdin){
             stdin.write(constants.UPDATE_CMD + '\n');
         });
 
         // Update devbox
         ssh.stdout.on('data', function(data) {
-            var message = data.toString();
+            let message = data.toString();
 
             if (_.contains(message, 'sicksync@')) {
                 console.log(project.hostname, text.UPDATE_SUCCESS);
@@ -43,7 +43,7 @@ module.exports = {
             updateRemoteOnce(ssh.stdin);
         });
     },
-    updateLocal: function() {
+    updateLocal () {
         exec(constants.UPDATE_CMD, function (error, stdout, stderr) {
             if (!!error || _.contains(stderr, 'ERR!')) {
                 return console.log(hostname, text.UPDATE_FAIL, (error || stderr));
@@ -52,7 +52,7 @@ module.exports = {
             console.log(hostname, text.UPDATE_SUCCESS);
         });
     },
-    update: function(config, cmd) {
+    update (config, cmd) {
         if (cmd.check) {
             return this.getLatestVersion(function(err, version) {
                 if (err) return;
@@ -65,7 +65,7 @@ module.exports = {
 
         this.updateLocal();
     },
-    notify: function() {
+    notify () {
         if (updateInfo.version !== packageJson.version) {
             return console.log(
                 text.UPDATE_AVAILABLE, '\n',
@@ -73,7 +73,7 @@ module.exports = {
                 'Latest version:', updateInfo.version);
         }
     },
-    check: function() {
+    check () {
         if (now - updateInfo.lastChecked >= constants.UPDATE_INTERVAL) {
             this.getLatestVersion(function (err, version) {
                 if (err) return;

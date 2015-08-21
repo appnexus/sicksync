@@ -1,4 +1,4 @@
-var _ = require('lodash'),
+let _ = require('lodash'),
     fs = require('fs'),
     watcher = require('chokidar').watch,
     EventEmitter = require('events').EventEmitter,
@@ -35,7 +35,7 @@ class FSHelper extends EventEmitter {
     }
 
     onFileChange (evt, sourcepath) {
-        var relativepath = sourcepath.split(this._baseDir)[1],
+        let relativepath = sourcepath.split(this._baseDir)[1],
             localpath = this._sourceLocation + relativepath,
             fileContents = null;
 

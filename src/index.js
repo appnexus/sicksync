@@ -1,9 +1,9 @@
-var program = require('commander'),
+let program = require('commander'),
     packageJson = require('../package.json'),
     updates = require('./update'),
     util = require('./util');
 
-var config = util.getConfig();
+let config = util.getConfig();
 
 require('./commands')(program, config);
 

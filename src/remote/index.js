@@ -1,4 +1,4 @@
-var _ = require('lodash'),
+let _ = require('lodash'),
     FSHelper = require('./fs-helper'),
     Server = require('./ws-server'),
     text = require('../../conf/text'),
@@ -10,18 +10,18 @@ module.exports = function startRemote(opts) {
     if (!_.isNumber(opts.port)) return console.warn(text.REMOTE_MISSING_PORT);
     if (!_.isString(opts.secret)) return console.warn(text.REMOTE_MISSING_SECRET);
 
-    var log = _.partial(console.log.bind(console), opts.secret);
-    var receivedLog = _.partial(log, '<');
-    var errorLog = _.partial(log, 'ERR');
+    let log = _.partial(console.log.bind(console), opts.secret);
+    let receivedLog = _.partial(log, '<');
+    let errorLog = _.partial(log, 'ERR');
 
-    var wss = new Server({
+    let wss = new Server({
         port: opts.port,
         secret: opts.secret,
         debug: opts.debug,
         encrypt: opts.encrypt
     });
 
-    var fsHelper = new FSHelper();
+    let fsHelper = new FSHelper();
 
     // WS events
     wss.on(wsEvents.UNAUTHORIZED, function() {

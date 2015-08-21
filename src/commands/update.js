@@ -1,4 +1,4 @@
-var _ = require('lodash'),
+let _ = require('lodash'),
     update = require('../update');
 
 module.exports = function sicksyncOnceCommand(program, config) {

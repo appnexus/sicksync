@@ -1,4 +1,4 @@
-var _ = require('lodash'),
+let _ = require('lodash'),
     local = require('../local').start;
 
 module.exports = function sicksyncStartCommand(program, config) {

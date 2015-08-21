@@ -1,4 +1,4 @@
-var WebSocketServer = require('ws').Server,
+let WebSocketServer = require('ws').Server,
     EventEmitter = require('events').EventEmitter,
     Crypt = require('../crypt'),
     text = require('../../conf/text'),
@@ -25,7 +25,7 @@ class WSServer extends EventEmitter {
     }
 
     handleMessage (message) {
-        var parsedMessage = this._crypt.decryptAndParse(message, this._encrypt);
+        let parsedMessage = this._crypt.decryptAndParse(message, this._encrypt);
 
         if (parsedMessage.secret !== this._secret) {
             return this.emit(wsEvents.UNAUTHORIZED);

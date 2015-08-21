@@ -1,4 +1,4 @@
-var _ = require('lodash'),
+let _ = require('lodash'),
     fs = require('fs-extra'),
     child = require('child_process'),
     minimatch = require('minimatch'),
@@ -12,28 +12,28 @@ var _ = require('lodash'),
 module.exports = {
 
     // Returns the ~ directory plus trailing `/`
-    getHome: function() {
+    getHome() {
         return (process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE);
     },
 
     // Returns the path to the sicksync dir
-    getSicksyncDir: function() {
+    getSicksyncDir() {
         return [this.getHome(), constants.SICKSYNC_DIR].join('/');
     },
 
     // Return the path to the update json
-    getUpdatePath: function() {
+    getUpdatePath() {
         return this.getSicksyncDir() + '/' + constants.UPDATE_FILE;
     },
 
     // Returns the path the the config file
-    getConfigPath: function() {
+    getConfigPath() {
         return this.getSicksyncDir() + '/' + constants.CONFIG_FILE;
     },
 
     // Returns the config object if it exists, if not an empty object. Loads/saves from cache where possible
-    getConfig: function() {
-        var config = {},
+    getConfig() {
+        let config = {},
             configPath = this.getConfigPath();
 
         if (fs.existsSync(configPath)) {
@@ -45,21 +45,21 @@ module.exports = {
     },
 
     // Randomly generate a unique ID
-    getId: function() {
+    getId() {
         return Math.random().toString(36).substr(2, 9) + Date.now();
     },
 
     // Write out the config file with a provided <obj>
-    writeConfig: function(configFile) {
-        var configPath = this.getConfigPath();
+    writeConfig(configFile) {
+        let configPath = this.getConfigPath();
 
         fs.outputFileSync(configPath, JSON.stringify(configFile, null, 4));
         console.log(text.CONFIG_SAVED);
     },
 
     // Given a file path, check to see if it's in the excludes array
-    isExcluded: function(filepath, excludes) {
-        var result = false;
+    isExcluded(filepath, excludes) {
+        let result = false;
 
         excludes.forEach(function(exclude) {
             if (minimatch(filepath, exclude)) result = true;
@@ -69,8 +69,8 @@ module.exports = {
     },
 
     // Log messages with Hostname prepended
-    generateLog: function(projectName, hostname) {
-        var args = _.slice(arguments);
+    generateLog(projectName, hostname) {
+        let args = _.slice(arguments);
 
         // If only one argument it's the hostname
         if (args.length === 1) {
@@ -79,7 +79,7 @@ module.exports = {
         }
 
         return function log() {
-            var args = [
+            let args = [
                 projectName ? chalk.blue('[' + projectName + ']') : '',
                 hostname ? chalk.green('[' + hostname + ']') : ''
             ].concat([].slice.call(arguments));
@@ -97,13 +97,13 @@ module.exports = {
     // The basic idea is that we want to limit calls to function to a
     // certain # of times in a given time-frame. If it breaks over that,
     // then we fallback to another function, and halt previous desired calls
-    rebounce: function(primaryFn, secondaryFn, fallOverAmount, coolDown) {
-        var timesCalled = 0;
-        var timeOutIds = [];
-        var fallbackCalled = false;
+    rebounce(primaryFn, secondaryFn, fallOverAmount, coolDown) {
+        let timesCalled = 0;
+        let timeOutIds = [];
+        let fallbackCalled = false;
 
         return function rebounced() {
-            var args = arguments;
+            let args = arguments;
             timesCalled++;
 
             timeOutIds.push(setTimeout(function() {
@@ -126,14 +126,14 @@ module.exports = {
             }
         };
     },
-    ensureTrailingSlash: function(path) {
+    ensureTrailingSlash(path) {
         return (path.substring(path.length - 1) === '/') ? path : path + '/';
     },
-    open: function(parameter) {
+    open(parameter) {
         return exec('open ' + parameter);
     },
-    toBoolean: function(param) {
-        var lowerParam = param.toLowerCase();
+    toBoolean(param) {
+        let lowerParam = param.toLowerCase();
         if (lowerParam.indexOf('y') > -1) {
             return true;
         }
@@ -148,27 +148,27 @@ module.exports = {
 
         return false;
     },
-    setupPrompter: function(prompt) {
+    setupPrompter(prompt) {
         prompt.message = '';
         prompt.delimiter = '';
         prompt.start();
 
         return prompt;
     },
-    shellIntoRemote: function(remote) {
+    shellIntoRemote(remote) {
         return spawn('ssh',[
             '-tt',
             remote
         ]);
     },
-    printLogo: function() {
+    printLogo() {
         console.log(chalk.blue(fs.readFileSync(path.resolve(__dirname, '../conf/logo.txt')).toString()));
     },
-    uniqInstance: function(tokenPath, Constructor) {
-        var instances = {};
+    uniqInstance(tokenPath, Constructor) {
+        let instances = {};
 
         return function(args) {
-            var token = _.get(args, tokenPath, null);
+            let token = _.get(args, tokenPath, null);
 
             if (_.get(instances, token, null)) {
                 return instances[token];

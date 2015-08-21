@@ -1,4 +1,4 @@
-var _ = require('lodash'),
+let _ = require('lodash'),
     path = require('path'),
     prompter = require('prompt'),
     chalk = require('chalk'),
@@ -13,8 +13,8 @@ function printProjectInfo (project) {
 }
 
 module.exports = {
-    add: function (config) {
-        var questions = {
+    add (config) {
+        let questions = {
             project: {
                 description: 'What would you like to name this project?',
                 required: true,
@@ -91,7 +91,7 @@ module.exports = {
         }, function sicksyncWriteResults(err, result) {
             if (err) return console.log('\nLooks we had a problem setting up: ' + err);
 
-            var project = result.project;
+            let project = result.project;
 
             if (!config.prefersEncrypted) {
                 config.prefersEncrypted = result.prefersEncrypted;
@@ -116,7 +116,7 @@ module.exports = {
             util.writeConfig(config);
         });
     },
-    remove: function(config, projects) {
+    remove (config, projects) {
         _.each(projects, function(project) {
             if (_.isUndefined(config.projects[project])) {
                 console.log(chalk.red('Couldn\'t remove project:'), project, 'since it doesn\'t exist in your config', '\n');
@@ -132,7 +132,7 @@ module.exports = {
 
         util.writeConfig(config);
     },
-    info: function(config, projects) {
+    info (config, projects) {
         if (_.isUndefined(config.projects) || _.isEmpty(config.projects)) {
             console.log('No projects! Add some by running', chalk.green('`sicksync add-project`'));
         }

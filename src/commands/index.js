@@ -1,4 +1,4 @@
-var normalizedPath = require('path').join(__dirname);
+let normalizedPath = require('path').join(__dirname);
 
 module.exports = function(program, config) {
     require('fs').readdirSync(normalizedPath).forEach(function(file) {

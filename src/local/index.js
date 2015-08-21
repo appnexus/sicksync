@@ -3,7 +3,7 @@
  *
  *  Entry point into the client portion of sicksync
  */
-var _ = require('lodash'),
+let _ = require('lodash'),
     hostname = require('os').hostname(),
     constants = require('../../conf/constants'),
     text = require('../../conf/text'),
@@ -36,20 +36,20 @@ function start(projects, opts, config) {
 }
 
 function startProject (project, config) {
-    var projectConf = config.projects[project];
-    var localLog = util.generateLog(projectConf.project, hostname);
-    var remoteLog = util.generateLog(projectConf.project, projectConf.hostname);
-    var sourceLocation = util.ensureTrailingSlash(projectConf.sourceLocation);
-    var destinationLocation = util.ensureTrailingSlash(projectConf.destinationLocation);
-    var secret = util.getId();
+    let projectConf = config.projects[project];
+    let localLog = util.generateLog(projectConf.project, hostname);
+    let remoteLog = util.generateLog(projectConf.project, projectConf.hostname);
+    let sourceLocation = util.ensureTrailingSlash(projectConf.sourceLocation);
+    let destinationLocation = util.ensureTrailingSlash(projectConf.destinationLocation);
+    let secret = util.getId();
 
-    var fsHelper = new FSHelper({
+    let fsHelper = new FSHelper({
         sourceLocation: sourceLocation,
         excludes: projectConf.excludes,
         followSymlinks: projectConf.followSymlinks
     });
 
-    var wsClient = new WebSocketClient({
+    let wsClient = new WebSocketClient({
         username: projectConf.username,
         hostname: projectConf.hostname,
         websocketPort: projectConf.websocketPort,
@@ -117,8 +117,8 @@ function once(projects, opts, config) {
         if (_.isEmpty(config.projects[project])) {
             return console.log(text.PROJECT_NOT_FOUND, project);
         }
-        var projectConf = config.projects[project];
-        var localLog = util.generateLog(projectConf.project, hostname);
+        let projectConf = config.projects[project];
+        let localLog = util.generateLog(projectConf.project, hostname);
         
         localLog(text.SYNC_ON_ONCE);
 
