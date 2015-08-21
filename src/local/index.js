@@ -129,7 +129,4 @@ function once(projects, opts, config) {
     });
 }
 
-module.exports = {
-    start: start,
-    once: once
-};
+export default { start, once };
