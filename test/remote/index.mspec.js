@@ -1,7 +1,8 @@
 var _ = require('lodash'),
     sinon = require('sinon'),
     expect = require('chai').expect,
-    remote = require('../../src/remote');
+    rewire = require('rewire'),
+    remote = rewire('../../src/remote');
 
 // Test Data
 var serverOpts = {
@@ -33,10 +34,12 @@ var fsMockAPI = {
 var FSMock = sinon.stub().returns(fsMockAPI);
 
 // Mock Injection
-remote.__set__('Server', ServerMock);
-remote.__set__('FSHelper', FSMock);
-remote.__set__('console', consoleMock);
-remote.__set__('process', processMock);
+remote.__set__({
+    Server: ServerMock,
+    FSHelper: FSMock,
+    console: consoleMock,
+    process: processMock
+});
 
 // Helpers
 function resetMock(method) {

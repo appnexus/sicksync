@@ -1,7 +1,8 @@
 var _ = require('lodash'),
     expect = require('chai').expect,
+    rewire = require('rewire'),
     sinon = require('sinon'),
-    FSHelper = require('../../src/local/fs-helper'),
+    FSHelper = rewire('../../src/local/fs-helper'),
     config = {
         sourceLocation: 'my/home/',
         destinationLocation: 'my/remote/box/',

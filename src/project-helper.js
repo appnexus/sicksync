@@ -1,12 +1,9 @@
-import _ from 'lodash';
-import path from 'path';
-import prompter from 'prompt';
-import chalk from 'chalk';
-import util from './util';
-
-let sicksyncSetup = util.setupPrompter(prompter),
-    console = console,
-    process = process;
+let _ = require('lodash'),
+    path = require('path'),
+    prompter = require('prompt'),
+    chalk = require('chalk'),
+    util = require('./util'),
+    sicksyncSetup = util.setupPrompter(prompter);
 
 function printProjectInfo (project) {
     console.log(chalk.green(project.project));
@@ -15,7 +12,7 @@ function printProjectInfo (project) {
     });
 }
 
-export default {
+module.exports = {
     add (config) {
         let questions = {
             project: {

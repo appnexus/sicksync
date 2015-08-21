@@ -4,8 +4,7 @@
   "description": "Don’t accept the available as the preferable. Go extra mile with extra speed.",
   "main": "src/index.js",
   "scripts": {
-    "cover": "NODE_ENV=test istanbul cover _mocha -- --check-leaks test/*.mspec.js test/**/*.mspec.js --compilers js:babel/register",
-    "test": "NODE_ENV=test _mocha --check-leaks test/*.mspec.js test/**/*.mspec.js --compilers js:babel/register",
+    "test": "istanbul cover _mocha -- --check-leaks test/*.mspec.js test/**/*.mspec.js --compilers js:babel/register",
     "tdd": "npm test -- -w",
     "prepublish": "rm -rf ./dist && babel src --out-dir dist"
   },

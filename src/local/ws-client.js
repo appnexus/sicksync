@@ -1,11 +1,10 @@
-import _ from 'lodash';
-import WebSocket from 'ws';
-import { EventEmitter } from 'events';
-import RemoteHelper from './remote-helper';
-import Crypt from '../crypt';
-import eventsConf from '../../conf/events';
-    
-let wsEvents = eventsConf.WS.LOCAL,
+let _ = require('lodash'),
+    WebSocket = require('ws'),
+    EventEmitter = require('events').EventEmitter,
+    RemoteHelper = require('./remote-helper'),
+    Crypt = require('../crypt'),
+    eventsConf = require('../../conf/events'),
+    wsEvents = eventsConf.WS.LOCAL,
     remoteEvents = eventsConf.REMOTE;
 
 class WSClient extends EventEmitter {
@@ -67,4 +66,4 @@ class WSClient extends EventEmitter {
     }
 }
 
-export default WSClient;
+module.exports = WSClient;

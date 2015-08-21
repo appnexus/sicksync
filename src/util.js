@@ -1,18 +1,15 @@
-import _ from 'lodash';
-import fs from 'fs-extra';
-import child from 'child_process';
-import minimatch from 'minimatch';
-import chalk from 'chalk';
-import path from 'path';
-import constants from '../conf/constants';
-import text from '../conf/text';
+let _ = require('lodash'),
+    fs = require('fs-extra'),
+    child = require('child_process'),
+    minimatch = require('minimatch'),
+    chalk = require('chalk'),
+    path = require('path'),
+    constants = require('../conf/constants'),
+    text = require('../conf/text'),
+    exec = child.exec,
+    spawn = child.spawn;
 
-let exec = child.exec,
-    spawn = child.spawn,
-    console = console,
-    process = process;
-
-export default {
+module.exports = {
 
     // Returns the ~ directory plus trailing `/`
     getHome() {

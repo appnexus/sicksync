@@ -1,23 +1,22 @@
 var expect = require('chai').expect,
+    rewire = require('rewire'),
     sinon = require('sinon'),
-    util = require('../src/util');
-
-// Mocks
-var consoleMock = { log: sinon.spy() };
-var mockProcess = {
-    env: {}
-};
-
-util.__set__('console', consoleMock);
-util.__set__('process', mockProcess);
+    util = rewire('../src/util');
 
 describe('util', function() {
-
-    afterEach(function() {
-        consoleMock.log.reset();
-    })
-
     describe('#getHome', function() {
+        var oldProcess = util.__get__('process');
+        var mockProcess = {
+            env: {}
+        };
+
+        afterEach(function() {
+            delete mockProcess.env.HOME;
+            delete mockProcess.env.HOMEPATH;
+            delete mockProcess.env.USERPROFILE;
+            util.__set__('process', oldProcess);
+        });
+
         it('should return process.env.HOME if it exists', function() {
             mockProcess.env.HOME = 'where the heart is';
             util.__set__('process', mockProcess);
@@ -51,8 +50,24 @@ describe('util', function() {
     });
 
     describe('#getConfig', function() {
+        var constants = util.__get__('constants');
+        var constantsMock = {
+            CONFIG_FILE: 'iShouldntBeHereHopefully'
+        };
+        var oldFs = util.__get__('fs');
+
+        afterEach(function() {
+            util.__set__('fs', oldFs);
+            util.__set__('constants', constants);
+        });
+
         it('should return an object', function() {
             expect(util.getConfig()).to.be.an('object');
+        });
+
+        it('should return an empty object if the config doesn\'t exist', function() {
+            util.__set__('constants', constantsMock);
+            expect(util.getConfig()).to.eql({});
         });
     });
 
@@ -335,6 +350,18 @@ describe('util', function() {
     });
 
     describe('logging utils', function () {
+        var cachedConsole = console;
+        var consoleMock = { log: sinon.spy() };
+
+        beforeEach(function () {
+            util.__set__('console', consoleMock);
+        });
+
+        afterEach(function() {
+            util.__set__('console', cachedConsole);
+            consoleMock.log.reset();
+        });
+
         describe('#generateLog', function () {
 
             it('should return a logging function that prepends the project name and hostname', function() {
