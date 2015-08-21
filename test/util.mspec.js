@@ -1,5 +1,4 @@
 var expect = require('chai').expect,
-    hostname = require('os').hostname(),
     rewire = require('rewire'),
     sinon = require('sinon'),
     util = rewire('../src/util');
@@ -59,7 +58,6 @@ describe('util', function() {
 
         afterEach(function() {
             util.__set__('fs', oldFs);
-            util.__set__('configCache', null);
             util.__set__('constants', constants);
         });
 

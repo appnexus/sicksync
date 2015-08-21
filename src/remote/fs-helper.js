@@ -1,5 +1,4 @@
 var fs = require('fs-extra'),
-    nodeUtil = require('util'),
     EventEmitter = require('events').EventEmitter,
     untildify = require('untildify'),
     fsEvents = require('../../conf/events').FS.REMOTE;

@@ -7,8 +7,7 @@ var _ = require('lodash'),
     constants = require('../conf/constants'),
     text = require('../conf/text'),
     exec = child.exec,
-    spawn = child.spawn,
-    configCache = null;
+    spawn = child.spawn;
 
 module.exports = {
 
@@ -38,7 +37,7 @@ module.exports = {
             configPath = this.getConfigPath();
 
         if (fs.existsSync(configPath)) {
-            config = configCache = require(configPath);
+            config = require(configPath);
         }
 
         // Return a cloned copy of config to avoid indirect changes
