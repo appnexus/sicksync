@@ -1,7 +1,7 @@
-let crypto = require('crypto'),
-    constants = require('../conf/constants');
+import crypto from 'crypto';
+import constants from '../conf/constants';
 
-module.exports = function CryptHelper(secret) {
+export default function CryptHelper(secret) {
     return {
         _crypt (text, isEncrypt) {
             let cryptMethod = isEncrypt ? 'createCipher' : 'createDecipher';

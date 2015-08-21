@@ -1,9 +1,8 @@
 var _ = require('lodash'),
     expect = require('chai').expect,
-    rewire = require('rewire'),
     sinon = require('sinon'),
     util = require('../../src/util'),
-    entry = rewire('../../src/local');
+    entry = require('../../src/local');
 
 // Test Data
 var testConfig = {
@@ -81,14 +80,12 @@ function triggerBigSyncComplete() {
 }
 
 // Inject Mocks
-entry.__set__({
-    bigSync: bigSyncMock,
-    FSHelper: FSClientMock,
-    WebSocketClient: WSClientMock,
-    util: utilMock,
-    console: consoleSpy,
-    process: processMock
-}); 
+entry.__set__('bigSync', bigSyncMock);
+entry.__set__('FS', FSClientMock);
+entry.__set__('WS', WSClientMock);
+entry.__set__('util', utilMock);
+entry.__set__('console', consoleSpy);
+entry.__set__('process', processMock);
 
 describe('Client Entry (index.js)', function () {
     afterEach(function() {

@@ -1,8 +1,7 @@
 var _ = require('lodash'),
-    rewire = require('rewire'),
     sinon = require('sinon'),
     expect = require('chai').expect,
-    WSServer = rewire('../../src/remote/ws-server');
+    WSServer = require('../../src/remote/ws-server');
 
 // Mocks
 var mockParams = {

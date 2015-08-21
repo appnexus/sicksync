@@ -1,8 +1,7 @@
 var expect = require('chai').expect,
     _ = require('lodash'),
-    rewire = require('rewire'),
     sinon = require('sinon'),
-    bigSync = rewire('../src/big-sync');
+    bigSync = require('../src/big-sync');
 
 var mockConfig = {
     username: 'joel',

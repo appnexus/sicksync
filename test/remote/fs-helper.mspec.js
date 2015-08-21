@@ -1,9 +1,8 @@
 var _ = require('lodash'),
     sinon = require('sinon'),
     expect = require('chai').expect,
-    rewire = require('rewire'),
     util = require('../../src/util'),
-    FSHelper = rewire('../../src/remote/fs-helper');
+    FSHelper = require('../../src/remote/fs-helper');
 
 // Mocks
 var fsMock = {
@@ -13,9 +12,7 @@ var fsMock = {
 };
 
 // Inject Mocks
-FSHelper.__set__({
-    fs: fsMock
-});
+FSHelper.__set__('fs', fsMock);
 
 var addTest = {
     destinationpath: '~/Projects',

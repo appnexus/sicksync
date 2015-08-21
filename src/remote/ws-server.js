@@ -1,8 +1,11 @@
-let WebSocketServer = require('ws').Server,
-    EventEmitter = require('events').EventEmitter,
-    Crypt = require('../crypt'),
-    text = require('../../conf/text'),
-    wsEvents = require('../../conf/events').WS.REMOTE;
+import { Server as WebSocketServer } from 'ws';
+import { EventEmitter } from 'events';
+import Crypt from '../crypt';
+import text from '../../conf/text';
+import eventsConf from '../../conf/events';
+
+let wsEvents = eventsConf.WS.REMOTE,
+    console = console;
 
 class WSServer extends EventEmitter {
     constructor (params) {
@@ -42,4 +45,4 @@ class WSServer extends EventEmitter {
     }
 }
 
-module.exports = WSServer;
+export default WSServer;

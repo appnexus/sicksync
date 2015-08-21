@@ -1,8 +1,8 @@
-let _ = require('lodash'),
-    EventEmitter = require('events').EventEmitter,
-    util = require('../util'),
-    remoteEvents = require('../../conf/events').REMOTE,
-    readyFlag = require('../../conf/text').SERVER_ON_READY;
+import _ from 'lodash';
+import { EventEmitter } from 'events';
+import util from '../util';
+import { REMOTE as remoteEvents } from '../../conf/events';
+import { SERVER_ON_READY as readyFlag } from '../../conf/text';
 
 class RemoteHelper extends EventEmitter {
     constructor (params) {
@@ -59,4 +59,4 @@ class RemoteHelper extends EventEmitter {
     }
 }
 
-module.exports = RemoteHelper;
+export default RemoteHelper;

@@ -1,13 +1,14 @@
-let _ = require('lodash'),
-    fs = require('fs'),
-    watcher = require('chokidar').watch,
-    EventEmitter = require('events').EventEmitter,
-    path = require('path'),
-    untildify = require('untildify'),
-    util = require('../util'),
-    constants = require('../../conf/constants'),
-    eventsConf = require('../../conf/events'),
-    fsEvents = eventsConf.FS.LOCAL;
+import _ from 'lodash';
+import fs from 'fs';
+import { watch as watcher } from 'chokidar';
+import { EventEmitter } from 'events';
+import path from 'path';
+import untildify from 'untildify';
+import util from '../util';
+import constants from '../../conf/constants';
+import eventsConf from '../../conf/events';
+
+let fsEvents = eventsConf.FS.LOCAL;
 
 class FSHelper extends EventEmitter {
     constructor(params) {
@@ -59,4 +60,4 @@ class FSHelper extends EventEmitter {
     }
 }
 
-module.exports = FSHelper;
+export default FSHelper;

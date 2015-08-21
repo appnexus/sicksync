@@ -3,17 +3,23 @@
  *
  *  Entry point into the client portion of sicksync
  */
-let _ = require('lodash'),
-    hostname = require('os').hostname(),
-    constants = require('../../conf/constants'),
-    text = require('../../conf/text'),
-    eventsConf = require('../../conf/events'),
-    util = require('../util'),
-    FSHelper = util.uniqInstance(constants.FS_TOKEN, require('./fs-helper')),
-    WebSocketClient = util.uniqInstance(constants.WS_TOKEN, require('./ws-client')),
-    bigSync = require('../big-sync'),
-    wsEvents = eventsConf.WS.LOCAL,
-    fsEvents = eventsConf.FS.LOCAL;
+import _ from 'lodash';
+import os from 'os';
+import constants from '../../conf/constants';
+import text from '../../conf/text';
+import eventsConf from '../../conf/events';
+import util from '../util';
+import FS from './fs-helper';
+import WS from './ws-client';
+import bigSync from '../big-sync';
+
+let wsEvents = eventsConf.WS.LOCAL,
+    fsEvents = eventsConf.FS.LOCAL,
+    hostname = os.hostname(),
+    FSHelper = util.uniqInstance(constants.FS_TOKEN, FS),
+    WebSocketClient = util.uniqInstance(constants.WS_TOKEN, WS),
+    console = console,
+    process = process;
 
 function triggerBigSync(project, params, cb) {
     bigSync({

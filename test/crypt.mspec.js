@@ -1,6 +1,5 @@
 var expect = require('chai').expect,
-    rewire = require('rewire'),
-    Crypt = rewire('../src/crypt'),
+    Crypt = require('../src/crypt'),
     crypt = new Crypt('somesecret');
 
 describe('crypt', function() {

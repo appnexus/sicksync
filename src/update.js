@@ -1,13 +1,16 @@
-let _ = require('lodash'),
-    latestVersion = require('latest-version'),
-    fs = require('fs-extra'),
-    exec = require('child_process').exec,
-    hostname = require('os').hostname(),
-    util = require('./util'),
-    packageJson = require('../package.json'),
-    constants = require('../conf/constants'),
-    text = require('../conf/text'),
-    now = Date.now(),
+import _ from 'lodash';
+import latestVersion from 'latest-version';
+import fs from 'fs-extra';
+import { exec } from 'child_process';
+import { hostname as getHostname } from 'os';
+import util from './util';
+import packageJson from '../package.json';
+import constants from '../conf/constants';
+import text from '../conf/text';
+
+let now = Date.now(),
+    hostname = getHostname(),
+    console = console,
     updateInfo = fs.existsSync(util.getUpdatePath()) ?
         require(util.getUpdatePath()) :
         {
@@ -15,7 +18,7 @@ let _ = require('lodash'),
             version: packageJson.version
         };
 
-module.exports = {
+export default {
     getLatestVersion: _.partial(latestVersion, 'sicksync'),
     updateRemote (project) {
         let ssh = util.shellIntoRemote(project.username + '@' + project.hostname);

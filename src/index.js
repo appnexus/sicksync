@@ -1,13 +1,13 @@
-let program = require('commander'),
-    packageJson = require('../package.json'),
-    updates = require('./update'),
-    util = require('./util');
+import program from 'commander';
+import packageJson from '../package.json';
+import updates from './update';
+import util from './util';
 
 let config = util.getConfig();
 
 require('./commands')(program, config);
 
-module.exports = function() {
+export default function SicksyncProgram() {
     program
         .version(packageJson.version)
         .usage('<command> [options]')
