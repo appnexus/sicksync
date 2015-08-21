@@ -2,7 +2,7 @@ module.exports = {
     FS: {
         LOCAL: {
             CHANGE: 'file-change',
-            LARGE: 'large-change',
+            LARGE: 'large-change'
         },
         REMOTE: {
             ADD_FILE: 'add-file',

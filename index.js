@@ -1,8 +1,7 @@
 var program = require('commander'),
-    package = require('./package.json'),
+    packageJson = require('./packageJson.json'),
     updates = require('./lib/update'),
-    util = require('./lib/util'),
-    start = require('./lib/local').start;
+    util = require('./lib/util');
 
 var config = util.getConfig();
 
@@ -10,11 +9,11 @@ require('./commands')(program, config);
 
 module.exports = function() {
     program
-        .version(package.version)
+        .version(packageJson.version)
         .usage('<command> [options]')
         .parse(process.argv);
 
-    // Run `sicksync start` if no other command
+    // Run help if no command is provided
     if (!process.argv.slice(2).length) {
         util.printLogo();
         program.outputHelp();

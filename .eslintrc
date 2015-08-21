@@ -1,0 +1,15 @@
+{
+  "ecmaFeatures": {
+    "modules": true
+  },
+  "env": {
+    "node": true,
+    "es6": true,
+    "mocha": true
+  },
+  "rules": {
+    "quotes": [1, "single"],
+    "comma-dangle": [1, "never"]
+  },
+  "plugins": []
+}
