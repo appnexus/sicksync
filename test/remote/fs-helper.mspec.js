@@ -2,8 +2,8 @@ var _ = require('lodash'),
     sinon = require('sinon'),
     expect = require('chai').expect,
     rewire = require('rewire'),
-    util = require('../../lib/util'),
-    FSHelper = rewire('../../lib/remote/fs-helper');
+    util = require('../../src/util'),
+    FSHelper = rewire('../../src/remote/fs-helper');
 
 // Mocks
 var fsMock = {

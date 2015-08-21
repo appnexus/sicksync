@@ -2,8 +2,8 @@ var _ = require('lodash'),
     expect = require('chai').expect,
     rewire = require('rewire'),
     sinon = require('sinon'),
-    util = require('../../lib/util'),
-    entry = rewire('../../lib/local');
+    util = require('../../src/util'),
+    entry = rewire('../../src/local');
 
 // Test Data
 var testConfig = {

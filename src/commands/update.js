@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-    update = require('../lib/update');
+    update = require('../update');
 
 module.exports = function sicksyncOnceCommand(program, config) {
     program

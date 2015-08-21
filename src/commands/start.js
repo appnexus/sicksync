@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-    local = require('../lib/local').start;
+    local = require('../local').start;
 
 module.exports = function sicksyncStartCommand(program, config) {
     program

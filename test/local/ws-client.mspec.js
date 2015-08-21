@@ -2,7 +2,7 @@ var expect = require('chai').expect,
     _ = require('lodash'),
     rewire = require('rewire'),
     sinon = require('sinon'),
-    Client = rewire('../../lib/local/ws-client');
+    Client = rewire('../../src/local/ws-client');
 
 var params = {
     secret: 'keepitsafe',

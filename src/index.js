@@ -1,7 +1,7 @@
 var program = require('commander'),
-    packageJson = require('./packageJson.json'),
-    updates = require('./lib/update'),
-    util = require('./lib/util');
+    packageJson = require('../package.json'),
+    updates = require('./update'),
+    util = require('./util');
 
 var config = util.getConfig();
 

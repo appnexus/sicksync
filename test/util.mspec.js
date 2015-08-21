@@ -2,7 +2,7 @@ var expect = require('chai').expect,
     hostname = require('os').hostname(),
     rewire = require('rewire'),
     sinon = require('sinon'),
-    util = rewire('../lib/util');
+    util = rewire('../src/util');
 
 describe('util', function() {
     describe('#getHome', function() {

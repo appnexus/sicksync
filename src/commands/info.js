@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-    projectHelper = require('../lib/project-helper');
+    projectHelper = require('../project-helper');
 
 module.exports = function sicksyncOnceCommand(program, config) {
     program

@@ -2,7 +2,7 @@
   "name": "sicksync",
   "version": "1.2.0",
   "description": "Don’t accept the available as the preferable. Go extra mile with extra speed.",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "istanbul cover _mocha -- --check-leaks test/*.mspec.js test/**/*.mspec.js",
     "tdd": "npm test -- -w"

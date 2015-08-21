@@ -2,7 +2,7 @@ var _ = require('lodash'),
     sinon = require('sinon'),
     expect = require('chai').expect,
     rewire = require('rewire'),
-    remote = rewire('../../lib/remote');
+    remote = rewire('../../src/remote');
 
 // Test Data
 var serverOpts = {

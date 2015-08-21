@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-    once = require('../lib/local').once;
+    once = require('../local').once;
 
 module.exports = function sicksyncOnceCommand(program, config) {
     program

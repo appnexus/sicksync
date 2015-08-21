@@ -3,7 +3,7 @@ var expect = require('chai').expect,
     sinon = require('sinon'),
     rewire = require('rewire'),
     text = require('../../conf/text'),
-    Helper = rewire('../../lib/local/remote-helper');
+    Helper = rewire('../../src/local/remote-helper');
 
 var sshMock = {
     stdout: {

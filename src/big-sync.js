@@ -1,7 +1,7 @@
 var Rsync = require('rsync'),
     _ = require('lodash'),
     hostname = require('os').hostname(),
-    util = require('../lib/util');
+    util = require('./util');
 
 module.exports = function bigSync(project) {
     var log = util.generateLog(project.project, hostname);
