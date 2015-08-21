@@ -1,5 +1,5 @@
 # Ignore built code
-build/
+dist/
 coverage/
 
 # Ignore temp
