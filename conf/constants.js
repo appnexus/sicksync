@@ -5,6 +5,7 @@ module.exports = {
     FILE_CHANGE_COOLDOWN_MS: 10,
     CRYPT_ALGO: 'aes-128-ctr',
     CONFIG_FILE: 'config.json',
+    CONFIG_FILE_V1: '~/.sicksync-config.json',
     UPDATE_FILE: 'update.json',
     SICKSYNC_DIR: '~/.sicksync',
     FS_TOKEN: 'sourceLocation',

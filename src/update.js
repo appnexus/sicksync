@@ -4,6 +4,7 @@ let _ = require('lodash'),
     exec = require('child_process').exec,
     hostname = require('os').hostname(),
     path = require('path'),
+    untildify = require('untildify'),
     util = require('./util'),
     packageJson = require('../package.json'),
     constants = require('../conf/constants'),
@@ -93,6 +94,12 @@ module.exports = {
         }
     },
     migrate1to2(config) {
+        if (_.isEmpty(config)) {
+            let configLocation = untildify(constants.CONFIG_FILE_V1);
+            config = require(configLocation);
+            fs.delete(configLocation);
+        }
+
         config.project = path.basename(config.sourceLocation);
 
         return {
