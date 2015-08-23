@@ -16,7 +16,7 @@ let _ = require('lodash'),
         };
 
 module.exports = {
-    getLatestVersion: _.partial(latestVersion, 'sicksync'),
+    getLatestVersion: _.partial(_.ary(latestVersion, 2), 'sicksync'),
     updateRemote (project) {
         let ssh = util.shellIntoRemote(project.username + '@' + project.hostname);
 
@@ -55,6 +55,7 @@ module.exports = {
     update (config, cmd) {
         if (cmd.check) {
             return this.getLatestVersion(function(err, version) {
+                console.log('wat');
                 if (err) return;
                 console.log('Latest Version:', version);
                 console.log('Current Version:', packageJson.version);
@@ -85,6 +86,28 @@ module.exports = {
                     })
                 );
             });
+        }
+    },
+    migrateConfig(config) {
+        let updatedConfig = {};
+        let configVersion = (config.version) ? config.version : '1.2.0';
+        configVersion = +configVersion.replace('.', '');
+
+        if (configVersion <= 120) {
+            let projectName = paths.basename(project.sourceLocation);
+            updatedConfig.debug = config.debug;
+            updatedConfig.retryOnDisconnect = config.retryOnDisconnect;
+            updatedConfig.projects = [{
+                project: projectName,
+                hostname: config.hostname,
+                username: config.username,
+                sourceLocation: config.sourceLocation,
+                destinationLocation: config.destinationLocation,
+                excludes: config.excludes,
+                websocketPort: config.websocketPort,
+                followSymLinks: config.followSymLinks,
+                prefersEncrypted: config.prefersEncrypted
+            }];
         }
     }
 };

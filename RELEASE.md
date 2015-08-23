@@ -2,12 +2,13 @@
 *Overview*
 
 sicksync 2.0.0 Introduces a lot of new features and functionality. These changes are detailed further below, but to summarize:
-- Multi-project syncing! You can now add projects to sicksync and easily sync multiple projects at once.
+- Multi-project syncing! You can now add projects to sicksync and easily sync multiple projects in one command.
 - Better project management. sicksync now has commands to get project info, add projects, and remove them.
 - Updating is now a lot easier as sicksync will let you know when there's updates, and takes care of updating your remote machines.
 - Stateless remote code. This means that you'll never have to sync up your config files again.
-- Git-style sub commands. No more nasty option hashes and a more extensible CLI.
-- A complete rewrite top-to-bottom. Much easier to read and contribute to.
+- Git-style sub commands. No more nasty option hashes and a more extendable CLI.
+- A complete rewrite top-to-bottom in ES6. Much easier to read and contribute to.
+- Smaller/slimmer npm package output.
 
 ### New
 - `sicksync start <projects...>`: Runs the sicksync process for the given space-separated `<projects...>`.
@@ -17,16 +18,16 @@ sicksync 2.0.0 Introduces a lot of new features and functionality. These changes
 - `sicksync update`: Update sicksync both locally and remotely for all projects.
 
 ### Breaking
-- `sicksync --once` is now `sicksync once`
-- `sicksync --config` is now `sicksync config`
-- `sicksync --setup` is now `sicksync setup`
-- `sicksync-local` is now covered by `sicksync`.
-- `sicksync-remote` is now `sicksync remote`. `sicksync start` does this for you automatically, so this _can_ be ignored.
-- Configs have undergone changes in both structure and location. See below on migrating from sicksync 1.x.
+- `sicksync --once` is now `sicksync once <projects...>`, and requires you to pass projects.
+- `sicksync --config` is now `sicksync config`.
+- `sicksync-local` is now covered by the `sicksync start <projects...>` command.
+- `sicksync-remote` is now `sicksync remote`. `sicksync start <projects...>` does this for you automatically, so this effectively _should_ be ignored.
+- Configs have undergone changes in both structure and shape. See below on migrating from sicksync 1.x.
 
 ### Deprecated
 - `sicksync --debug`: use `sicksync config` to enable debug messages.
 - `sicksync --encrypt`: use `sicksync config` to enable encryption.
+- `sicksync --setup`: use `sicksync add-project`.
 
 ## 1.2.0
 - *BREAKING* `big-sync` will now DELETE files in the remote location that aren't found in the local location. Please be ensure that, after upgrading, caution is ran when running either `sicksync` or `sicksync -o`.

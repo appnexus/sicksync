@@ -28,15 +28,17 @@ function triggerBigSync(project, params, cb) {
 
 function start(projects, opts, config) {
     _.each(projects, function(project) {
-        if (_.isEmpty(config.projects[project])) {
+        let projectConf = _.findWhere(config.projects, { project });
+
+        if (_.isEmpty(projectConf)) {
             return console.log(text.PROJECT_NOT_FOUND, project);
         }
-        startProject(project, config);
+
+        startProject(projectConf, config);
     });
 }
 
-function startProject (project, config) {
-    let projectConf = config.projects[project];
+function startProject (projectConf, config) {
     let localLog = util.generateLog(projectConf.project, hostname);
     let remoteLog = util.generateLog(projectConf.project, projectConf.hostname);
     let sourceLocation = util.ensureTrailingSlash(projectConf.sourceLocation);
@@ -114,10 +116,12 @@ function startProject (project, config) {
 
 function once(projects, opts, config) {
     _.each(projects, function(project) {
-        if (_.isEmpty(config.projects[project])) {
+        let projectConf = _.findWhere(config.projects, { project });
+
+        if (_.isEmpty(projectConf)) {
             return console.log(text.PROJECT_NOT_FOUND, project);
         }
-        let projectConf = config.projects[project];
+
         let localLog = util.generateLog(projectConf.project, hostname);
         
         localLog(text.SYNC_ON_ONCE);

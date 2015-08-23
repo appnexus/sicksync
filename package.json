@@ -5,6 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "istanbul cover _mocha -- --check-leaks test/*.mspec.js test/**/*.mspec.js --compilers js:babel/register",
+    "watch": "npm run transpile -- -w",
+    "transpile": "babel src --out-dir dist",
     "tdd": "npm test -- -w",
     "prepublish": "rm -rf ./dist && babel src --out-dir dist"
   },

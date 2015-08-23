@@ -68,6 +68,12 @@ module.exports = {
         return result;
     },
 
+    move(object, from, to) {
+        if (!_.has(object, from, null)) return false;
+
+        _.set(object, to, _.get(object, from));
+    },
+
     // Log messages with Hostname prepended
     generateLog(projectName, hostname) {
         let args = _.slice(arguments);

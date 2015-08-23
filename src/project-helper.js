@@ -2,18 +2,20 @@ let _ = require('lodash'),
     path = require('path'),
     prompter = require('prompt'),
     chalk = require('chalk'),
+    packageJson = require('../package.json'),
     util = require('./util'),
     sicksyncSetup = util.setupPrompter(prompter);
 
 function printProjectInfo (project) {
     console.log(chalk.green(project.project));
-    _.forIn(project, function(value, key) {
+    _.forIn(project, (value, key) => {
         console.log('  ', chalk.yellow(_.startCase(key)), value);
     });
 }
 
 module.exports = {
     add (config) {
+
         let questions = {
             project: {
                 description: 'What would you like to name this project?',
@@ -51,6 +53,11 @@ module.exports = {
                     return csv.split(',');
                 }
             },
+            prefersEncrypted: {
+                description: 'Would you like to encrypt the sync messages? (yes/no):',
+                before: util.toBoolean,
+                default: 'no'
+            },
             websocketPort: {
                 description: 'What port should sicksync use for this project?',
                 default: 8675
@@ -61,14 +68,6 @@ module.exports = {
                 before: util.toBoolean
             }
         };
-
-        if (_.isUndefined(config.prefersEncrypted)) {
-            questions.prefersEncrypted = {
-                description: 'Would you like to encrypt the sync messages? (yes/no):',
-                before: util.toBoolean,
-                default: 'no'
-            };
-        }
 
         if (_.isUndefined(config.debug)) {
             questions.debug = {
@@ -88,15 +87,8 @@ module.exports = {
 
         sicksyncSetup.get({
             properties: questions
-        }, function sicksyncWriteResults(err, result) {
+        }, (err, result) => {
             if (err) return console.log('\nLooks we had a problem setting up: ' + err);
-
-            let project = result.project;
-
-            if (!config.prefersEncrypted) {
-                config.prefersEncrypted = result.prefersEncrypted;
-                delete result.prefersEncrypted;
-            }
 
             if (!config.debug) {
                 config.debug = result.debug;
@@ -109,42 +101,37 @@ module.exports = {
             }
 
             // Save our project in the main config
-            config.projects = config.projects || {};
-            config.projects[project] = result;
+            config.version = packageJson.version;
+            config.projects = config.projects || [];
+            config.projects.push(result);
 
             // Write
             util.writeConfig(config);
         });
     },
     remove (config, projects) {
-        _.each(projects, function(project) {
-            if (_.isUndefined(config.projects[project])) {
-                console.log(chalk.red('Couldn\'t remove project:'), project, 'since it doesn\'t exist in your config', '\n');
-                console.log('Projects in your config:');
-                _.forIn(config.projects, function(projectConf, projectName) {
-                    console.log(projectName);
-                });
-                return;
-            }
-
-            delete config.projects[project];
+        var updatedConfig = _.clone(config);
+        
+        updatedConfig.projects = _.filter(config.projects, (projectConf) => {
+            if (_.contains(projects, projectConf.project)) return false;
+            return true;
         });
 
-        util.writeConfig(config);
+        util.writeConfig(updatedConfig);
     },
     info (config, projects) {
-        if (_.isUndefined(config.projects) || _.isEmpty(config.projects)) {
+        if (_.isEmpty(config.projects)) {
             console.log('No projects! Add some by running', chalk.green('`sicksync add-project`'));
         }
 
         if (_.isEmpty(projects)) {
-            return _.forIn(config.projects, function(projectInfo) {
-                printProjectInfo(projectInfo);
+            _.each(config.projects, (project) => {
+                printProjectInfo(project);
             });
         }
 
-        _.forIn(projects, function(project) {
-            printProjectInfo(config.projects[project]);
+        _.each(projects, (project) => {
+            printProjectInfo(_.findWhere(config.projects, { project }));
         });
     }
 };

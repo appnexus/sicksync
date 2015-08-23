@@ -27,65 +27,47 @@ sicksync, at it's core, is a simple websocket service that sends small file chan
 
 ## Command Line Options
 
-`sicksync -h, --help`
+`sicksync` || `sicksync -h, --help`
 
-Outputs the help information as well as the version number.
+Outputs the help information and all the possible command line options.
 
-`sicksync` | `sicksync start`
+`sicksync start <projects...>`
 
 Runs the continuous syncing process, taking care of both the remote and local machines (process management wise). Small, iterative changes use a blazing-fast WebSocket connection to send file information, while larger changes trigger a rsync update. This ensures both speed in rapid changes and confidence in larger ones.
 
-`sicksync setup`
-
-Runs the setup wizard, which will create a `.sicksync/config.json` in your home directory.
-
-This file is a simple JSON config object, so feel free to change it whenever.
-
-`sicksync once [-n | --dry-run]`
+`sicksync once [-n | --dry-run] <projects...>`
 
 Runs a one-time sync, which is simply `rsync` under-the-hood. This happens automatically everytime you run `sicksync start`, and if you have the `retryOnDisconnect` flag will run on reconnect.
 
-`sicksync remote [--port | -p <port>] [--secret | -s <secret>] [--encryption | -e] [--debug | -d]`
+`sicksync add-project | add`
 
-Starts the remote process for continous syncing. This likely does not need to be called directly since `sicksync start` takes care of that for you. Since the remote end of sicksync is "dumb", you'll have to manually supply the port number and secret key.
+Runs the setup wizard for a new project, which will create a `.sicksync/config.json` in your home directory if not already present.
+
+This file is a simple JSON config object, so feel free to change it whenever by running `sicksync config`.
+
+`sicksync remove-project | rm <projects...>`
+
+Removes the projects from sicksync's internal config. This is a destructive action and is not reversable.
+
+`sicksync update`
+
+Updates sicksync locally, as well as _all of your remote machines_. This _will_ run `npm i -g sicksync` internally, and does not do it as a `sudo`, so care should be taken if you haven't setup `npm` accordingly. [Please see this article for more information](https://docs.npmjs.com/getting-started/fixing-npm-permissions).
 
 `sicksync config`
 
 Opens the sicksync config file in the editor of your choice.
 
+`sicksync remote [--port | -p <port>] [--secret | -s <secret>] [--encryption | -e] [--debug | -d]`
+
+Starts the remote process for continous syncing. This likely does not need to be called directly since `sicksync start` takes care of that for you. Since the remote end of sicksync is "dumb", you'll have to manually supply the port number and secret key.
+
 ## Configuration Options
 
-`sourceLocation: {absolute filepath}`
+sicksync will write to a central JSON file (located in `~/.sicksync/config.json`). This JSON blob is pretty self-documentating, but there are two critical pieces to it's hierarchy:
 
-The *absolute* file-path you want to watch and sync with. Cannot have any `~` as sicksync doesn't yet understand the home shorthand. sicksync will also watch any nested file-changes (recursively) and update the remote machine with changes.
+### Global Options
 
-`excludes: {array of relative filepaths or globs}`
-
-An array of file(s) or filepath(s) that, when matched, sicksync will ignore and not send changes. Editor configuration and `.git/*` files are generally ok to ignore. Uses [`minimatch`](https://github.com/isaacs/minimatch) for globbing.
-
-`websocketPort: {number}`
-
-The port number which you want BOTH the local and remote machines to use for websocket-syncing.
-
-`secret: {string}`
-
-The secret used for encrpyted messages as well as the initial handshake for the websocket syncs. If there is a mis-match between the local and remote machine's secret, sicksync will not work. This get's automatically generated in the wizard, so it's not necessary to change it unless some bad happens.
-
-`userName: {string}`
-
-The username you use to log into the remote machine with. sicksync will use this to start the syncing process, as well as copy files over.
-
-`hostname: {string}`
-
-The hostname or ip address of the remote machine you wish to sync with.
-
-`destinationLocation: {filepath}`
-
-The location on your remote machine you wish to apply changes to. Again, this must be the *absolute* path in your local machine.
-
-`prefersEncrypted: {boolean}`
-
-Flag that will turn on or off encrypted sync messages.
+There are currently only two options you can configure globally, and are applied to _all_ projects in your configuration:
 
 `debug: {boolean}`
 
@@ -95,6 +77,42 @@ Flag that will turn on or off debug messages during the syncing process.
 
 When true, this will tell `sicksync` to re-attempt to connect when the server disconnects. Using `CTRL+C` will not trigger a retry locally. Also runs a one-time sync beforehand to ensure any lost changes find their way home.
 
+### Project Options
+
+Project Options apply only to each individual project, and can be changed at any time.
+
+`project: {project-name}`
+
+Generated automatically if when using `sicksync add-project`, but is the label used in debugging messages when syncing.
+
+`sourceLocation: {filepath}`
+
+The file-path you want to watch and sync with. sicksync will also watch any nested file-changes (recursively) and update the remote machine with changes.
+
+`destinationLocation: {filepath}`
+
+The location on your remote machine you wish to apply changes to.
+
+`excludes: {array of relative filepaths or globs}`
+
+An array of file(s) or filepath(s) that, when matched, sicksync will ignore and not send changes. Editor configuration and `.git/*` files are generally ok to ignore. Uses [`minimatch`](https://github.com/isaacs/minimatch) for globbing.
+
+`websocketPort: {number}`
+
+The port number which you want BOTH the local and remote machines to use for websocket-syncing.
+
+`userName: {string}`
+
+The username you use to log into the remote machine with. sicksync will use this to start the syncing process, as well as copy files over.
+
+`hostname: {string}`
+
+The hostname or ip address of the remote machine you wish to sync with.
+
+`prefersEncrypted: {boolean}`
+
+Flag that will turn on or off encrypted sync messages.
+
 `followSymLinks: {boolean}`
 
 When true, this will tell `sicksync` to follow and sync files and folders that are symlinked. Defaults to `false` in setup.
@@ -103,8 +121,9 @@ When true, this will tell `sicksync` to follow and sync files and folders that a
 
 2.x introduces a number of new and breaking changes. It's worthwhile to upgrade, as sicksync now has better reliabitiliy and extensibility in 2.x.
 
-1. Move your config file: `mv ~/.sicksync-config.json ~/.sicksync/config.json`. There are no breaking config changes.
-2. Update sicksync locally: `npm i -g sicksync`.
+
+1. Update sicksync locally: `npm i -g sicksync`.
+2. Run the command `sicksync migrate`. This will automatically move your config file, and update it.
 3. Update sicksync remotely: `ssh username@devbox "npm i -g sicksync"`.
 4. Remove the config file from your remote maching: `rm ~/.sicksync-config.json`
 
