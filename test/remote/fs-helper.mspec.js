@@ -2,7 +2,7 @@ var _ = require('lodash'),
     sinon = require('sinon'),
     expect = require('chai').expect,
     rewire = require('rewire'),
-    util = require('../../src/util'),
+    untildify = require('untildify'),
     FSHelper = rewire('../../src/remote/fs-helper');
 
 // Mocks
@@ -36,8 +36,8 @@ describe('remote fs-helper', function () {
     describe('#addFile', function () {
         it('should untildify the file', function() {
             fsHelper.addFile(addTest);
-
-            expect(fsMock.outputFile.lastCall.args[0]).to.equal(util.getHome() + addTest.destinationpath.replace('~', ''));
+            console.log(fsMock.outputFile.lastCall.args[0]);
+            expect(fsMock.outputFile.lastCall.args[0]).to.equal(untildify(addTest.destinationpath));
         });
 
         it('should pass the contents to the fs-extra write', function() {
@@ -65,7 +65,7 @@ describe('remote fs-helper', function () {
         it('should untildify the file', function() {
             fsHelper.addDir(addDirTest);
 
-            expect(fsMock.mkdirs.lastCall.args[0]).to.equal(util.getHome() + addDirTest.destinationpath.replace('~', ''));
+            expect(fsMock.mkdirs.lastCall.args[0]).to.equal(untildify(addDirTest.destinationpath));
         });
 
         it('should emit an event when the file has written successfully', function(done) {
@@ -87,7 +87,7 @@ describe('remote fs-helper', function () {
         it('should untildify the file', function() {
             fsHelper.removePath(addDirTest);
 
-            expect(fsMock.delete.lastCall.args[0]).to.equal(util.getHome() + addDirTest.destinationpath.replace('~', ''));
+            expect(fsMock.delete.lastCall.args[0]).to.equal(untildify(addDirTest.destinationpath));
         });
 
         it('should emit an event when the file has written successfully', function(done) {

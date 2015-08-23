@@ -4,6 +4,7 @@ let _ = require('lodash'),
     minimatch = require('minimatch'),
     chalk = require('chalk'),
     path = require('path'),
+    untildify = require('untildify'),
     constants = require('../conf/constants'),
     text = require('../conf/text'),
     exec = child.exec,
@@ -11,14 +12,9 @@ let _ = require('lodash'),
 
 module.exports = {
 
-    // Returns the ~ directory plus trailing `/`
-    getHome() {
-        return (process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE);
-    },
-
     // Returns the path to the sicksync dir
     getSicksyncDir() {
-        return [this.getHome(), constants.SICKSYNC_DIR].join('/');
+        return untildify(constants.SICKSYNC_DIR);
     },
 
     // Return the path to the update json

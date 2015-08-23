@@ -49,9 +49,11 @@ This file is a simple JSON config object, so feel free to change it whenever by 
 
 Removes the projects from sicksync's internal config. This is a destructive action and is not reversable.
 
-`sicksync update`
+`sicksync update [--check | -c] [--migrate-config | -m]`
 
 Updates sicksync locally, as well as _all of your remote machines_. This _will_ run `npm i -g sicksync` internally, and does not do it as a `sudo`, so care should be taken if you haven't setup `npm` accordingly. [Please see this article for more information](https://docs.npmjs.com/getting-started/fixing-npm-permissions).
+
+The `--check` config will see check what version of sicksync is available and print the version difference. `--migrate-config` will migrate your config file to accomodate the current version of sicksync. See the "Migrating To..." below for more information on migrating.
 
 `sicksync config`
 
@@ -119,13 +121,13 @@ When true, this will tell `sicksync` to follow and sync files and folders that a
 
 ## Migrating to from 1.x to 2.x
 
-2.x introduces a number of new and breaking changes. It's worthwhile to upgrade, as sicksync now has better reliabitiliy and extensibility in 2.x.
+2.x introduces a number of new and breaking changes. It's worthwhile to upgrade, as sicksync now has better reliabitiliy, new functionality, and extensibility in 2.x. Aside from command-line changes, sicksync 2.x also introduces a breaking config change as well. Below are the steps you'll need to run in order to migrate to sicksync 2.x:
 
 
 1. Update sicksync locally: `npm i -g sicksync`.
-2. Run the command `sicksync migrate`. This will automatically move your config file, and update it.
-3. Update sicksync remotely: `ssh username@devbox "npm i -g sicksync"`.
-4. Remove the config file from your remote maching: `rm ~/.sicksync-config.json`
+2. Run the command `sicksync update --migrate-config`. This will automatically move your config file, and update it.
+3. Run `sicksync update`. This will update your remote machine to the latest version of sicksync.
+4. Remove the config file from your remote and local machines: `rm ~/.sicksync-config.json`
 
 After this, you'll see when updates are available when running sicksync, and can easily update by running `sicksync update`.
 
