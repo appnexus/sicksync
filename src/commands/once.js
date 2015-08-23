@@ -6,5 +6,5 @@ module.exports = function sicksyncOnceCommand(program, config) {
         .command('once <projects...>')
         .description('Runs a one-time sync on the supplied project(s)')
         .option('-n, --dry-run', 'Shows information on what files will be sent without sending them')
-        .action(_.partialRight(once, config));
+        .action(_.partial(_.ary(once, 3), config));
 };

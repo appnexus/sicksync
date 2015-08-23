@@ -10,27 +10,27 @@ class FSHelper extends EventEmitter {
     }
 
     addFile (message) {
-        fs.outputFile(untildify(message.destinationpath), message.contents, function(err) {
+        fs.outputFile(untildify(message.destinationpath), message.contents, (err) => {
             if (err) return this.emit(fsEvents.ADD_FILE_ERROR, err);
 
             this.emit(fsEvents.ADD_FILE, message.destinationpath);
-        }.bind(this));
+        });
     }
 
     addDir (message) {
-        fs.mkdirs(untildify(message.destinationpath), function(err) {
+        fs.mkdirs(untildify(message.destinationpath), (err) => {
             if (err) return this.emit(fsEvents.ADD_DIR_ERROR, err);
 
             this.emit(fsEvents.ADD_DIR, message.destinationpath);
-        }.bind(this));
+        });
     }
 
     removePath (message) {
-        fs.delete(untildify(message.destinationpath), function(err) {
+        fs.delete(untildify(message.destinationpath), (err) => {
             if (err) return this.emit(fsEvents.DELETE_ERROR, err);
 
             this.emit(fsEvents.DELETE, message.destinationpath);
-        }.bind(this));
+        });
     }
 }
 

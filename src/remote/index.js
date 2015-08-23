@@ -24,17 +24,17 @@ module.exports = function startRemote(opts) {
     let fsHelper = new FSHelper();
 
     // WS events
-    wss.on(wsEvents.UNAUTHORIZED, function() {
+    wss.on(wsEvents.UNAUTHORIZED, () => {
         log(text.SERVER_ON_UNAUTHORIZED);
         process.exit();
     });
 
-    wss.on(wsEvents.CONNECTION_CLOSED, function() {
+    wss.on(wsEvents.CONNECTION_CLOSED, () => {
         log(text.SERVER_ON_CONNECTION_CLOSED);
         process.exit();
     });
 
-    wss.on(wsEvents.FILE_CHANGE, function(message) {
+    wss.on(wsEvents.FILE_CHANGE, (message) => {
         switch (message.changeType) {
             case 'add':
                 fsHelper.addFile(message);

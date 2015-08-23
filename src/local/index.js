@@ -26,19 +26,19 @@ function triggerBigSync(project, params, cb) {
     }, params, cb);
 }
 
-function start(projects, opts, config) {
-    _.each(projects, function(project) {
+function start(config, projects) {
+    _.each(projects, (project) => {
         let projectConf = _.findWhere(config.projects, { project });
 
         if (_.isEmpty(projectConf)) {
             return console.log(text.PROJECT_NOT_FOUND, project);
         }
 
-        startProject(projectConf, config);
+        startProject(config, projectConf);
     });
 }
 
-function startProject (projectConf, config) {
+function startProject (config, projectConf) {
     let localLog = util.generateLog(projectConf.project, hostname);
     let remoteLog = util.generateLog(projectConf.project, projectConf.hostname);
     let sourceLocation = util.ensureTrailingSlash(projectConf.sourceLocation);
@@ -61,8 +61,8 @@ function startProject (projectConf, config) {
     });
 
     // WS events
-    wsClient.on(wsEvents.READY, function() {
-        triggerBigSync(projectConf, { debug: config.debug }, function() {
+    wsClient.on(wsEvents.READY, () => {
+        triggerBigSync(projectConf, { debug: config.debug }, () => {
             fsHelper.watch();
 
             localLog(
@@ -75,17 +75,17 @@ function startProject (projectConf, config) {
 
     wsClient.on(wsEvents.RECONNECTING, _.partial(_.ary(localLog, 1), text.SYNC_ON_RECONNECT));
 
-    wsClient.on(wsEvents.DISCONNECTED, function() {
+    wsClient.on(wsEvents.DISCONNECTED, () => {
         localLog(text.SYNC_ON_DISCONNECT);
         process.exit();
     });
 
-    wsClient.on(wsEvents.REMOTE_ERROR, function(err) {
+    wsClient.on(wsEvents.REMOTE_ERROR, (err) => {
         localLog(text.SYNC_ON_REMOTE_LOST, err);
         process.exit();
     });
 
-    wsClient.on(wsEvents.REMOTE_MESSAGE, function(message) {
+    wsClient.on(wsEvents.REMOTE_MESSAGE, (message) => {
         // Since WS can be shared amongst projects, filter out
         // any that are not in this project
         if (_.contains(message, destinationLocation)) {
@@ -94,7 +94,7 @@ function startProject (projectConf, config) {
     });
 
     // FS events
-    fsHelper.on(fsEvents.CHANGE, function(fileChange) {
+    fsHelper.on(fsEvents.CHANGE, (fileChange) => {
         fileChange.destinationpath = destinationLocation + fileChange.relativepath;
         fileChange.subject = 'file';
 
@@ -103,19 +103,19 @@ function startProject (projectConf, config) {
         wsClient.send(fileChange);
     });
 
-    fsHelper.on(fsEvents.LARGE, function() {
+    fsHelper.on(fsEvents.LARGE, () => {
         localLog(text.SYNC_ON_LARGE_CHANGE);
         fsHelper.pauseWatch();
 
-        triggerBigSync(projectConf, { debug: config.debug }, function() {
+        triggerBigSync(projectConf, { debug: config.debug }, () => {
             localLog(text.SYNC_ON_LARGE_CHANGE_DONE);
             fsHelper.watch();
         });
     });
 }
 
-function once(projects, opts, config) {
-    _.each(projects, function(project) {
+function once(config, projects, opts) {
+    _.each(projects, (project) => {
         let projectConf = _.findWhere(config.projects, { project });
 
         if (_.isEmpty(projectConf)) {

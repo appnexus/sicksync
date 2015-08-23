@@ -6,5 +6,5 @@ module.exports = function setupSicksyncCommand(program, config) {
         .command('add-project')
         .alias('add')
         .description('Adds a new project to sicksync.')
-        .action(_.partial(projectHelper.add, config));
+        .action(_.partial(_.ary(projectHelper.add, 1), config));
 };

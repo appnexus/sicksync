@@ -3,8 +3,8 @@ let _ = require('lodash'),
 
 module.exports = function removeProjectCommand(program, config) {
     program
-        .command('remove-project <project...>')
+        .command('remove-project <projects...>')
         .alias('rm')
         .description('Removes a project from sicksync.')
-        .action(_.partial(projectHelper.remove, config));
+        .action(_.partial(_.ary(projectHelper.remove, 2), config));
 };

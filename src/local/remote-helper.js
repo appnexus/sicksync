@@ -34,7 +34,7 @@ class RemoteHelper extends EventEmitter {
         let bootSicksync = _.once(this._startRemoteSicksync.bind(this));
         let ssh = util.shellIntoRemote(this._username + '@' + this._hostname);
 
-        ssh.stdout.on('data', function(data) {
+        ssh.stdout.on('data', (data) => {
             let message = data.toString();
 
             // Boot sicksync (once!)

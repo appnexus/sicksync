@@ -109,8 +109,9 @@ module.exports = {
             util.writeConfig(config);
         });
     },
+
     remove (config, projects) {
-        var updatedConfig = _.clone(config);
+        let updatedConfig = _.clone(config);
         
         updatedConfig.projects = _.filter(config.projects, (projectConf) => {
             if (_.contains(projects, projectConf.project)) return false;
@@ -119,6 +120,7 @@ module.exports = {
 
         util.writeConfig(updatedConfig);
     },
+
     info (config, projects) {
         if (_.isEmpty(config.projects)) {
             console.log('No projects! Add some by running', chalk.green('`sicksync add-project`'));

@@ -3,6 +3,7 @@ let _ = require('lodash'),
     fs = require('fs-extra'),
     exec = require('child_process').exec,
     hostname = require('os').hostname(),
+    path = require('path'),
     util = require('./util'),
     packageJson = require('../package.json'),
     constants = require('../conf/constants'),
@@ -25,7 +26,7 @@ module.exports = {
         });
 
         // Update devbox
-        ssh.stdout.on('data', function(data) {
+        ssh.stdout.on('data', (data) => {
             let message = data.toString();
 
             if (_.contains(message, 'sicksync@')) {
@@ -44,7 +45,7 @@ module.exports = {
         });
     },
     updateLocal () {
-        exec(constants.UPDATE_CMD, function (error, stdout, stderr) {
+        exec(constants.UPDATE_CMD,  (error, stdout, stderr) => {
             if (!!error || _.contains(stderr, 'ERR!')) {
                 return console.log(hostname, text.UPDATE_FAIL, (error || stderr));
             }
@@ -52,14 +53,17 @@ module.exports = {
             console.log(hostname, text.UPDATE_SUCCESS);
         });
     },
-    update (config, cmd) {
-        if (cmd.check) {
+    update (config, opts) {
+        if (opts.check) {
             return this.getLatestVersion(function(err, version) {
-                console.log('wat');
                 if (err) return;
                 console.log('Latest Version:', version);
                 console.log('Current Version:', packageJson.version);
             });
+        }
+
+        if (opts.migrateConfig) {
+            return this.migrateConfig(config);
         }
 
         _.each(config.projects, this.updateRemote);
@@ -88,26 +92,21 @@ module.exports = {
             });
         }
     },
-    migrateConfig(config) {
-        let updatedConfig = {};
-        let configVersion = (config.version) ? config.version : '1.2.0';
-        configVersion = +configVersion.replace('.', '');
+    migrate1to2(config) {
+        config.project = path.basename(config.sourceLocation);
 
-        if (configVersion <= 120) {
-            let projectName = paths.basename(project.sourceLocation);
-            updatedConfig.debug = config.debug;
-            updatedConfig.retryOnDisconnect = config.retryOnDisconnect;
-            updatedConfig.projects = [{
-                project: projectName,
-                hostname: config.hostname,
-                username: config.username,
-                sourceLocation: config.sourceLocation,
-                destinationLocation: config.destinationLocation,
-                excludes: config.excludes,
-                websocketPort: config.websocketPort,
-                followSymLinks: config.followSymLinks,
-                prefersEncrypted: config.prefersEncrypted
-            }];
+        return {
+            version: packageJson.version,
+            debug: config.debug,
+            retryOnDisconnect: config.retryOnDisconnect,
+            projects: [_.omit(config, 'debug', 'retryOnDisconnect')]
+        };
+    },
+    migrateConfig(config) {
+        let configVersion = config.version ? +configVersion.replace('.', '') : null;
+
+        if (!configVersion) {
+            util.writeConfig(this.migrate1to2(config));
         }
     }
 };

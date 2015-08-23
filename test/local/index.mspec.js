@@ -105,14 +105,14 @@ describe('Client Entry (index.js)', function () {
 
     describe('#start', function () {
         beforeEach(function () {
-            entry.start(['myProject'], null, testConfig);
+            entry.start(testConfig, ['myProject']);
         });
 
         describe('when the project isn\'t found in the config', function () {
             it('should log a message in the console for that project', function() {
                 var missingProject = 'atlantis';
                 
-                entry.start(['myProject', missingProject], null, testConfig);
+                entry.start(testConfig, ['myProject', missingProject]);
                 expect(consoleSpy.log.lastCall.args.join(' ')).to.contain('couldn\'t find this project in your config');
                 expect(consoleSpy.log.lastCall.args.join(' ')).to.contain(missingProject);
             });
@@ -163,7 +163,7 @@ describe('Client Entry (index.js)', function () {
                     var encryptionConfig = _.clone(testConfig);
                     encryptionConfig.projects.myProject.prefersEncrypted = true;
 
-                    entry.start(['myProject'], null, encryptionConfig);
+                    entry.start(encryptionConfig, ['myProject']);
                     getWSOnCall('ready')();
                     triggerBigSyncComplete();
                     console.log(loggerMock.lastCall.args.join(' '));
@@ -286,14 +286,14 @@ describe('Client Entry (index.js)', function () {
 
     describe('#once', function () {
         beforeEach(function () {
-            entry.once(['myProject'], { dry: false, debug: true }, testConfig);   
+            entry.once(testConfig, ['myProject'], { dry: false, debug: true });   
         });
 
         describe('when the project isn\'t found in the config', function () {
             it('should log a message in the console for that project', function() {
                 var missingProject = 'atlantis';
                 
-                entry.once(['myProject', missingProject], {}, testConfig);
+                entry.once( testConfig, ['myProject', missingProject], {});
                 expect(consoleSpy.log.lastCall.args.join(' ')).to.contain('couldn\'t find this project in your config');
                 expect(consoleSpy.log.lastCall.args.join(' ')).to.contain(missingProject);
             });
