@@ -13,14 +13,15 @@ sicksync is a CLI to sync your projects code to a remote machine. If you work in
 ## Requirements
 
 - NodeJS with npm
+- You can `npm install -g` without `sudo`
 - You can just `ssh to-your-remote-machine` without using a password (ie, ssh keys)
 
 ## Install
-sicksync needs to be installed globally on both your remote and local machines.
+Installing `sicksync` is easy, and can easily be added your existing machines after they've been added:
 
 - Local: `npm install -g sicksync`
-- Remote: `ssh to-your-remote-machine` then `npm install -g sicksync`
-- Local: `sicksync` will start the syncing process
+- Add your first project: `sicksync add`
+- Have sicksync install itself on your remote machine: `sicksync update`
 
 ## Overview
 sicksync, at it's core, is a simple websocket service that sends small file changes to a remote machine. If it get's hammered with changes (ie, a `git checkout some-massive-branch`), it will defer to rsync to transfer these large deltas. This makes it a stupendous tool when you need a short feedback-loop, but still need the flexibility to send large files. It also includes an encryption layer if you're worried about sending files plain-text.
@@ -29,19 +30,19 @@ sicksync, at it's core, is a simple websocket service that sends small file chan
 
 `sicksync` || `sicksync -h, --help`
 
-Outputs the help information and all the possible command line options.
-
-`sicksync start <projects...>`
-
-Runs the continuous syncing process, taking care of both the remote and local machines (process management wise). Small, iterative changes use a blazing-fast WebSocket connection to send file information, while larger changes trigger a rsync update. This ensures both speed in rapid changes and confidence in larger ones.
-
-`sicksync once [-n | --dry-run] <projects...>`
-
-Runs a one-time sync, which is simply `rsync` under-the-hood. This happens automatically everytime you run `sicksync start`, and if you have the `retryOnDisconnect` flag will run on reconnect.
+Outputs the help information and all the possible command line options. All sub-commands have their own help text, and can be run by passing an additional `-h` with them. Eg, `sicksync start -h`.
 
 `sicksync add-project | add`
 
 Runs the setup wizard for a new project, which will create a `.sicksync/config.json` in your home directory if not already present.
+
+`sicksync start <projects...>`
+
+Runs the continuous syncing process, taking care of both the remote and local machines (process management wise). Small, iterative changes use a blazing-fast WebSocket connection to send file information, while larger changes trigger a rsync update. This ensures both speed in rapid changes, and confidence in larger ones.
+
+`sicksync once [-n | --dry-run] <projects...>`
+
+Runs a one-time sync, which is simply `rsync` under-the-hood. This happens automatically everytime you run `sicksync start`, and if you have the `retryOnDisconnect` flag will run on reconnect.
 
 This file is a simple JSON config object, so feel free to change it whenever by running `sicksync config`.
 
@@ -53,7 +54,9 @@ Removes the projects from sicksync's internal config. This is a destructive acti
 
 Updates sicksync locally, as well as _all of your remote machines_. This _will_ run `npm i -g sicksync` internally, and does not do it as a `sudo`, so care should be taken if you haven't setup `npm` accordingly. [Please see this article for more information](https://docs.npmjs.com/getting-started/fixing-npm-permissions).
 
-The `--check` config will see check what version of sicksync is available and print the version difference. `--migrate-config` will migrate your config file to accomodate the current version of sicksync. See the "Migrating To..." below for more information on migrating.
+The `--check` flag will see check what version of sicksync is available and print the version difference. 
+
+The `--migrate-config` flag will migrate your config file to accomodate the current version of sicksync. See the "Migrating To..." below for more information on migrating.
 
 `sicksync config`
 
@@ -122,7 +125,6 @@ When true, this will tell `sicksync` to follow and sync files and folders that a
 ## Migrating to from 1.x to 2.x
 
 2.x introduces a number of new and breaking changes. It's worthwhile to upgrade, as sicksync now has better reliabitiliy, new functionality, and extensibility in 2.x. Aside from command-line changes, sicksync 2.x also introduces a breaking config change as well. Below are the steps you'll need to run in order to migrate to sicksync 2.x:
-
 
 1. Update sicksync locally: `npm i -g sicksync`.
 2. Run the command `sicksync update --migrate-config`. This will automatically move your config file, and update it.
