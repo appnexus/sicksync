@@ -8,7 +8,7 @@ var api = {
 
 function resetAll() {
     _.forIn(api, function(method) {
-        method.reset();
+        if (_.isFunction(method.reset)) method.reset();
     });
 }
 

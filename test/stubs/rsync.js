@@ -16,8 +16,8 @@ var api = {
 };
 
 function resetAll() {
-    _.forIn(rsyncSpies, function(method) {
-        method.reset();
+    _.forIn(api, function(method) {
+        if (_.isFunction(method.reset)) method.reset();
     });
 }
 

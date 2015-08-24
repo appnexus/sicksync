@@ -3,11 +3,11 @@ var _ = require('lodash'),
 
 var api = {
     exit: sinon.spy()
-}
+};
 
 function resetAll() {
     _.forIn(api, function(method) {
-        method.reset();
+        if (_.isFunction(method.reset)) method.reset();
     });
 }
 

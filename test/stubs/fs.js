@@ -2,14 +2,18 @@ var _ = require('lodash'),
     sinon = require('sinon');
 
 var api = {
-    readFileSync: sinon.stub().returnsArg(0)
-}
+    readFileSync: sinon.stub().returnsArg(0),
+    outputFile: sinon.spy(),
+    mkdirs: sinon.spy(),
+    delete: sinon.spy()
+};
 
 function resetAll() {
     _.forIn(api, function(method) {
-        method.reset();
-    })
+        if (_.isFunction(method.reset)) method.reset();
+    });
 }
 
 module.exports = api;
 module.exports.resetAll = resetAll;
+module.exports['@noCallThru'] = true;
