@@ -1,13 +1,14 @@
-let _ = require('lodash'),
-    fs = require('fs'),
-    watcher = require('chokidar').watch,
-    EventEmitter = require('events').EventEmitter,
-    path = require('path'),
-    untildify = require('untildify'),
-    util = require('../util'),
-    constants = require('../../conf/constants'),
-    eventsConf = require('../../conf/events'),
-    fsEvents = eventsConf.FS.LOCAL;
+import _ from 'lodash';
+import fs from 'fs';
+import { watch } from 'chokidar';
+import { EventEmitter } from 'events';
+import path from 'path';
+import untildify from 'untildify';
+import util from '../util';
+import constants from '../../conf/constants';
+import eventsConf from '../../conf/events';
+
+let fsEvents = eventsConf.FS.LOCAL;
 
 class FSHelper extends EventEmitter {
     constructor(params) {
@@ -20,7 +21,7 @@ class FSHelper extends EventEmitter {
         this._paused = true;
 
         // Node/watcher only work with full file-paths (no ~'s)
-        this._watcher = watcher(untildify(this._sourceLocation), {
+        this._watcher = watch(untildify(this._sourceLocation), {
                 ignored: this._excludes,
                 persistent: true,
                 followSymlinks: this._followSymlinks,
@@ -35,6 +36,7 @@ class FSHelper extends EventEmitter {
     }
 
     onFileChange (evt, sourcepath) {
+        console.log(evt, sourcepath);
         let relativepath = sourcepath.split(this._baseDir)[1],
             localpath = this._sourceLocation + relativepath,
             fileContents = null;
@@ -59,4 +61,4 @@ class FSHelper extends EventEmitter {
     }
 }
 
-module.exports = FSHelper;
+export default FSHelper;

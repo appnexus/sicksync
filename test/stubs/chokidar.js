@@ -17,5 +17,12 @@ _.forIn(api, function(method, name) {
     mockConstructor[name] = method;
 });
 
-module.exports = mockConstructor;
+function triggerFsEvent() {
+    api.on.lastCall.args[1].apply(null, arguments);
+}
+
+module.exports.watch = mockConstructor;
+module.exports._api = api;
 module.exports.resetAll = resetAll;
+module.exports.triggerFsEvent = triggerFsEvent;
+module.exports['@noCallThru'] = true;

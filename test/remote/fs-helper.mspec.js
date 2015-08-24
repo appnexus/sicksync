@@ -2,8 +2,8 @@ var _ = require('lodash'),
     expect = require('chai').expect,
     fsStub = require('../stubs/fs'),
     untildify = require('untildify'),
-    proxyRequire = require('proxyquire'),
-    FSHelper = proxyRequire('../../src/remote/fs-helper', {
+    proxyquire = require('proxyquire'),
+    FSHelper = proxyquire('../../src/remote/fs-helper', {
         'fs-extra': fsStub
     });
 
