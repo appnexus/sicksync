@@ -1,7 +1,9 @@
-let fs = require('fs-extra'),
-    EventEmitter = require('events').EventEmitter,
-    untildify = require('untildify'),
-    fsEvents = require('../../conf/events').FS.REMOTE;
+import fs from 'fs-extra';
+import { EventEmitter } from 'events';
+import untildify from 'untildify';
+import { FS } from '../../conf/events';
+    
+let fsEvents = FS.REMOTE;
 
 class FSHelper extends EventEmitter {
 
@@ -34,4 +36,4 @@ class FSHelper extends EventEmitter {
     }
 }
 
-module.exports = FSHelper;
+export default FSHelper;
