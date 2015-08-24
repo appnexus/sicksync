@@ -36,15 +36,17 @@ Outputs the help information and all the possible command line options. All sub-
 
 Runs the setup wizard for a new project, which will create a `.sicksync/config.json` in your home directory if not already present.
 
-`sicksync start <projects...>`
+`sicksync start [projects...]`
 
 Runs the continuous syncing process, taking care of both the remote and local machines (process management wise). Small, iterative changes use a blazing-fast WebSocket connection to send file information, while larger changes trigger a rsync update. This ensures both speed in rapid changes, and confidence in larger ones.
 
-`sicksync once [-n | --dry-run] <projects...>`
+If `[projects...]` isn't passed in, sicksync will try and find the project based on your current working directory.
+
+`sicksync once [-n | --dry-run] [projects...]`
 
 Runs a one-time sync, which is simply `rsync` under-the-hood. This happens automatically everytime you run `sicksync start`, and if you have the `retryOnDisconnect` flag will run on reconnect.
 
-This file is a simple JSON config object, so feel free to change it whenever by running `sicksync config`.
+If `[projects...]` isn't passed in, sicksync will try and find the project based on your current working directory.
 
 `sicksync remove-project | rm <projects...>`
 
