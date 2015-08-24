@@ -3,7 +3,7 @@ let _ = require('lodash'),
 
 module.exports = function sicksyncStartCommand(program, config) {
     program
-        .command('start <projects...>')
+        .command('start [projects...]')
         .description('Starts the continuous sicksync process for the given project(s)')
         .action(_.partial(_.ary(local, 2), config));
 };

@@ -27,14 +27,14 @@ function triggerBigSync(project, params, cb) {
 }
 
 function start(config, projects) {
-    _.each(projects, (project) => {
-        let projectConf = _.findWhere(config.projects, { project });
+    let foundProjects = util.getProjectsFromConfig(config, projects);
 
-        if (_.isEmpty(projectConf)) {
-            return console.log(text.PROJECT_NOT_FOUND, project);
-        }
+    if (_.isEmpty(foundProjects)) {
+        return logProjectsNotFound(foundProjects);
+    }
 
-        startProject(config, projectConf);
+    _.each(foundProjects, (project) => {
+        startProject(config, project);
     });
 }
 
@@ -115,22 +115,30 @@ function startProject (config, projectConf) {
 }
 
 function once(config, projects, opts) {
-    _.each(projects, (project) => {
-        let projectConf = _.findWhere(config.projects, { project });
+    let foundProjects = util.getProjectsFromConfig(config, projects);
 
-        if (_.isEmpty(projectConf)) {
-            return console.log(text.PROJECT_NOT_FOUND, project);
-        }
+    if (_.isEmpty(foundProjects)) {
+        return logProjectsNotFound(foundProjects);
+    }
 
-        let localLog = util.generateLog(projectConf.project, hostname);
+    _.each(foundProjects, (project) => {
+        let localLog = util.generateLog(project.project, hostname);
         
         localLog(text.SYNC_ON_ONCE);
 
-        triggerBigSync(projectConf, {
+        triggerBigSync(project, {
             dry: opts.dryRun,
             debug: config.debug
         }, _.partial(localLog, text.SYNC_ON_ONCE_DONE));
     });
+}
+
+function logProjectsNotFound(projects) {
+    let projectsWanted = projects.length ?
+        projects :
+        process.cwd();
+
+    console.log(text.PROJECT_NOT_FOUND, projectsWanted);
 }
 
 export default { start, once };

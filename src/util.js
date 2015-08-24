@@ -183,5 +183,37 @@ module.exports = {
 
             return new Constructor(args);
         };
+    },
+    getProjectFromCwd(config) {
+        return _.chain(config.projects)
+            .map((project) => {
+                project.sourceLocation = untildify(project.sourceLocation);
+                return project;
+            })
+            .filter((project) => {
+                return project.sourceLocation === process.cwd();
+            })
+            .value();
+    },
+    getProjectsFromConfig(config, projects) {
+        let foundProjects = [];
+
+        if (_.isEmpty(projects)) {
+            let cwdProject = this.getProjectFromCwd(config);
+
+            if (cwdProject) {
+                foundProjects = cwdProject;
+            }
+        }
+
+        _.each(projects, (project) => {
+            let projectConf = _.findWhere(config.projects, { project });
+
+            if (!_.isEmpty(projectConf)) {
+                foundProjects.push(projectConf);
+            }
+        });
+
+        return foundProjects
     }
 };

@@ -108,16 +108,6 @@ describe('Client Entry (index.js)', function () {
             entry.start(testConfig, ['myProject']);
         });
 
-        describe('when the project isn\'t found in the config', function () {
-            it('should log a message in the console for that project', function() {
-                var missingProject = 'atlantis';
-                
-                entry.start(testConfig, ['myProject', missingProject]);
-                expect(consoleSpy.log.lastCall.args.join(' ')).to.contain('couldn\'t find this project in your config');
-                expect(consoleSpy.log.lastCall.args.join(' ')).to.contain(missingProject);
-            });
-        });
-
         describe('WSClient', function () {
             it('should instantiate a new WSClient with the appropriate params', function() {
                 var params = WSClientMock.lastCall.args[0],
@@ -287,16 +277,6 @@ describe('Client Entry (index.js)', function () {
     describe('#once', function () {
         beforeEach(function () {
             entry.once(testConfig, ['myProject'], { dry: false, debug: true });   
-        });
-
-        describe('when the project isn\'t found in the config', function () {
-            it('should log a message in the console for that project', function() {
-                var missingProject = 'atlantis';
-                
-                entry.once( testConfig, ['myProject', missingProject], {});
-                expect(consoleSpy.log.lastCall.args.join(' ')).to.contain('couldn\'t find this project in your config');
-                expect(consoleSpy.log.lastCall.args.join(' ')).to.contain(missingProject);
-            });
         });
 
         it('log a message that it\'s initiating a one-time sync', function() {
