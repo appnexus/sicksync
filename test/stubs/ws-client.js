@@ -3,8 +3,13 @@ var _ = require('lodash'),
 
 var api = {
     on: sinon.spy(),
+    _connect: sinon.spy(),
+    _handleDisconnect: sinon.spy(),
+    _reconnect: sinon.spy(),
     send: sinon.spy()
 };
+
+var mockConstructor = sinon.stub().returns(api);
 
 function resetAll() {
     _.forIn(api, function(method) {
@@ -24,19 +29,16 @@ function getEventCall(event) {
     return callArgs;
 }
 
-function triggerEventWithArgs(event) {
+function triggerEvent(event) {
     var args = _.drop(arguments);
     var eventCall = getEventCall(event);
-
-    eventCall.args[1].appy(null, args);
+    
+    eventCall.args[1].apply(null, args);
 }
 
-var mockConstructor = sinon.stub().returns(api);
-
 module.exports = mockConstructor;
-module.exports.Sever = mockConstructor;
-module.exports._api = api;
-module.exports.resetAll = resetAll;
+module.exports.triggerEvent = triggerEvent;
 module.exports.getEventCall = getEventCall;
-module.exports.triggerEventWithArgs = triggerEventWithArgs;
+module.exports.resetAll = resetAll;
+module.exports._api = api;
 module.exports['@noCallThru'] = true;

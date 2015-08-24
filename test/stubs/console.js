@@ -1,15 +1,21 @@
 var _ = require('lodash'),
     sinon = require('sinon');
 
-var api = {
-    log: sinon.spy()
-};
-
 function resetAll() {
     _.forIn(api, function(method) {
         if (_.isFunction(method.reset)) method.reset();
     });
 }
 
-module.exports = api;
+function inject() {
+    sinon.spy(console, 'log');
+}
+
+function restore() {
+    console.log.restore();
+}
+
+module.exports.inject = inject;
+module.exports.restore = restore;
 module.exports.resetAll = resetAll;
+module.exports['@noCallThru'] = true;

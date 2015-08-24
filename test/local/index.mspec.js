@@ -1,9 +1,22 @@
 var _ = require('lodash'),
     expect = require('chai').expect,
-    rewire = require('rewire'),
-    sinon = require('sinon'),
-    util = require('../../src/util'),
-    entry = rewire('../../src/local');
+    proxyquire = require('proxyquire'),
+    
+    // Stubs
+    utilStub = require('../stubs/util'),
+    processStub = require('../stubs/process'),
+    bigSyncStub = require('../stubs/big-sync'),
+    fsHelperStub = require('../stubs/client-fs-helper'),
+    wsClientStub = require('../stubs/ws-client'),
+    
+    // Entry
+    entry = proxyquire('../../src/local', {
+        './fs-helper': fsHelperStub,
+        './ws-client': wsClientStub,
+        '../big-sync': bigSyncStub,
+        '../util': utilStub,
+        'process': processStub
+    });
 
 // Test Data
 var testConfig = {
@@ -25,82 +38,18 @@ var testConfig = {
 };
 var projectConfig = testConfig.projects.myProject;
 
-// Mocks
-var consoleSpy = {
-    log: sinon.spy()
-};
-var processMock = {
-    exit: sinon.spy()
-};
-var loggerMock = sinon.spy();
-var utilMock = _.clone(util);
-utilMock.generateLog = sinon.stub().returns(loggerMock);
-
-var WsClientAPI = {
-    on: sinon.spy(),
-    send: sinon.spy()
-};
-var WSClientMock = sinon.stub().returns(WsClientAPI);
-
-var FSClientAPI = {
-    on: sinon.spy(),
-    watch: sinon.spy(),
-    pauseWatch: sinon.spy()
-};
-var FSClientMock = sinon.stub().returns(FSClientAPI);
-
-var bigSyncMock = sinon.spy();
-
-// Helpers
-function resetMock(method) {
-    method.reset();
-}
-
-function getWSOnCall(event) {
-    var callArgs = null;
-
-    _.each(WsClientAPI.on.getCalls(), function(call) {
-        if (call.args[0] === event) callArgs = call.args[1];
-    });
-
-    return callArgs;
-}
-
-function getFSOnCall(event) {
-    var callArgs = null;
-
-    _.each(FSClientAPI.on.getCalls(), function(call) {
-        if (call.args[0] === event) callArgs = call.args[1];
-    });
-
-    return callArgs;
-}
-
-function triggerBigSyncComplete() {
-    bigSyncMock.lastCall.args[2]();
-}
-
-// Inject Mocks
-entry.__set__({
-    bigSync: bigSyncMock,
-    FSHelper: FSClientMock,
-    WebSocketClient: WSClientMock,
-    util: utilMock,
-    console: consoleSpy,
-    process: processMock
-}); 
-
 describe('Client Entry (index.js)', function () {
+
+    beforeEach(function() {
+        processStub.inject();
+    });
+
     afterEach(function() {
-        consoleSpy.log.reset();
-        bigSyncMock.reset();
-        FSClientMock.reset();
-        WSClientMock.reset();
-        loggerMock.reset();
-        processMock.exit.reset();
-        utilMock.generateLog.reset();
-        _.forIn(FSClientAPI, resetMock);
-        _.forIn(WsClientAPI, resetMock);
+        processStub.restore();
+        utilStub.resetAll();
+        bigSyncStub.resetAll();
+        fsHelperStub.resetAll();
+        wsClientStub.resetAll();
     });
 
     describe('#start', function () {
@@ -110,7 +59,7 @@ describe('Client Entry (index.js)', function () {
 
         describe('WSClient', function () {
             it('should instantiate a new WSClient with the appropriate params', function() {
-                var params = WSClientMock.lastCall.args[0],
+                var params = wsClientStub.lastCall.args[0],
                     projectConfig = testConfig.projects.myProject;
 
                 expect(params.username).to.equal(projectConfig.username);
@@ -123,11 +72,11 @@ describe('Client Entry (index.js)', function () {
 
             describe('on:ready', function () {
                 beforeEach(function () {
-                    getWSOnCall('ready')();
+                    wsClientStub.triggerEvent('ready');
                 });
 
                 it('should trigger a bigSync', function() {
-                    var bigSyncParams = bigSyncMock.lastCall.args[0];
+                    var bigSyncParams = bigSyncStub.lastCall.args[0];
 
                     expect(bigSyncParams.project).to.equal(projectConfig.project);
                     expect(bigSyncParams.excludes).to.eql(projectConfig.excludes);
@@ -135,14 +84,14 @@ describe('Client Entry (index.js)', function () {
                     expect(bigSyncParams.destinationLocation).to.eql(projectConfig.destinationLocation + '/');
                     expect(bigSyncParams.hostname).to.eql(projectConfig.hostname);
                     expect(bigSyncParams.username).to.eql(projectConfig.username);
-                    expect(bigSyncMock.lastCall.args[1].debug).to.equal(testConfig.debug);
+                    expect(bigSyncStub.lastCall.args[1].debug).to.equal(testConfig.debug);
                 });
 
                 it('should start the file watch and log that it\'s connected', function() {
-                    triggerBigSyncComplete();
-                    var loggedMessage = loggerMock.lastCall.args.join(' ');
+                    bigSyncStub.triggerBigSyncComplete();
+                    var loggedMessage = utilStub.logSpy.lastCall.args.join(' ');
                     
-                    expect(FSClientAPI.watch.called).to.be.true;
+                    expect(fsHelperStub._api.watch.called).to.be.true;
 
                     expect(loggedMessage).to.contain('Connected');
                     expect(loggedMessage).to.contain(projectConfig.hostname);
@@ -154,52 +103,52 @@ describe('Client Entry (index.js)', function () {
                     encryptionConfig.projects.myProject.prefersEncrypted = true;
 
                     entry.start(encryptionConfig, ['myProject']);
-                    getWSOnCall('ready')();
-                    triggerBigSyncComplete();
-                    console.log(loggerMock.lastCall.args.join(' '));
-                    expect(loggerMock.lastCall.args.join(' ')).to.contain('using encryption');
+                    wsClientStub.triggerEvent('ready');
+                    bigSyncStub.triggerBigSyncComplete();
+
+                    expect(utilStub.logSpy.lastCall.args.join(' ')).to.contain('using encryption');
                 });
             });
 
             describe('on:reconnecting', function () {
                 beforeEach(function () {
-                    getWSOnCall('reconnecting')();
+                    wsClientStub.triggerEvent('reconnecting');
                 });
 
                 it('should log a message that it\'s reconnecting', function() {
-                    expect(loggerMock.lastCall.args.join(' ')).to.contain('Reconnecting');
+                    expect(utilStub.logSpy.lastCall.args.join(' ')).to.contain('Reconnecting');
                 });
             });
 
             describe('on:disconnected', function () {
                 beforeEach(function () {
-                    getWSOnCall('disconnected')();
+                    wsClientStub.triggerEvent('disconnected');
                 });
 
                 it('should log a message that it\'s reconnecting', function() {
-                    expect(loggerMock.lastCall.args.join(' ')).to.contain('Lost connection');
+                    expect(utilStub.logSpy.lastCall.args.join(' ')).to.contain('Lost connection');
                 });
             });
 
             describe('on:remote-error', function () {
                 beforeEach(function () {
-                    getWSOnCall('remote-error')();
+                    wsClientStub.triggerEvent('remote-error');
                 });
 
                 it('should log a message that it\'s reconnecting', function() {
-                    expect(loggerMock.lastCall.args.join(' ')).to.contain('Couldn\'t start sicksync process');
+                    expect(utilStub.logSpy.lastCall.args.join(' ')).to.contain('Couldn\'t start sicksync process');
                 });
             });
 
             describe('on:remote-message', function () {
                 it('should log a message if the message contains the destinationLocation', function() {
-                    getWSOnCall('remote-message')(projectConfig.destinationLocation + '/');
-                    expect(loggerMock.lastCall.args.join(' ')).to.contain(projectConfig.destinationLocation);
+                    wsClientStub.triggerEvent('remote-message', projectConfig.destinationLocation + '/');
+                    expect(utilStub.logSpy.lastCall.args.join(' ')).to.contain(projectConfig.destinationLocation);
                 });
 
                 it('should not log a message if the message does not contain the destinationLocation', function() {
-                    getWSOnCall('remote-message')('not-my-source');
-                    expect(loggerMock.called).to.be.false;
+                    wsClientStub.triggerEvent('remote-message', 'not-my-source');
+                    expect(utilStub.logSpy.called).to.be.false;
                 });
             });
         });
@@ -213,11 +162,11 @@ describe('Client Entry (index.js)', function () {
 
             describe('on:file-change', function () {
                 beforeEach(function () {
-                    getFSOnCall('file-change')(fileChange);
+                    fsHelperStub.triggerFsCall('file-change', fileChange);
                 });
 
                 it('should log a message on file changes', function() {
-                    var loggedMessage = loggerMock.lastCall.args.join(' ');
+                    var loggedMessage = utilStub.logSpy.lastCall.args.join(' ');
 
                     expect(loggedMessage).to.contain('>');
                     expect(loggedMessage).to.contain(fileChange.changeType);
@@ -225,7 +174,7 @@ describe('Client Entry (index.js)', function () {
                 });
 
                 it('should send the file through the ws client and add in the appropriate properties', function() {
-                    var sendCall = WsClientAPI.send.lastCall.args[0];
+                    var sendCall = wsClientStub._api.send.lastCall.args[0];
 
                     expect(sendCall.destinationpath).to.equal(projectConfig.destinationLocation + '/' + fileChange.relativepath);
                     expect(sendCall.subject).to.equal('file');
@@ -234,19 +183,19 @@ describe('Client Entry (index.js)', function () {
 
             describe('on:large-change', function () {
                 beforeEach(function () {
-                    getFSOnCall('large-change')(fileChange);
+                    fsHelperStub.triggerFsCall('large-change', fileChange);
                 });
 
                 it('should log a large change has been detected', function() {
-                    expect(loggerMock.lastCall.args[0]).to.contain('large change');
+                    expect(utilStub.logSpy.lastCall.args[0]).to.contain('large change');
                 });
 
                 it('should pause the fs-watch', function() {
-                    expect(FSClientAPI.pauseWatch.called).to.be.true;
+                    expect(fsHelperStub._api.pauseWatch.called).to.be.true;
                 });
 
                 it('should trigger a bigSync', function() {
-                    var bigSyncParams = bigSyncMock.lastCall.args[0];
+                    var bigSyncParams = bigSyncStub.lastCall.args[0];
 
                     expect(bigSyncParams.project).to.equal(projectConfig.project);
                     expect(bigSyncParams.excludes).to.eql(projectConfig.excludes);
@@ -254,20 +203,20 @@ describe('Client Entry (index.js)', function () {
                     expect(bigSyncParams.destinationLocation).to.eql(projectConfig.destinationLocation + '/');
                     expect(bigSyncParams.hostname).to.eql(projectConfig.hostname);
                     expect(bigSyncParams.username).to.eql(projectConfig.username);
-                    expect(bigSyncMock.lastCall.args[1].debug).to.equal(testConfig.debug);
+                    expect(bigSyncStub.lastCall.args[1].debug).to.equal(testConfig.debug);
                 });
 
                 describe('when the bigSync completes', function () {
                     beforeEach(function () {
-                        triggerBigSyncComplete();
+                        bigSyncStub.triggerBigSyncComplete();
                     });
 
                     it('should log that the change was successful after bigSync completes', function() {
-                        expect(loggerMock.lastCall.args[0]).to.contain('change sent');
+                        expect(utilStub.logSpy.lastCall.args[0]).to.contain('change sent');
                     });
 
                     it('should start the restart the file watch', function() {
-                        expect(FSClientAPI.watch.called).to.be.true;
+                        expect(fsHelperStub._api.watch.called).to.be.true;
                     });
                 });
             });
@@ -280,11 +229,11 @@ describe('Client Entry (index.js)', function () {
         });
 
         it('log a message that it\'s initiating a one-time sync', function() {
-            expect(loggerMock.lastCall.args.join(' ')).to.contain('one-time sync');
+            expect(utilStub.logSpy.lastCall.args.join(' ')).to.contain('one-time sync');
         });
 
         it('should call bigSync with the appropriate params', function() {
-            var bigSyncParams = bigSyncMock.lastCall.args[0];
+            var bigSyncParams = bigSyncStub.lastCall.args[0];
 
             expect(bigSyncParams.project).to.equal(projectConfig.project);
             expect(bigSyncParams.excludes).to.eql(projectConfig.excludes);
@@ -292,12 +241,12 @@ describe('Client Entry (index.js)', function () {
             expect(bigSyncParams.destinationLocation).to.eql(projectConfig.destinationLocation + '/');
             expect(bigSyncParams.hostname).to.eql(projectConfig.hostname);
             expect(bigSyncParams.username).to.eql(projectConfig.username);
-            expect(bigSyncMock.lastCall.args[1].debug).to.equal(testConfig.debug);
+            expect(bigSyncStub.lastCall.args[1].debug).to.equal(testConfig.debug);
         });
 
         it('should log a message when it\'s complete', function() {
-            triggerBigSyncComplete();
-            expect(loggerMock.lastCall.args.join(' ')).to.contain('sync complete');
+            bigSyncStub.triggerBigSyncComplete();
+            expect(utilStub.logSpy.lastCall.args.join(' ')).to.contain('sync complete');
         });
     });
 });

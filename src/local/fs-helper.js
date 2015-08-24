@@ -36,7 +36,6 @@ class FSHelper extends EventEmitter {
     }
 
     onFileChange (evt, sourcepath) {
-        console.log(evt, sourcepath);
         let relativepath = sourcepath.split(this._baseDir)[1],
             localpath = this._sourceLocation + relativepath,
             fileContents = null;

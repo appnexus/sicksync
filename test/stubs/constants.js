@@ -10,3 +10,4 @@ function setProp(prop, newVal) {
 
 module.exports = properties;
 module.exports.setProp = setProp;
+module.exports['@noCallThru'] = true;

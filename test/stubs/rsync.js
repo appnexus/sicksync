@@ -24,3 +24,4 @@ function resetAll() {
 module.exports = mockConstructor;
 module.exports._api = api;
 module.exports.resetAll = resetAll;
+module.exports['@noCallThru'] = true;

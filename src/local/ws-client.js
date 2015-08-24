@@ -44,13 +44,6 @@ class WSClient extends EventEmitter {
         this.emit(wsEvents.DISCONNECTED);
     }
 
-    _handleDisconnect () {
-        if (this._retryOnDisconnect) {
-            return this._reconnect();
-        }
-        this.emit(wsEvents.DISCONNECTED);
-    }
-
     _reconnect () {
         this.emit('reconnecting');
 
