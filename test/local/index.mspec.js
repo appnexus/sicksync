@@ -40,12 +40,16 @@ var projectConfig = testConfig.projects.myProject;
 
 describe('Client Entry (index.js)', function () {
 
-    beforeEach(function() {
+    before(function() {
         processStub.inject();
     });
 
-    afterEach(function() {
+    after(function() {
         processStub.restore();
+    });
+
+    afterEach(function() {
+        processStub.resetAll();
         utilStub.resetAll();
         bigSyncStub.resetAll();
         fsHelperStub.resetAll();
