@@ -15,10 +15,7 @@ var sshApi = {
 var api = _.assign({}, util, {
     logSpy: sinon.spy(),
     getConfig: sinon.stub().returns(_config),
-    shellIntoRemote: sinon.stub.returns(sshApi),
-    uniqInstance: function(token, constructor) {
-        return constructor;
-    },
+    shellIntoRemote: sinon.stub().returns(sshApi),
     generateLog: sinon.stub().returns(function() {
         api.logSpy.apply(null, arguments);
     })
@@ -42,6 +39,7 @@ function setConfig(config) {
 }
 
 module.exports = api;
+module.exports._ssh = sshApi;
 module.exports.triggerStdout = triggerStdout;
 module.exports.setConfig = setConfig;
 module.exports.resetAll = resetAll;
