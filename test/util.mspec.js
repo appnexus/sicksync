@@ -118,6 +118,20 @@ describe('util', function() {
 
             expect(util.isExcluded(fileToExclude, pathsToExclude)).to.be.false;
         });
+
+        it('should return false if the exclude is only globbed at one level, and a nested file is passed', function() {
+            var fileToExclude = '.git/logs/HEAD';
+            var pathsToExclude = [ '.git/*'];
+
+            expect(util.isExcluded(fileToExclude, pathsToExclude)).to.be.false;
+        });
+
+        it('should return true if the exclude is globbed recursively, and the file is in the root directory', function() {
+            var fileToExclude = '.git/logs.lock';
+            var pathsToExclude = [ '.git/**'];
+
+            expect(util.isExcluded(fileToExclude, pathsToExclude)).to.be.true;
+        });
     });
 
     describe('#rebounce', function() {

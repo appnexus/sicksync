@@ -39,7 +39,7 @@ class FSHelper extends EventEmitter {
         let relativepath = sourcepath.split(this._baseDir)[1],
             localpath = this._sourceLocation + relativepath,
             fileContents = null;
-
+        console.log(util.isExcluded(relativepath, this._excludes), relativepath, this._excludes);
         if (this._paused || util.isExcluded(relativepath, this._excludes)) return;
         if (evt === 'add' || evt === 'change') fileContents = fs.readFileSync(sourcepath).toString();
 

@@ -48,7 +48,7 @@ module.exports = {
             },
             excludes: {
                 description: 'Are there any files you\'d like to exclude? Use a comma separated list (supports globbing)',
-                default: '.git/*,.idea/*,v2/public/bundles2/*',
+                default: '.git/**,node_modules/**',
                 before: function(csv) {
                     return csv.split(',');
                 }
