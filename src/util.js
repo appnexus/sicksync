@@ -214,6 +214,6 @@ module.exports = {
             }
         });
 
-        return foundProjects
+        return foundProjects;
     }
 };
