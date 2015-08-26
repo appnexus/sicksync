@@ -1,36 +1,34 @@
-var _ = require('lodash'),
-    rewire = require('rewire'),
-    sinon = require('sinon'),
-    expect = require('chai').expect,
-    WSServer = rewire('../../src/remote/ws-server');
+var expect = require('chai').expect,
+    proxyquire = require('proxyquire'),
+
+    // Stubs
+    wsStub = require('../stubs/ws'),
+    consoleStub = require('../stubs/console'),
+
+    // Inject
+    WSServer = proxyquire('../../src/remote/ws-server', {
+        'ws': wsStub
+    });
 
 // Mocks
-var mockParams = {
+var testParams = {
     encrypt: false,
     hostname: 'coolhost',
     secret: 'valid'
 };
 
-var wsMock = {
-    on: sinon.spy(),
-    resetAll: function() {
-        _.forIn(wsMock, function(method, key) {
-            if (key !== 'resetAll') method.reset();
-        });
-    }
-};
-
-var WebSocketServerMock = function() {
-    return wsMock;
-};
-
-WSServer.__set__('WebSocketServer', WebSocketServerMock);
-WSServer.__set__('console', { info: _.noop });
-
 describe('ws-server', function() {
+    before(function() {
+        consoleStub.inject();
+    });
+
+    after(function() {
+        consoleStub.restore();
+    });
 
     afterEach(function() {
-        wsMock.resetAll();
+        wsStub.resetAll();
+        consoleStub.resetAll();
     });
 
     it('should throw an error when not supplying a `params` object', function() {
@@ -41,23 +39,23 @@ describe('ws-server', function() {
         var wsserver;
 
         beforeEach(function() {
-            wsserver = new WSServer(mockParams);
+            wsserver = new WSServer(testParams);
         });
 
         it('should register a `connection` handler', function() {
-            expect(wsMock.on.getCall(0).args[0]).to.equal('connection');
-            expect(wsMock.on.getCall(0).args[1]).to.be.a('function');
+            expect(wsStub._api.on.getCall(0).args[0]).to.equal('connection');
+            expect(wsStub._api.on.getCall(0).args[1]).to.be.a('function');
         });
 
         describe('when a client connects', function() {
             beforeEach(function() {
                 // Invoke the `connection` handler
-                wsMock.on.getCall(0).args[1](wsMock);
+                wsStub._api.on.getCall(0).args[1](wsStub._api);
             });
 
             it('should register a `message` handler', function() {
-                expect(wsMock.on.getCall(1).args[0]).to.equal('message');
-                expect(wsMock.on.getCall(1).args[1]).to.be.a('function');
+                expect(wsStub._api.on.getCall(1).args[0]).to.equal('message');
+                expect(wsStub._api.on.getCall(1).args[1]).to.be.a('function');
             });
 
             it('should emit a connection-closed event when a client disconnects', function(done) {
@@ -65,7 +63,7 @@ describe('ws-server', function() {
                     expect(true).to.be.ok;
                     done();
                 });
-                wsMock.on.getCall(2).args[1]();
+                wsStub._api.on.getCall(2).args[1]();
             });
 
             describe('when the secret does not match', function () {
@@ -79,7 +77,7 @@ describe('ws-server', function() {
                     wsserver.on('unauthorized', done);
 
                     // Invoke the message handler
-                    wsMock.on.getCall(1).args[1](JSON.stringify(badMessage));
+                    wsStub._api.on.getCall(1).args[1](JSON.stringify(badMessage));
                 });
             });
 
@@ -88,7 +86,7 @@ describe('ws-server', function() {
                 var fileMessage = {
                     subject: 'file',
                     contents: 'some-contents',
-                    secret: mockParams.secret
+                    secret: testParams.secret
                 };
 
                 beforeEach(function(done) {
@@ -99,7 +97,7 @@ describe('ws-server', function() {
                     });
 
                     // Invoke the message handler
-                    wsMock.on.getCall(1).args[1](JSON.stringify(fileMessage));
+                    wsStub._api.on.getCall(1).args[1](JSON.stringify(fileMessage));
                 });
 
                 afterEach(function() {

@@ -34,7 +34,7 @@ function triggerEventWithArgs(event) {
 var mockConstructor = sinon.stub().returns(api);
 
 module.exports = mockConstructor;
-module.exports.Sever = mockConstructor;
+module.exports.Server = mockConstructor;
 module.exports._api = api;
 module.exports.resetAll = resetAll;
 module.exports.getEventCall = getEventCall;
