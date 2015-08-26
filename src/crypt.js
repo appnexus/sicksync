@@ -1,14 +1,14 @@
-let crypto = require('crypto'),
-    constants = require('../conf/constants');
+import crypto from 'crypto';
+import { CRYPT_ALGO as algo } from '../conf/constants';
 
-module.exports = function CryptHelper(secret) {
+function CryptHelper(secret) {
     return {
         _crypt (text, isEncrypt) {
             let cryptMethod = isEncrypt ? 'createCipher' : 'createDecipher';
             let finalParam = isEncrypt ? 'hex' : 'utf8';
             let cipherArgs = isEncrypt ? [text, 'utf8', 'hex'] : [text, 'hex', 'utf8'];
 
-            let cipher = crypto[cryptMethod](constants.CRYPT_ALGO, secret);
+            let cipher = crypto[cryptMethod](algo, secret);
             let result = cipher.update.apply(cipher, cipherArgs);
             result += cipher.final(finalParam);
 
@@ -36,4 +36,6 @@ module.exports = function CryptHelper(secret) {
             return JSON.parse(msg);
         }
     };
-};
+}
+
+export default CryptHelper;
