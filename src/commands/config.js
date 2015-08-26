@@ -1,9 +1,11 @@
-let _ = require('lodash'),
-    util = require('../util');
+import { partial } from 'lodash';
+import { open, getConfigPath } from '../util';
 
-module.exports = function sicksyncOnceCommand(program/*, config */) {
+function sicksyncConfigCommand(program/*, config */) {
     program
         .command('config')
         .description('Opens the sicksync config file in your chosen editor.')
-        .action(_.partial(util.open, util.getConfigPath()));
+        .action(partial(open, getConfigPath()));
 };
+
+export default sicksyncConfigCommand;

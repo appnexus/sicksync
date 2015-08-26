@@ -1,9 +1,11 @@
-let _ = require('lodash'),
-    projectHelper = require('../project-helper');
+import { ary, partial } from 'lodash';
+import { info } from '../project-helper';
 
-module.exports = function sicksyncOnceCommand(program, config) {
+function sicksyncInfoCommand(program, config) {
     program
         .command('info [project...]')
         .description('Shows the information for the supplied project(s)')
-        .action(_.partial(_.ary(projectHelper.info, 2), config));
+        .action(partial(ary(info, 2), config));
 };
+
+export default sicksyncInfoCommand;

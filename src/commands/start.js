@@ -1,9 +1,11 @@
-let _ = require('lodash'),
-    local = require('../local').start;
+import { ary, partial } from 'lodash';
+import { start } from '../local';
 
-module.exports = function sicksyncStartCommand(program, config) {
+function sicksyncStartCommand(program, config) {
     program
         .command('start [projects...]')
         .description('Starts the continuous sicksync process for the given project(s)')
-        .action(_.partial(_.ary(local, 2), config));
+        .action(partial(ary(start, 2), config));
 };
+
+export default sicksyncStartCommand;

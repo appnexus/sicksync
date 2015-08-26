@@ -1,10 +1,12 @@
-let _ = require('lodash'),
-    once = require('../local').once;
+import { ary, partial } from 'lodash';
+import { once } from '../local';
 
-module.exports = function sicksyncOnceCommand(program, config) {
+function sicksyncOnceCommand(program, config) {
     program
         .command('once [projects...]')
         .description('Runs a one-time sync on the supplied project(s)')
         .option('-n, --dry-run', 'Shows information on what files will be sent without sending them')
-        .action(_.partial(_.ary(once, 3), config));
+        .action(partial(ary(once, 3), config));
 };
+
+export default sicksyncOnceCommand;

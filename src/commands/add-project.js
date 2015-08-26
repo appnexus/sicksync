@@ -1,10 +1,12 @@
-let _ = require('lodash'),
-    projectHelper = require('../project-helper');
+import { ary, partial } from 'lodash';
+import { add } from '../project-helper';
 
-module.exports = function setupSicksyncCommand(program, config) {
+function sicksyncAddProjectCommand(program, config) {
     program
         .command('add-project')
         .alias('add')
         .description('Adds a new project to sicksync.')
-        .action(_.partial(_.ary(projectHelper.add, 1), config));
+        .action(partial(ary(add, 1), config));
 };
+
+export default sicksyncAddProjectCommand;

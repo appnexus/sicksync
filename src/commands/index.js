@@ -1,7 +1,9 @@
-let normalizedPath = require('path').join(__dirname);
+import { join } from 'path';
 
-module.exports = function(program, config) {
-    require('fs').readdirSync(normalizedPath).forEach(function(file) {
+function getCommands(program, config) {
+    require('fs').readdirSync(join(__dirname)).forEach(function(file) {
         if (file !== 'index.js') require('./' + file)(program, config);
     });
 };
+
+export default getCommands;

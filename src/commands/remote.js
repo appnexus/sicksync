@@ -1,6 +1,6 @@
-let remote = require('../remote');
+import remote from '../remote';
 
-module.exports = function sicksyncRemoteCommand(program) {
+function sicksyncRemoteCommand(program) {
     program
         .command('remote')
         .description('Starts the remote process of sicksync. Must be ran on the remote machine.')
@@ -10,3 +10,5 @@ module.exports = function sicksyncRemoteCommand(program) {
         .option('-d, --debug', 'Show debug messages')
         .action(remote);
 };
+
+export default sicksyncRemoteCommand;
