@@ -1,0 +1,5 @@
+bin/
+coverage/
+build/
+img/
+node_modules/

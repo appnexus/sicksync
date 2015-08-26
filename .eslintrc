@@ -1,0 +1,17 @@
+{
+  "ecmaFeatures": {
+    "modules": true
+  },
+  "env": {
+    "node": true,
+    "es6": true,
+    "mocha": true
+  },
+  "rules": {
+    "quotes": [1, "single"],
+    "comma-dangle": [1, "never"],
+    "no-unused-vars": [2, {"vars": "all", "args": "after-used"}],
+    "semi": [2, "always"]
+  },
+  "plugins": []
+}

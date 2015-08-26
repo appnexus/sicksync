@@ -1,0 +1,12 @@
+# Source Code
+test/
+coverage/
+src/
+img/
+
+# Linters/helpers
+.editorconfig
+.eslintignore
+.eslintrc
+.gitignore
+.travis.yml
