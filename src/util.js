@@ -185,15 +185,9 @@ module.exports = {
         };
     },
     getProjectFromCwd(config) {
-        return _.chain(config.projects)
-            .map((project) => {
-                project.sourceLocation = untildify(project.sourceLocation);
-                return project;
-            })
-            .filter((project) => {
-                return project.sourceLocation === process.cwd();
-            })
-            .value();
+        return _.filter(config.projects, (project) => {
+            return  untildify(project.sourceLocation) === process.cwd();
+        });
     },
     getProjectsFromConfig(config, projects) {
         let foundProjects = [];
