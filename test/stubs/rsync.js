@@ -1,8 +1,6 @@
 var _ = require('lodash'),
     sinon = require('sinon');
 
-var mockConstructor = sinon.spy();
-
 var api = {
     shell: sinon.stub().returnsThis(),
     flags: sinon.stub().returnsThis(),
@@ -14,6 +12,8 @@ var api = {
     progress: sinon.stub().returnsThis(),
     execute: sinon.stub().callsArg(0)
 };
+
+var mockConstructor = sinon.stub().returns(api);
 
 function resetAll() {
     _.forIn(api, function(method) {

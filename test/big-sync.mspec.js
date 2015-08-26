@@ -1,10 +1,17 @@
 var expect = require('chai').expect,
-    _ = require('lodash'),
-    rewire = require('rewire'),
-    sinon = require('sinon'),
-    bigSync = rewire('../src/big-sync');
+    proxyquire = require('proxyquire'),
+    
+    // Mocks
+    rsyncStub = require('./stubs/rsync'),
+    utilStub = require('./stubs/util'),
 
-var mockConfig = {
+    // Inject
+    bigSync = proxyquire('../src/big-sync', {
+        'rsync': rsyncStub,
+        './util': utilStub
+    });
+
+var testConfig = {
     username: 'joel',
     excludes: ['one', 'two', 'three'],
     sourceLocation: '/some/file/path',
@@ -12,135 +19,92 @@ var mockConfig = {
     destinationLocation: '/some/where/out/there'
 };
 
-var rsyncSpies = {
-    shell: sinon.stub().returnsThis(),
-    flags: sinon.stub().returnsThis(),
-    exclude: sinon.stub().returnsThis(),
-    source: sinon.stub().returnsThis(),
-    destination: sinon.stub().returnsThis(),
-    output: sinon.stub().returnsThis(),
-    set: sinon.stub().returnsThis(),
-    progress: sinon.stub().returnsThis(),
-    execute: sinon.stub().callsArg(0),
-    resetAll: function() {
-        _.forIn(rsyncSpies, function(method, key) {
-            if (key !== 'resetAll') method.reset();
-        });
-    }
-};
-
-var utilSpy = {
-    log: sinon.spy(),
-    generateLog: sinon.stub().returns(function() { 
-        utilSpy.log.apply(null, arguments); 
-    }),
-    ensureTrailingSlash: sinon.stub().returnsArg(0),
-    resetAll: function() {
-        _.forIn(utilSpy, function(method, key) {
-            if (key !== 'resetAll') method.reset();
-        });
-    }
-};
-
-function RsyncMockConstructor() {
-    return rsyncSpies;
-}
-
 describe('bigSync', function() {
-    var oldUtil = bigSync.__get__('util');
-    var oldRsync = bigSync.__get__('Rsync');
-
-    beforeEach(function() {
-        bigSync.__set__('Rsync', RsyncMockConstructor);
-        bigSync.__set__('util', utilSpy);
-    });
 
     afterEach(function() {
-        bigSync.__set__('util', oldUtil);
-        bigSync.__set__('Rsync', oldRsync);
-        rsyncSpies.resetAll();
-        utilSpy.resetAll();
+        rsyncStub.resetAll();
+        utilStub.resetAll();
     });
 
     describe('when executed', function() {
 
         beforeEach(function(done) {
-            bigSync(mockConfig, done);
+            bigSync(testConfig, done);
         });
 
         it('should set the `shell` property to `ssh`', function() {
-            expect('ssh').to.equal(rsyncSpies.shell.lastCall.args[0]);
+            expect('ssh').to.equal(rsyncStub._api.shell.lastCall.args[0]);
         });
 
         it('should set the `flags` property to `az`', function() {
-            expect('az').to.equal(rsyncSpies.flags.lastCall.args[0]);
+            expect('az').to.equal(rsyncStub._api.flags.lastCall.args[0]);
         });
 
         it('should set the `exclude` property to match the one in config', function() {
-            expect(mockConfig.excludes).to.deep.equal(rsyncSpies.exclude.lastCall.args[0]);
+            expect(testConfig.excludes).to.deep.equal(rsyncStub._api.exclude.lastCall.args[0]);
         });
 
-        it('should set the `source` property to match the on one in the config', function() {
-            expect(mockConfig.sourceLocation).to.equal(rsyncSpies.source.lastCall.args[0]);
+        it('should set the `source` property to match the on one in the config and append a trailing slash', function() {
+            expect(testConfig.sourceLocation + '/').to.equal(rsyncStub._api.source.lastCall.args[0]);
         });
 
         it('should set the `destination` property to match the on one in the config', function() {
-            var destination = mockConfig.username + '@' + mockConfig.hostname + ':' + mockConfig.destinationLocation;
-            expect(destination).to.equal(rsyncSpies.destination.lastCall.args[0]);
+            var destination = testConfig.username + '@' + testConfig.hostname + ':' + testConfig.destinationLocation;
+            expect(destination).to.equal(rsyncStub._api.destination.lastCall.args[0]);
         });
 
         it('should set the deletion flag', function() {
-            expect('delete').to.equal(rsyncSpies.set.lastCall.args[0]);
+            expect('delete').to.equal(rsyncStub._api.set.lastCall.args[0]);
         });
     });
 
     describe('optional params', function () {
         describe('when debug is `true`', function () {
             beforeEach(function(done) {
-                bigSync(mockConfig, { debug: true }, done);
+                bigSync(testConfig, { debug: true }, done);
             });
 
             it('should set the `progress` flag', function() {
-                expect(rsyncSpies.progress.called).to.be.true;
+                expect(rsyncStub._api.progress.called).to.be.true;
             });
 
             it('should pass in a function to log the status messages', function() {
-                expect(rsyncSpies.output.lastCall.args[0]).to.be.a('function');
+                expect(rsyncStub._api.output.lastCall.args[0]).to.be.a('function');
             });
 
             it('should pass in a function to log the error messages', function() {
-                expect(rsyncSpies.output.lastCall.args[1]).to.be.a('function');
+                expect(rsyncStub._api.output.lastCall.args[1]).to.be.a('function');
             });
 
             it('should output the status messages', function() {
                 var message = 'Processing';
-                rsyncSpies.output.lastCall.args[0](new Buffer(message));
+                rsyncStub._api.output.lastCall.args[0](new Buffer(message));
 
-                expect(utilSpy.log.lastCall.args[0]).to.contain(message);
+                expect(utilStub.logSpy.lastCall.args[0]).to.contain(message);
             });
 
             it('should output the error messages', function() {
                 var message = 'Processing';
-                rsyncSpies.output.lastCall.args[1](new Buffer(message));
+                rsyncStub._api.output.lastCall.args[1](new Buffer(message));
 
-                expect(utilSpy.log.lastCall.args[0]).to.contain(message);
+                expect(utilStub.logSpy.lastCall.args[0]).to.contain(message);
             });
         });
 
         describe('when `isDryRun` is true', function () {
             beforeEach(function(done) {
-                bigSync(mockConfig, { dry: true }, done);
+                bigSync(testConfig, { dry: true }, done);
             });
 
             it('should set the rsync command to run dry', function() {
-                expect(rsyncSpies.set.lastCall.args[0]).to.equal('dry-run');
+                expect(rsyncStub._api.set.lastCall.args[0]).to.equal('dry-run');
             });
         });
 
         describe('when no callback is handed', function () {
             it('should still function properly', function() {
                 expect(function() {
-                    bigSync(mockConfig);
+                    bigSync(testConfig);
                 }).to.not.throw(Error);
             });
         });

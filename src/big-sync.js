@@ -1,10 +1,10 @@
-let Rsync = require('rsync'),
-    _ = require('lodash'),
-    hostname = require('os').hostname(),
-    util = require('./util');
+import Rsync from 'rsync';
+import _ from 'lodash';
+import { hostname } from 'os';
+import util from './util';
 
-module.exports = function bigSync(project) {
-    let log = util.generateLog(project.project, hostname);
+function bigSync(project) {
+    let log = util.generateLog(project.project, hostname());
 
     function consoleLogFromBuffer(buffer) {
         log(buffer.toString());
@@ -37,3 +37,5 @@ module.exports = function bigSync(project) {
 
     rsync.execute(onComplete);
 };
+
+export default bigSync;
