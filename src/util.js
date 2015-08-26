@@ -186,12 +186,11 @@ module.exports = {
     },
     getProjectFromCwd(config) {
         return _.chain(config.projects)
-            .map((project) => {
-                project.sourceLocation = untildify(project.sourceLocation);
-                return project;
-            })
             .filter((project) => {
-                return project.sourceLocation === process.cwd();
+                return _.isEqual(
+                    this.ensureTrailingSlash(untildify(project.sourceLocation)),
+                    this.ensureTrailingSlash(process.cwd())
+                );
             })
             .value();
     },

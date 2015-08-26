@@ -106,7 +106,15 @@ module.exports = {
             version: packageJson.version,
             debug: config.debug,
             retryOnDisconnect: config.retryOnDisconnect,
-            projects: [_.omit(config, 'debug', 'retryOnDisconnect')]
+            projects: [
+                _.chain(config)
+                    .omit('debug', 'retryOnDisconnect')
+                    .mapKeys(function(value, key) {
+                        if (key === 'userName') return 'username';
+                        return key;
+                    })
+                    .value()
+            ]
         };
     },
     migrateConfig(config) {
