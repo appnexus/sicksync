@@ -140,7 +140,7 @@ function logProjectsNotFound(projects) {
         projects :
         process.cwd();
 
-    console.log(text.PROJECT_NOT_FOUND, projectsWanted);
+    console.info(text.PROJECT_NOT_FOUND, projectsWanted);
 }
 
 export default { start, once };

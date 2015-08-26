@@ -25,7 +25,7 @@ var WebSocketServerMock = function() {
 };
 
 WSServer.__set__('WebSocketServer', WebSocketServerMock);
-WSServer.__set__('console', { log: _.noop });
+WSServer.__set__('console', { info: _.noop });
 
 describe('ws-server', function() {
 
@@ -35,10 +35,6 @@ describe('ws-server', function() {
 
     it('should throw an error when not supplying a `params` object', function() {
         expect(WSServer).to.throw();
-    });
-
-    it('should return an event-emitter', function() {
-        expect(new WSServer(mockParams).on).to.be.a('function');
     });
 
     describe('default behaviour', function() {

@@ -31,13 +31,13 @@ module.exports = {
             let message = data.toString();
 
             if (_.contains(message, 'sicksync@')) {
-                console.log(project.hostname, text.UPDATE_SUCCESS);
+                console.info(project.hostname, text.UPDATE_SUCCESS);
 
                 return ssh.kill('SIGINT');
             }
 
             if (_.contains(message, 'ERR!')) {
-                console.log(project.hostname, text.UPDATE_FAIL);
+                console.info(project.hostname, text.UPDATE_FAIL);
 
                 return ssh.kill('SIGINT');
             }
@@ -48,18 +48,18 @@ module.exports = {
     updateLocal () {
         exec(constants.UPDATE_CMD,  (error, stdout, stderr) => {
             if (!!error || _.contains(stderr, 'ERR!')) {
-                return console.log(hostname, text.UPDATE_FAIL, (error || stderr));
+                return console.info(hostname, text.UPDATE_FAIL, (error || stderr));
             }
 
-            console.log(hostname, text.UPDATE_SUCCESS);
+            console.info(hostname, text.UPDATE_SUCCESS);
         });
     },
     update (config, opts) {
         if (opts.check) {
             return this.getLatestVersion(function(err, version) {
                 if (err) return;
-                console.log('Latest Version:', version);
-                console.log('Current Version:', packageJson.version);
+                console.info('Latest Version:', version);
+                console.info('Current Version:', packageJson.version);
             });
         }
 
@@ -73,7 +73,7 @@ module.exports = {
     },
     notify () {
         if (updateInfo.version !== packageJson.version) {
-            return console.log(
+            return console.info(
                 text.UPDATE_AVAILABLE, '\n',
                 'Current version:', packageJson.version, '\n',
                 'Latest version:', updateInfo.version);

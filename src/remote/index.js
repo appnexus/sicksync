@@ -1,16 +1,17 @@
-let _ = require('lodash'),
-    FSHelper = require('./fs-helper'),
-    Server = require('./ws-server'),
-    text = require('../../conf/text'),
-    eventsConf = require('../../conf/events'),
-    fsEvents = eventsConf.FS.REMOTE,
+import _ from 'lodash';
+import FSHelper from './fs-helper';
+import Server from './ws-server';
+import text from '../../conf/text';
+import eventsConf from '../../conf/events';
+
+let fsEvents = eventsConf.FS.REMOTE,
     wsEvents = eventsConf.WS.REMOTE;
 
-module.exports = function startRemote(opts) {
-    if (!_.isNumber(opts.port)) return console.warn(text.REMOTE_MISSING_PORT);
-    if (!_.isString(opts.secret)) return console.warn(text.REMOTE_MISSING_SECRET);
+function startRemote(opts) {
+    if (!_.isNumber(opts.port)) return console.info(text.REMOTE_MISSING_PORT);
+    if (!_.isString(opts.secret)) return console.info(text.REMOTE_MISSING_SECRET);
 
-    let log = _.partial(console.log.bind(console), opts.secret);
+    let log = _.partial(console.info.bind(console), opts.secret);
     let receivedLog = _.partial(log, '<');
     let errorLog = _.partial(log, 'ERR');
 
@@ -65,3 +66,5 @@ module.exports = function startRemote(opts) {
     fsHelper.on(fsEvents.ADD_DIR_ERROR, errorLog);
     fsHelper.on(fsEvents.DELETE_ERROR, errorLog);
 };
+
+export default startRemote;

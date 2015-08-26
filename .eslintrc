@@ -8,10 +8,11 @@
     "mocha": true
   },
   "rules": {
-    "quotes": [1, "single"],
-    "comma-dangle": [1, "never"],
+    "quotes": [2, "single"],
+    "comma-dangle": [2, "never"],
     "no-unused-vars": [2, {"vars": "all", "args": "after-used"}],
-    "semi": [2, "always"]
+    "semi": [2, "always"],
+    "no-undef": [2]
   },
   "plugins": []
 }

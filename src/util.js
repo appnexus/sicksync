@@ -50,7 +50,7 @@ module.exports = {
         let configPath = this.getConfigPath();
 
         fs.outputFileSync(configPath, JSON.stringify(configFile, null, 4));
-        console.log(text.CONFIG_SAVED);
+        console.info(text.CONFIG_SAVED);
     },
 
     // Given a file path, check to see if it's in the excludes array
@@ -86,7 +86,7 @@ module.exports = {
                 hostname ? chalk.green('[' + hostname + ']') : ''
             ].concat([].slice.call(arguments));
 
-            console.log.apply(console, args);
+            console.info.apply(console, args);
         };
     },
 
@@ -164,7 +164,7 @@ module.exports = {
         ]);
     },
     printLogo() {
-        console.log(chalk.blue(fs.readFileSync(path.resolve(__dirname, '../conf/logo.txt')).toString()));
+        console.info(chalk.blue(fs.readFileSync(path.resolve(__dirname, '../conf/logo.txt')).toString()));
     },
     uniqInstance(tokenPath, Constructor) {
         let instances = {};

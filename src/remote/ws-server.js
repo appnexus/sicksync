@@ -16,7 +16,7 @@ class WSServer extends EventEmitter {
             port: params.port 
         }).on('connection', this.handleConnect.bind(this));
 
-        console.log(this._secret, text.SERVER_ON_READY);
+        console.info(this._secret, text.SERVER_ON_READY);
     }
 
     handleConnect (ws) {

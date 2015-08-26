@@ -1,18 +1,16 @@
-var _ = require('lodash'),
-    sinon = require('sinon');
+var sinon = require('sinon'),
+    oldInfo = console.info;
 
 function resetAll() {
-    _.forIn(api, function(method) {
-        if (_.isFunction(method.reset)) method.reset();
-    });
+    console.info.reset();
 }
 
 function inject() {
-    sinon.spy(console, 'log');
+    console.info = sinon.spy();
 }
 
 function restore() {
-    console.log.restore();
+    console.info = oldInfo;
 }
 
 module.exports.inject = inject;

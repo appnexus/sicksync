@@ -59,7 +59,7 @@ describe('util', function() {
 
         beforeEach(function() {
             outputFileSyncSpy = sinon.stub(util.__get__('fs'), 'outputFileSync');
-            consoleSpy = sinon.stub(console, 'log');
+            consoleSpy = sinon.stub(console, 'info');
         });
 
         afterEach(function() {
@@ -317,7 +317,7 @@ describe('util', function() {
 
     describe('logging utils', function () {
         var cachedConsole = console;
-        var consoleMock = { log: sinon.spy() };
+        var consoleMock = { info: sinon.spy() };
 
         beforeEach(function () {
             util.__set__('console', consoleMock);
@@ -325,7 +325,7 @@ describe('util', function() {
 
         afterEach(function() {
             util.__set__('console', cachedConsole);
-            consoleMock.log.reset();
+            consoleMock.info.reset();
         });
 
         describe('#generateLog', function () {
@@ -336,21 +336,21 @@ describe('util', function() {
                 var message = 'wat';
                 util.generateLog(project, host)(message);
 
-                expect(consoleMock.log.lastCall.args[0]).to.contain(project);
-                expect(consoleMock.log.lastCall.args[1]).to.contain(host);
-                expect(consoleMock.log.lastCall.args[2]).to.contain(message);
+                expect(consoleMock.info.lastCall.args[0]).to.contain(project);
+                expect(consoleMock.info.lastCall.args[1]).to.contain(host);
+                expect(consoleMock.info.lastCall.args[2]).to.contain(message);
             });
 
             it('should treat only one argument as the hostname', function() {
                 var host = 'myhost';
                 util.generateLog(host)('wat');
-                expect(consoleMock.log.lastCall.args[1]).to.contain(host);
+                expect(consoleMock.info.lastCall.args[1]).to.contain(host);
             });
 
             it('should log message when no hosts or projects are passed in', function() {
                 var message = 'wat';
                 util.generateLog()(message);
-                expect(consoleMock.log.lastCall.args[2]).to.contain(message);
+                expect(consoleMock.info.lastCall.args[2]).to.contain(message);
             });
         });
         
@@ -358,7 +358,7 @@ describe('util', function() {
             it('should pring a sweet sweet sweet logo', function() {
                 util.printLogo();
 
-                expect(consoleMock.log.called).to.be.true;
+                expect(consoleMock.info.called).to.be.true;
             });
         });
     });

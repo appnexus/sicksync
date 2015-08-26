@@ -7,9 +7,9 @@ let _ = require('lodash'),
     sicksyncSetup = util.setupPrompter(prompter);
 
 function printProjectInfo (project) {
-    console.log(chalk.green(project.project));
+    console.info(chalk.green(project.project));
     _.forIn(project, (value, key) => {
-        console.log('  ', chalk.yellow(_.startCase(key)), value);
+        console.info('  ', chalk.yellow(_.startCase(key)), value);
     });
 }
 
@@ -88,7 +88,7 @@ module.exports = {
         sicksyncSetup.get({
             properties: questions
         }, (err, result) => {
-            if (err) return console.log('\nLooks we had a problem setting up: ' + err);
+            if (err) return console.info('\nLooks we had a problem setting up: ' + err);
 
             if (!config.debug) {
                 config.debug = result.debug;
@@ -123,7 +123,7 @@ module.exports = {
 
     info (config, projects) {
         if (_.isEmpty(config.projects)) {
-            console.log('No projects! Add some by running', chalk.green('`sicksync add-project`'));
+            console.info('No projects! Add some by running', chalk.green('`sicksync add-project`'));
         }
 
         if (_.isEmpty(projects)) {
