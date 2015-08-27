@@ -1,22 +1,22 @@
-let _ = require('lodash'),
-    latestVersion = require('latest-version'),
-    fs = require('fs-extra'),
-    exec = require('child_process').exec,
-    hostname = require('os').hostname(),
-    path = require('path'),
-    untildify = require('untildify'),
-    util = require('./util'),
-    packageJson = require('../package.json'),
-    constants = require('../conf/constants'),
-    text = require('../conf/text'),
-    now = Date.now(),
+import _ from 'lodash';
+import latestVersion from 'latest-version';
+import fs from 'fs-extra';
+import { exec } from 'child_process';
+import { hostname } from 'os';
+import { basename } from 'path';
+import untildify from 'untildify';
+import util from './util';
+import packageJson from '../package.json';
+import constants from '../conf/constants';
+import text from '../conf/text';
+
+let now = Date.now(),
     updateInfo = fs.existsSync(util.getUpdatePath()) ?
         require(util.getUpdatePath()) :
         {
             lastChecked: now,
             version: packageJson.version
         };
-
 
 let getLatestVersion = _.partial(_.ary(latestVersion, 2), 'sicksync');
 
@@ -53,7 +53,7 @@ function updateLocal () {
             return console.info(hostname, text.UPDATE_FAIL, (error || stderr));
         }
 
-        console.info(hostname, text.UPDATE_SUCCESS);
+        console.info(hostname(), text.UPDATE_SUCCESS);
     });
 }
 
@@ -106,7 +106,7 @@ function migrate1to2(config) {
         fs.delete(configLocation);
     }
 
-    config.project = path.basename(config.sourceLocation);
+    config.project = basename(config.sourceLocation);
 
     return {
         version: packageJson.version,
