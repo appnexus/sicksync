@@ -1,10 +1,10 @@
 import Rsync from 'rsync';
 import _ from 'lodash';
 import { hostname } from 'os';
-import util from './util';
+import { generateLog, ensureTrailingSlash } from './util';
 
 function bigSync(project) {
-    let log = util.generateLog(project.project, hostname());
+    let log = generateLog(project.project, hostname());
 
     function consoleLogFromBuffer(buffer) {
         log(buffer.toString());
@@ -22,7 +22,7 @@ function bigSync(project) {
         .shell('ssh')
         .flags('az')
         .exclude(project.excludes)
-        .source(util.ensureTrailingSlash(project.sourceLocation))
+        .source(ensureTrailingSlash(project.sourceLocation))
         .set('delete')
         .destination(project.username + '@' + project.hostname + ':' + project.destinationLocation);
 

@@ -1,25 +1,28 @@
-let program = require('commander'),
-    packageJson = require('../package.json'),
-    updates = require('./update'),
-    util = require('./util');
+import program from 'commander';
+import { version } from '../package.json';
+import { check, notify } from './update';
+import { getConfig, printLogo } from './util';
+import commands from './commands';
 
-let config = util.getConfig();
+let config = getConfig();
 
-require('./commands')(program, config);
+commands(program, config);
 
-module.exports = function() {
+function SickSync() {
     program
-        .version(packageJson.version)
+        .version(version)
         .usage('<command> [options]')
         .parse(process.argv);
 
     // Run help if no command is provided
     if (!process.argv.slice(2).length) {
-        util.printLogo();
+        printLogo();
         program.outputHelp();
     }
 
     // Run/Display update notifications
-    updates.check();
-    updates.notify();
+    check();
+    notify();
 };
+
+export default SickSync;

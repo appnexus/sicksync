@@ -1,26 +1,26 @@
-let _ = require('lodash'),
-    path = require('path'),
-    prompter = require('prompt'),
-    chalk = require('chalk'),
-    packageJson = require('../package.json'),
-    util = require('./util'),
-    sicksyncSetup = util.setupPrompter(prompter);
+import _ from 'lodash';
+import { sep } from 'path';
+import prompter from 'prompt';
+import { green, yellow } from 'chalk';
+import { version } from '../package.json';
+import util from './util';
+
+let sicksyncSetup = util.setupPrompter(prompter);
 
 function printProjectInfo (project) {
-    console.info(chalk.green(project.project));
+    console.info(green(project.project));
     _.forIn(project, (value, key) => {
-        console.info('  ', chalk.yellow(_.startCase(key)), value);
+        console.info('  ', yellow(_.startCase(key)), value);
     });
 }
 
-module.exports = {
+export default {
     add (config) {
-
         let questions = {
             project: {
                 description: 'What would you like to name this project?',
                 required: true,
-                default: _.last(process.cwd().split(path.sep)),
+                default: _.last(process.cwd().split(sep)),
                 message: 'Please enter a name for this project'
             },
             hostname: {
@@ -101,7 +101,7 @@ module.exports = {
             }
 
             // Save our project in the main config
-            config.version = packageJson.version;
+            config.version = version;
             config.projects = config.projects || [];
             config.projects.push(result);
 
@@ -123,7 +123,7 @@ module.exports = {
 
     info (config, projects) {
         if (_.isEmpty(config.projects)) {
-            console.info('No projects! Add some by running', chalk.green('`sicksync add-project`'));
+            console.info('No projects! Add some by running', green('`sicksync add-project`'));
         }
 
         if (_.isEmpty(projects)) {
