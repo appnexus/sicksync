@@ -4,6 +4,7 @@
   "description": "Don’t accept the available as the preferable. Go extra mile with extra speed.",
   "main": "src/index.js",
   "scripts": {
+    "preinstall": "./scripts/pre-install.js",
     "test": "istanbul cover _mocha -- test/*.mspec.js test/**/*.mspec.js --compilers js:babel/register",
     "watch": "npm run transpile -- -w",
     "transpile": "babel src --out-dir dist",
@@ -24,6 +25,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/appnexus/sicksync.git"
+  },
+  "engines" : {
+    "node" : ">=0.12"
   },
   "author": "jgriffith",
   "license": "Apache-2.0",
