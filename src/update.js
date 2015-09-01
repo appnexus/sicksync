@@ -6,7 +6,7 @@ import { hostname } from 'os';
 import { basename } from 'path';
 import untildify from 'untildify';
 import util from './util';
-import packageJson from '../package.json';
+import { version as currentVersion } from '../package.json';
 import constants from '../conf/constants';
 import text from '../conf/text';
 
@@ -15,7 +15,7 @@ let now = Date.now(),
         require(util.getUpdatePath()) :
         {
             lastChecked: now,
-            version: packageJson.version
+            version: currentVersion
         };
 
 let getLatestVersion = _.partial(_.ary(latestVersion, 2), 'sicksync');
@@ -62,7 +62,7 @@ function update (config, opts) {
         return getLatestVersion(function(err, version) {
             if (err) return;
             console.info('Latest Version:', version);
-            console.info('Current Version:', packageJson.version);
+            console.info('Current Version:', currentVersion);
         });
     }
 
@@ -76,10 +76,10 @@ function update (config, opts) {
 }
 
 function notify () {
-    if (updateInfo.version !== packageJson.version) {
+    if (updateInfo.version !== currentVersion) {
         return console.info(
             text.UPDATE_AVAILABLE, '\n',
-            'Current version:', packageJson.version, '\n',
+            'Current version:', currentVersion, '\n',
             'Latest version:', updateInfo.version);
     }
 }
@@ -109,7 +109,7 @@ function migrate1to2(config) {
     config.project = basename(config.sourceLocation);
 
     return {
-        version: packageJson.version,
+        version: currentVersion,
         debug: config.debug,
         retryOnDisconnect: config.retryOnDisconnect,
         projects: [
