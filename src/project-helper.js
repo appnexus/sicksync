@@ -48,7 +48,7 @@ export default {
             },
             excludes: {
                 description: 'Are there any files you\'d like to exclude? Use a comma separated list (supports globbing)',
-                default: '.git/*,.idea/*,v2/public/bundles2/*',
+                default: '.git/**,.git/**/*,.idea/*,**/*.swp,**/*.svn',
                 before: function(csv) {
                     return csv.split(',');
                 }
