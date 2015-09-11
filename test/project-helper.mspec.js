@@ -1,33 +1,33 @@
 var expect = require('chai').expect,
     proxyquire = require('proxyquire'),
 
-    // Mocks
-    mockUtil = require('./stubs/util'),
-    consoleMock = require('./stubs/console'),
+    // Stubs
+    mockStub = require('./stubs/util'),
+    consoleStub = require('./stubs/console'),
 
     projectHelper = proxyquire('../src/project-helper', {
-        './util': mockUtil
+        './util': mockStub
     });
 
 describe('Project-Helper', function () {
     before(function() {
-        consoleMock.inject();
+        consoleStub.inject();
     });
 
     after(function() {
-        consoleMock.restore();
+        consoleStub.restore();
     });
 
     afterEach(function() {
-        consoleMock.resetAll();
-        mockUtil.resetAll();
+        consoleStub.resetAll();
+        mockStub.resetAll();
     });
 
     describe('#add', function () {
         it('query for all information, including globals, on new installs', function() {
             projectHelper.add({});
 
-            expect(mockUtil._prompt.get.lastCall.args[0].properties).to.have.all.keys(
+            expect(mockStub._prompt.get.lastCall.args[0].properties).to.have.all.keys(
                 'project',
                 'hostname',
                 'username',
@@ -45,7 +45,7 @@ describe('Project-Helper', function () {
         it('should query for only project-related information on current installs', function() {
             projectHelper.add({ retryOnDisconnect: true, debug: true });
 
-            expect(mockUtil._prompt.get.lastCall.args[0].properties).to.have.all.keys(
+            expect(mockStub._prompt.get.lastCall.args[0].properties).to.have.all.keys(
                 'project',
                 'hostname',
                 'username',
@@ -63,7 +63,7 @@ describe('Project-Helper', function () {
 
             projectHelper.add({ retryOnDisconnect: true, debug: true });
             // Trigger a failure
-            mockUtil._prompt.get.lastCall.args[1](errorText);
+            mockStub._prompt.get.lastCall.args[1](errorText);
             expect(console.info.lastCall.args[0]).to.contain(errorText);
         });
 
@@ -72,7 +72,7 @@ describe('Project-Helper', function () {
             
             projectHelper.add({});
             
-            excludesHelper = mockUtil._prompt.get.lastCall.args[0].properties.excludes.before;
+            excludesHelper = mockStub._prompt.get.lastCall.args[0].properties.excludes.before;
             
             expect(excludesHelper('one,two')).to.eql(['one', 'two']);
         });
@@ -89,8 +89,8 @@ describe('Project-Helper', function () {
 
                 projectHelper.add({});
                 // Trigger success
-                mockUtil._prompt.get.lastCall.args[1](null, result);
-                writeConfigCall = mockUtil.writeConfig.lastCall.args[0];
+                mockStub._prompt.get.lastCall.args[1](null, result);
+                writeConfigCall = mockStub.writeConfig.lastCall.args[0];
 
                 expect(writeConfigCall.debug).to.be.true;
                 expect(writeConfigCall.retryOnDisconnect).to.be.true;
@@ -116,8 +116,8 @@ describe('Project-Helper', function () {
                 });
 
                 // Trigger success
-                mockUtil._prompt.get.lastCall.args[1](null, result);
-                writeConfigCall = mockUtil.writeConfig.lastCall.args[0];
+                mockStub._prompt.get.lastCall.args[1](null, result);
+                writeConfigCall = mockStub.writeConfig.lastCall.args[0];
 
                 expect(writeConfigCall.debug).to.be.false;
                 expect(writeConfigCall.retryOnDisconnect).to.be.false;
@@ -140,7 +140,7 @@ describe('Project-Helper', function () {
 
             projectHelper.remove(config, projectsToRemove);
 
-            expect(mockUtil.writeConfig.lastCall.args[0].projects).to.have.length(1);
+            expect(mockStub.writeConfig.lastCall.args[0].projects).to.have.length(1);
         });
 
         it('should do nothing for projects it cannot find', function() {
@@ -157,7 +157,7 @@ describe('Project-Helper', function () {
 
             projectHelper.remove(config, projectsToRemove);
 
-            expect(mockUtil.writeConfig.lastCall.args[0].projects).to.have.length(3);
+            expect(mockStub.writeConfig.lastCall.args[0].projects).to.have.length(3);
         });
     });
 

@@ -22,6 +22,7 @@ var api = _.assign({}, util, {
     shellIntoRemote: sinon.stub().returns(sshApi),
     setupPrompter: sinon.stub().returns(prompterApi),
     writeConfig: sinon.spy(),
+    getUpdatePath: sinon.spy(),
     generateLog: sinon.stub().returns(function() {
         api.logSpy.apply(null, arguments);
     })

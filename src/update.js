@@ -14,7 +14,7 @@ let now = Date.now(),
     updateInfo = fs.existsSync(util.getUpdatePath()) ?
         require(util.getUpdatePath()) :
         {
-            lastChecked: now,
+            lastChecked: 0,
             version: currentVersion
         };
 
@@ -125,7 +125,9 @@ function migrate1to2(config) {
 }
 
 function migrateConfig(config) {
-    let configVersion = config.version ? +configVersion.replace('.', '') : null;
+    let configVersion = config.version ?
+        config.version.replace(/\./g, '') :
+        null;
 
     if (!configVersion) {
         util.writeConfig(migrate1to2(config));
