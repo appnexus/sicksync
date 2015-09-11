@@ -12,10 +12,16 @@ var sshApi = {
     }
 };
 
+var prompterApi = {
+    get: sinon.spy()
+};
+
 var api = _.assign({}, util, {
     logSpy: sinon.spy(),
     getConfig: sinon.stub().returns(_config),
     shellIntoRemote: sinon.stub().returns(sshApi),
+    setupPrompter: sinon.stub().returns(prompterApi),
+    writeConfig: sinon.spy(),
     generateLog: sinon.stub().returns(function() {
         api.logSpy.apply(null, arguments);
     })
@@ -28,6 +34,7 @@ function triggerStdout(message) {
 function resetAll() {
     sshApi.stdout.on.reset();
     sshApi.stdin.write.reset();
+    prompterApi.get.reset();
 
     _.forIn(api, function(method) {
         if (_.isFunction(method.reset)) method.reset();
@@ -40,6 +47,7 @@ function setConfig(config) {
 
 module.exports = api;
 module.exports._ssh = sshApi;
+module.exports._prompt = prompterApi;
 module.exports.triggerStdout = triggerStdout;
 module.exports.setConfig = setConfig;
 module.exports.resetAll = resetAll;

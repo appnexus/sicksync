@@ -90,12 +90,12 @@ export default {
         }, (err, result) => {
             if (err) return console.info('\nLooks we had a problem setting up: ' + err);
 
-            if (!config.debug) {
+            if (_.isUndefined(config.debug)) {
                 config.debug = result.debug;
                 delete result.debug;
             }
 
-            if (!config.retryOnDisconnect) {
+            if (_.isUndefined(config.retryOnDisconnect)) {
                 config.retryOnDisconnect = result.retryOnDisconnect;
                 delete result.retryOnDisconnect;
             }
@@ -122,8 +122,8 @@ export default {
     },
 
     info (config, projects) {
-        if (_.isEmpty(config.projects)) {
-            console.info('No projects! Add some by running', green('`sicksync add-project`'));
+        if (_.isEmpty(config) || _.isEmpty(config.projects)) {
+            return console.info('No projects! Add some by running', green('`sicksync add-project`'));
         }
 
         if (_.isEmpty(projects)) {
