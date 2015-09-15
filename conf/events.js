@@ -16,7 +16,8 @@ module.exports = {
     REMOTE: {
         READY: 'ready',
         ERROR: 'error',
-        MESSAGE: 'message'
+        MESSAGE: 'message',
+        NOT_FOUND: 'not-found'
     },
     WS: {
         LOCAL: {
@@ -24,6 +25,7 @@ module.exports = {
             RECONNECTING: 'reconnecting',
             REMOTE_MESSAGE: 'remote-message',
             REMOTE_ERROR: 'remote-error',
+            REMOTE_NOT_FOUND: 'remote-not-found',
             READY: 'ready'
         },
         REMOTE: {

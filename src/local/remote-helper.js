@@ -50,6 +50,11 @@ class RemoteHelper extends EventEmitter {
                 return context.emit(remoteEvents.MESSAGE, cleanedMessage);
             }
 
+            // Not in $PATH
+            if (_.contains(message, 'no sicksync in')) {
+                return context.emit(remoteEvents.NOT_FOUND, message);
+            }
+
             // Command not found :(
             /* istanbul ignore else */
             if (_.contains(message, 'command not found')) {

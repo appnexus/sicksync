@@ -52,6 +52,7 @@ class WSClient extends EventEmitter {
         this._devbox.on(remoteEvents.READY, this._connect.bind(this));
         this._devbox.on(remoteEvents.MESSAGE, _.partial(this.emit.bind(this), wsEvents.REMOTE_MESSAGE));
         this._devbox.on(remoteEvents.ERROR, _.partial(this.emit.bind(this), wsEvents.REMOTE_ERROR));
+        this._devbox.on(remoteEvents.NOT_FOUND, _.partial(this.emit.bind(this), wsEvents.REMOTE_NOT_FOUND));
     }
 
     send (obj) {

@@ -64,7 +64,16 @@ describe('remote-helper', function () {
                 done();
             });
             utilStub.triggerStdout(errorMessage);
+        });
 
+        it('should emit an error event when the command isn\'t in the $PATH', function(done) {
+            var notInPathMessage = 'no sicksync in';
+            helper.start();
+            helper.once('not-found', function(data) {
+                expect(data).to.contain(notInPathMessage);
+                done();
+            });
+            utilStub.triggerStdout(notInPathMessage);
         });
 
         describe('starting the sicksync process', function () {

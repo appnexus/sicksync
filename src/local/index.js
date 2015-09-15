@@ -87,6 +87,11 @@ function startProject (config, projectConf) {
         process.exit();
     });
 
+    wsClient.on(wsEvents.REMOTE_NOT_FOUND, (err) => {
+        localLog(text.SYNC_ON_REMOTE_NOT_FOUND, projectConf.hostname, err);
+        process.exit();
+    });
+
     wsClient.on(wsEvents.REMOTE_MESSAGE, (message) => {
         // Since WS can be shared amongst projects, filter out
         // any that are not in this project
