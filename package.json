@@ -1,6 +1,6 @@
 {
   "name": "sicksync",
-  "version": "2.0.0-alpha-1",
+  "version": "2.0.0-alpha-2",
   "description": "Don’t accept the available as the preferable. Go extra mile with extra speed.",
   "main": "src/index.js",
   "scripts": {
@@ -26,8 +26,8 @@
     "type": "git",
     "url": "https://github.com/appnexus/sicksync.git"
   },
-  "engines" : {
-    "node" : ">=0.12"
+  "engines": {
+    "node": ">=0.12"
   },
   "author": "jgriffith",
   "license": "Apache-2.0",
