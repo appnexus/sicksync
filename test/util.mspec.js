@@ -1,38 +1,54 @@
 var expect = require('chai').expect,
-    rewire = require('rewire'),
+    proxyquire = require('proxyquire'),
     sinon = require('sinon'),
-    util = rewire('../src/util');
+
+    constantsStub = require('./stubs/constants'),
+    fsStub = require('./stubs/fs.js'),
+    childStub = require('./stubs/child-process'),
+    consoleStub = require('./stubs/console'),
+
+    util = proxyquire('../src/util', {
+        '../conf/constants': constantsStub,
+        'fs-extra': fsStub,
+        'child_process': childStub
+    });
 
 describe('util', function() {
-    describe('#getConfigPath', function() {
-        it('should return a string', function() {
-            expect(util.getConfigPath()).to.be.a('string');
-        });
+    before(function() {
+        consoleStub.inject();
+    });
 
+    after(function() {
+        consoleStub.restore();
+    });
+
+    afterEach(function() {
+        constantsStub.resetAll();
+        fsStub.resetAll();
+        childStub.resetAll();
+        consoleStub.resetAll();
+    });
+
+    describe('#getConfigPath', function() {
         it('should contain `json` in it\'s path', function() {
-            expect(util.getConfigPath().indexOf('json') > -1).to.be.true;
+            expect(util.getConfigPath()).to.contain('config.json');
         });
     });
 
     describe('#getConfig', function() {
-        var constants = util.__get__('constants');
         var constantsMock = {
             CONFIG_FILE: 'iShouldntBeHereHopefully',
             SICKSYNC_DIR: '~/.sicksync'
         };
-        var oldFs = util.__get__('fs');
-
-        afterEach(function() {
-            util.__set__('fs', oldFs);
-            util.__set__('constants', constants);
-        });
 
         it('should return an object', function() {
             expect(util.getConfig()).to.be.an('object');
         });
 
         it('should return an empty object if the config doesn\'t exist', function() {
-            util.__set__('constants', constantsMock);
+            constantsStub.setProp('CONFIG_FILE', constantsMock.CONFIG_FILE);
+            fsStub.setExistsSyncFlag(false);
+
             expect(util.getConfig()).to.eql({});
         });
     });
@@ -54,25 +70,12 @@ describe('util', function() {
     });
 
     describe('#writeConfig', function() {
-        var outputFileSyncSpy = null;
-        var consoleSpy = null;
-
-        beforeEach(function() {
-            outputFileSyncSpy = sinon.stub(util.__get__('fs'), 'outputFileSync');
-            consoleSpy = sinon.stub(console, 'info');
-        });
-
-        afterEach(function() {
-            outputFileSyncSpy.restore();
-            consoleSpy.restore();
-        });
-
         it('should call `fs.outputFileSync`', function() {
             util.writeConfig({
                 some: 'object',
                 syncsRemotely: false
             });
-            expect(outputFileSyncSpy.called).to.be.true;
+            expect(fsStub.outputFileSync.called).to.be.true;
         });
 
         it('should call `fs.outputFileSyncSpy` with the right arguments', function() {
@@ -83,11 +86,11 @@ describe('util', function() {
             };
 
             util.writeConfig(configObject);
-            parsedFsCall = (JSON.parse(outputFileSyncSpy.getCall(0).args[1]));
+            parsedFsCall = (JSON.parse(fsStub.outputFileSync.getCall(0).args[1]));
 
             expect(parsedFsCall).to.be.an('object');
             expect(parsedFsCall).to.deep.equal(configObject);
-            expect(outputFileSyncSpy.getCall(0).args[0]).to.contain('.sicksync/config.json');
+            expect(fsStub.outputFileSync.getCall(0).args[0]).to.contain('.sicksync/config.json');
         });
     });
 
@@ -240,27 +243,15 @@ describe('util', function() {
     });
 
     describe('#open', function() {
-        var oldExec = util.__get__('exec');
-        var execSpy = null;
-
-        beforeEach(function() {
-            util.__set__('exec', sinon.stub());
-            execSpy = util.__get__('exec');
-        });
-
-        afterEach(function() {
-            util.__set__('exec', oldExec);
-        });
-
         it('should call `exec`', function() {
             util.open('somefile');
-            expect(execSpy.called).to.be.true;
+            expect(childStub.exec.called).to.be.true;
         });
 
         it('should pass in parameters to the `exec` call', function() {
             util.open('somefile');
-            expect(execSpy.getCall(0).args[0]).to.contain('somefile');
-            expect(execSpy.getCall(0).args[0]).to.contain('open');
+            expect(childStub.exec.getCall(0).args[0]).to.contain('somefile');
+            expect(childStub.exec.getCall(0).args[0]).to.contain('open');
         });
     });
 
@@ -316,18 +307,6 @@ describe('util', function() {
     });
 
     describe('logging utils', function () {
-        var cachedConsole = console;
-        var consoleMock = { info: sinon.spy() };
-
-        beforeEach(function () {
-            util.__set__('console', consoleMock);
-        });
-
-        afterEach(function() {
-            util.__set__('console', cachedConsole);
-            consoleMock.info.reset();
-        });
-
         describe('#generateLog', function () {
 
             it('should return a logging function that prepends the project name and hostname', function() {
@@ -336,21 +315,21 @@ describe('util', function() {
                 var message = 'wat';
                 util.generateLog(project, host)(message);
 
-                expect(consoleMock.info.lastCall.args[0]).to.contain(project);
-                expect(consoleMock.info.lastCall.args[1]).to.contain(host);
-                expect(consoleMock.info.lastCall.args[2]).to.contain(message);
+                expect(console.info.lastCall.args[0]).to.contain(project);
+                expect(console.info.lastCall.args[1]).to.contain(host);
+                expect(console.info.lastCall.args[2]).to.contain(message);
             });
 
             it('should treat only one argument as the hostname', function() {
                 var host = 'myhost';
                 util.generateLog(host)('wat');
-                expect(consoleMock.info.lastCall.args[1]).to.contain(host);
+                expect(console.info.lastCall.args[1]).to.contain(host);
             });
 
             it('should log message when no hosts or projects are passed in', function() {
                 var message = 'wat';
                 util.generateLog()(message);
-                expect(consoleMock.info.lastCall.args[2]).to.contain(message);
+                expect(console.info.lastCall.args[2]).to.contain(message);
             });
         });
         
@@ -358,32 +337,20 @@ describe('util', function() {
             it('should pring a sweet sweet sweet logo', function() {
                 util.printLogo();
 
-                expect(consoleMock.info.called).to.be.true;
+                expect(console.info.called).to.be.true;
             });
         });
     });
 
     describe('#shellIntoRemote', function () {
-        var spawnSpy = sinon.spy();
-        var cachedSpawn = util.__get__('spawn');
-
-        beforeEach(function() {
-            util.__set__('spawn', spawnSpy);
-        });
-
-        afterEach(function() {
-            util.__set__('spawn', cachedSpawn);
-            spawnSpy.reset();
-        });
-
         it('should shell into the remote passed and return', function() {
             var host = 'myhost';
             
             util.shellIntoRemote(host);
 
-            expect(spawnSpy.lastCall.args[0]).to.equal('ssh');
-            expect(spawnSpy.lastCall.args[1][0]).to.equal('-tt');
-            expect(spawnSpy.lastCall.args[1][1]).to.equal(host);
+            expect(childStub.spawn.lastCall.args[0]).to.equal('ssh');
+            expect(childStub.spawn.lastCall.args[1][0]).to.equal('-tt');
+            expect(childStub.spawn.lastCall.args[1][1]).to.equal(host);
         });
     });
 

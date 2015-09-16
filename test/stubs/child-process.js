@@ -2,7 +2,8 @@ var _ = require('lodash'),
     sinon = require('sinon');
 
 var api = {
-    exec: sinon.spy()
+    exec: sinon.spy(),
+    spawn: sinon.spy()
 };
 
 function resetAll() {

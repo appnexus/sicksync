@@ -1,14 +1,12 @@
-let _ = require('lodash'),
-    fs = require('fs-extra'),
-    child = require('child_process'),
-    minimatch = require('minimatch'),
-    chalk = require('chalk'),
-    path = require('path'),
-    untildify = require('untildify'),
-    constants = require('../conf/constants'),
-    text = require('../conf/text'),
-    exec = child.exec,
-    spawn = child.spawn;
+import _ from 'lodash';
+import fs from 'fs-extra';
+import {exec, spawn} from 'child_process';
+import minimatch from 'minimatch';
+import chalk from 'chalk';
+import path from 'path';
+import untildify from 'untildify';
+import constants from '../conf/constants';
+import text from '../conf/text';
 
 // Returns the path to the sicksync dir
 function getSicksyncDir() {

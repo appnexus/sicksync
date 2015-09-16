@@ -1,13 +1,22 @@
-var properties = {
-    SICKSYNC_DIR: '',
-    UPDATE_FILE: '',
-    CONFIG_FILE: ''
+var _ = require('lodash');
+
+var originalProps = {
+    SICKSYNC_DIR: '~/.sicksync',
+    UPDATE_FILE: 'update.json',
+    CONFIG_FILE: 'config.json'
 };
 
+var props = _.clone(originalProps);
+
 function setProp(prop, newVal) {
-    properties[prop] = newVal;
+    props[prop] = newVal;
 }
 
-module.exports = properties;
+function resetAll() {
+    props = _.clone(originalProps);
+}
+
+module.exports = props;
 module.exports.setProp = setProp;
+module.exports.resetAll = resetAll;
 module.exports['@noCallThru'] = true;
