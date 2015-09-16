@@ -2,11 +2,11 @@ import program from 'commander';
 import { version } from '../package.json';
 import { check, notify } from './update';
 import { getConfig, printLogo } from './util';
-import commands from './commands';
+import generateCommands from './commands';
 
 let config = getConfig();
 
-commands(program, config);
+generateCommands(program, config);
 
 function SickSync() {
     program
