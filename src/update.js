@@ -61,8 +61,11 @@ function update (config, opts) {
     if (opts.check) {
         return getLatestVersion(function(err, version) {
             if (err) return;
-            console.info('Latest Version:', version);
-            console.info('Current Version:', currentVersion);
+            console.info(
+                text.UPDATE_AVAILABLE, '\n',
+                'Current version:', currentVersion, '\n',
+                'Latest version:', version
+            );
         });
     }
 
@@ -80,7 +83,8 @@ function notify () {
         return console.info(
             text.UPDATE_AVAILABLE, '\n',
             'Current version:', currentVersion, '\n',
-            'Latest version:', updateInfo.version);
+            'Latest version:', updateInfo.version
+        );
     }
 }
 

@@ -9,7 +9,8 @@ var sshApi = {
     },
     stdin: {
         write: sinon.spy()
-    }
+    },
+    kill: sinon.spy()
 };
 
 var prompterApi = {
@@ -35,6 +36,7 @@ function triggerStdout(message) {
 function resetAll() {
     sshApi.stdout.on.reset();
     sshApi.stdin.write.reset();
+    sshApi.kill.reset();
     prompterApi.get.reset();
 
     _.forIn(api, function(method) {

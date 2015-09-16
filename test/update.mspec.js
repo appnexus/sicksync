@@ -154,4 +154,140 @@ describe('Update', function () {
             });
         });
     });
+
+    describe('#update', function () {
+        describe('Options', function () {
+            describe('Checked', function () {
+                it('should print version information when hearing back from latestVersion', function() {
+                    update.update(null, { check: true });
+                    latestVersionStub.lastCall.args[1](null, '1.2.3');
+
+                    expect(console.info.called).to.be.true;
+                });
+
+                it('should not print anything if the latestVersion call fails', function() {
+                    update.update(null, { check: true });
+                    latestVersionStub.lastCall.args[1]('ERROR!');
+
+                    expect(console.info.called).to.be.false;
+                });
+            });
+
+            describe('migrateConfig', function () {
+                it('should run the `migrateToConfig` functionality', function() {
+                    update.update(configV1, { migrateConfig: true });
+
+                    expect(utilStub.writeConfig.called).to.be.true;
+                });
+            });
+        });
+
+
+        describe('Default behavior', function () {
+            var config = {
+                projects: [{
+                    project: 'my-project',
+                    username: 'jgriffith',
+                    hostname: 'my-host'
+                }, {
+                    project: 'another-project',
+                    username: 'tdale',
+                    hostname:'wat'
+                }]
+            };
+
+            it('should update sicksync locally', function() {
+                update.update(config, {});
+
+                expect(childStub.exec.lastCall.args[0]).to.equal('npm i -g sicksync');
+            });
+
+            it('should log into each remote machine and update sicksync', function() {
+                update.update(config, {});
+
+                expect(utilStub.shellIntoRemote.firstCall.args[0])
+                    .to.equal(config.projects[0].username + '@' + config.projects[0].hostname);
+
+                expect(utilStub.shellIntoRemote.secondCall.args[0])
+                    .to.equal(config.projects[1].username + '@' + config.projects[1].hostname);
+            });
+        });
+    });
+
+    describe('#updateLocal', function () {
+        beforeEach(function() {
+            update.updateLocal();
+        });
+
+        it('should execute execute the update', function() {
+            expect(childStub.exec.lastCall.args[0]).to.equal('npm i -g sicksync');
+        });
+
+        it('should log any issues if the update failed', function() {
+            var errorMessage = 'ERROR!';
+            childStub.exec.lastCall.args[1](errorMessage);
+
+            expect(console.info.lastCall.args[1]).to.contain('Update failed! Please run manually');
+            expect(console.info.lastCall.args[2]).to.contain(errorMessage);
+        });
+
+        it('should log any issues if the update failed via stderr', function() {
+            var errorMessage = 'ERR!';
+            childStub.exec.lastCall.args[1](null, null, errorMessage);
+
+            expect(console.info.lastCall.args[1]).to.contain('Update failed! Please run manually');
+            expect(console.info.lastCall.args[2]).to.contain(errorMessage);
+        });
+
+        it('should log when the operation is successful', function() {
+            childStub.exec.lastCall.args[1](null, null, null);
+
+            expect(console.info.lastCall.args[1]).to.contain('Updated Successfully!');
+        });
+    });
+
+    describe('#updateRemote', function () {
+        var projectDef = {
+            username: 'joel',
+            hostname: 'my-host'
+        };
+
+        it('should use the user name and hostname to shell into the remote box', function() {
+            update.updateRemote(projectDef);
+
+            expect(utilStub.shellIntoRemote.lastCall.args[0]).to.equal(projectDef.username + '@' + projectDef.hostname);
+        });
+
+        describe('once shelled in', function () {
+            beforeEach(function() {
+                update.updateRemote(projectDef);
+            });
+
+            it('should run the update command once shelled in', function() {
+                utilStub.triggerStdout('Last Login');
+
+                expect(utilStub._ssh.stdin.write.lastCall.args[0]).to.contain('npm i -g sicksync');
+            });
+
+            it('should log a message if sicksync once sicksync is installed', function() {
+                 utilStub.triggerStdout('sicksync@2.0.0');
+
+                expect(console.info.lastCall.args[1]).to.contain('Updated Successfully!');
+            });
+
+            it('should log a message once sicksync is installed and exit', function() {
+                 utilStub.triggerStdout('sicksync@2.0.0');
+
+                expect(console.info.lastCall.args[1]).to.contain('Updated Successfully!');
+                expect(utilStub._ssh.kill.called).to.be.true;
+            });
+
+            it('should log a message if it errors and exit', function() {
+                 utilStub.triggerStdout('ERR! No sicksync!');
+
+                expect(console.info.lastCall.args[1]).to.contain('Update failed! Please run manually');
+                expect(utilStub._ssh.kill.called).to.be.true;
+            });
+        });
+    });
 });
