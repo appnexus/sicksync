@@ -6,13 +6,16 @@ var expect = require('chai').expect,
     utilStub = require('./stubs/util'),
     childStub = require('./stubs/child-process'),
     latestVersionStub = require('./stubs/latest-version'),
+    packageStub = require('./stubs/package'),
+    consoleStub = require('./stubs/console'),
 
     // Inject
     update = proxyquire('../src/update', {
         'child_process': childStub,
         'latest-version': latestVersionStub,
         './util': utilStub,
-        'fs-extra': fsStub
+        'fs-extra': fsStub,
+        '../package.json': packageStub
     });
 
 var configV1 = {
@@ -36,11 +39,20 @@ var configV1 = {
 
 describe('Update', function () {
 
+    before(function() {
+        consoleStub.inject();
+    });
+
+    after(function() {
+        consoleStub.restore();
+    });
+
     afterEach(function () {
         fsStub.resetAll();
         utilStub.resetAll();
         childStub.resetAll();
-        latestVersionStub.resetAll();    
+        latestVersionStub.resetAll();
+        consoleStub.resetAll();
     });
 
     describe('#migrate1to2', function () {
@@ -110,6 +122,36 @@ describe('Update', function () {
             latestVersionStub.lastCall.args[1]('Your machine is the dead'); // Trigger the callback
 
             expect(fsStub.writeFileSync.called).to.be.false;
+        });
+    });
+
+    describe('#notify', function () {
+        describe('When there\'s a new package out', function () {
+            beforeEach(function () {
+                packageStub.setVersion(2);
+            });
+
+            it('should log a message that a new version is available', function() {
+                update.notify();
+                expect(console.info.lastCall.args[0]).to.contain('Sicksync update available!');
+            });
+
+            it('should log the version differences', function() {
+                update.notify();
+                expect(console.info.lastCall.args[2]).to.contain('Current version:');
+                expect(console.info.lastCall.args[5]).to.contain('Latest version:');
+            });
+        });
+
+        describe('When there is NOT a new package out', function () {
+            beforeEach(function () {
+                packageStub.setVersion(1);
+            });
+            
+            it('should not print any information at all', function() {
+                update.notify();
+                expect(console.info.called).to.be.false;
+            });
         });
     });
 });
