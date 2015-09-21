@@ -3,7 +3,7 @@ import { CRYPT_ALGO as algo } from '../conf/constants';
 
 function CryptHelper(secret) {
     return {
-        _crypt (text, isEncrypt) {
+        _cryptHelper (text, isEncrypt) {
             let cryptMethod = isEncrypt ? 'createCipher' : 'createDecipher';
             let finalParam = isEncrypt ? 'hex' : 'utf8';
             let cipherArgs = isEncrypt ? [text, 'utf8', 'hex'] : [text, 'hex', 'utf8'];
@@ -15,10 +15,10 @@ function CryptHelper(secret) {
             return result;
         },
         encrypt (text) {
-            return this._crypt(text, true);
+            return this._cryptHelper(text, true);
         },
         decrypt (text) {
-            return this._crypt(text, false);
+            return this._cryptHelper(text, false);
         },
         stringifyAndEncrypt (data, withEncryption) {
             let stringifiedData = JSON.stringify(data);
