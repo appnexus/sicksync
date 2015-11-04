@@ -7,7 +7,6 @@ module.exports = {
     SYNC_ON_CONNECT: chalk.green('Connected'),
     SYNC_ON_RECONNECT: chalk.yellow('Reconnecting'),
     SYNC_ON_DISCONNECT: chalk.red('Lost connection'),
-    SYNC_ON_REMOTE_LOST: chalk.red('Couldn\'t start sicksync process'),
     SYNC_ON_REMOTE_NOT_FOUND: chalk.red('Couldn\'t find sicksync in $PATH on'),
     SYNC_ON_LARGE_CHANGE: chalk.yellow('Sending a large change'),
     SYNC_ON_LARGE_CHANGE_DONE: chalk.green('Large change sent!'),
