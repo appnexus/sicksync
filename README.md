@@ -137,18 +137,31 @@ After this, you'll see when updates are available when running sicksync, and can
 
 ## Troubleshooting
 
-Q: I'm seeing `[ERR] command not found: sicksync remote` when starting sicksync locally, what gives?
+**Q: `sicksync update` doesn't seem to work?**
 
-A: This likely has to do with `sicksync remote` not being in your `$PATH` when `sicksync` ssh's into your remote machine to start the process. If you are using ZSH, try moving your $PATH definitions to `.zshenv`.
+A: This likely has to do with needing to use `sudo` for installing sicksync (which we don't support). This is easily fixed by [visiting this page.](https://docs.npmjs.com/getting-started/fixing-npm-permissions#option-2-change-npm-s-default-directory-to-another-directory) If all else fails, shell into your machines and install sicksync manually by running `npm i -g sicksync`.
 
-Q: I'm seeing `Error: Module did not self-register.` when running sicksync.
+**Q: I'm seeing `command not found: sicksync` when starting sicksync, what gives?**
+
+A: This likely has to do with `sicksync` not being in your `$PATH` when `sicksync` ssh's into your remote machine to start the process. If you are using ZSH, try moving your $PATH definitions to `.zshenv`. Your `~/.bashrc` file should look something like:
+
+```
+if [ -f /etc/bashrc ]; then
+       . /etc/bashrc
+fi
+
+# Set this to your npm globally installed packages
+export PATH=$PATH:'/home/jgriffith/.npm/bin' 
+```
+
+**Q: I'm seeing `Error: Module did not self-register.` when running sicksync.**
 
 A: If you've recently updated `node` or changed versions, you'll need to recompile the binaries that go along with `sicksync`. Run `npm install -g sicksync` again, or if you've forked/cloned the repo then remove the associated `node_modules` folder and run `npm install`.
 
-Q: `sicksync once` is taking a long time to run, is that ok?
+**Q: `sicksync once` is taking a long time to run, is that ok?**
 
 A: Depends. If there are a lot of changes, the one-time-sync can take a bit to run. Can `scp` or `rsync` be ran effectively?
 
-Q: I'm having an issue, and I need help.
+**Q: I'm having an issue, and I need help.**
 
 A: Send a PR with the problem and we'll give it a gander!
