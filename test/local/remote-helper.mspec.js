@@ -59,7 +59,7 @@ describe('remote-helper', function () {
         it('should emit an error event when the command isn\'t found', function(done) {
             var errorMessage = 'command not found';
             helper.start();
-            helper.once('error', function(data) {
+            helper.once('not-found', function(data) {
                 expect(data).to.contain(errorMessage);
                 done();
             });

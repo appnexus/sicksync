@@ -4,6 +4,12 @@ import util from '../util';
 import { REMOTE as remoteEvents } from '../../conf/events';
 import { SERVER_ON_READY as  readyFlag } from '../../conf/text';
 
+const COMMAND_NOT_FOUND = [
+    'sicksync not found',
+    'no sicksync in',
+    'command not found'
+];
+
 class RemoteHelper extends EventEmitter {
     constructor (params) {
         super();
@@ -41,7 +47,9 @@ class RemoteHelper extends EventEmitter {
             bootSicksync(ssh);
 
             // If we get a 'ready' flag back from the server, emit a ready event
-            if (_.contains(message, readyFlag)) return context.emit(remoteEvents.READY);
+            if (_.contains(message, readyFlag)) {
+                return context.emit(remoteEvents.READY);
+            }
 
             // If the message contains the devboxes name, emit the message
             if (_.contains(message, context._secret)) {
@@ -50,16 +58,13 @@ class RemoteHelper extends EventEmitter {
                 return context.emit(remoteEvents.MESSAGE, cleanedMessage);
             }
 
-            // Not in $PATH
-            if (_.contains(message, 'no sicksync in')) {
-                return context.emit(remoteEvents.NOT_FOUND, message);
-            }
-
-            // Command not found :(
-            /* istanbul ignore else */
-            if (_.contains(message, 'command not found')) {
-                return context.emit(remoteEvents.ERROR, message);
-            }
+            // Not found/Not installed
+            _.each(COMMAND_NOT_FOUND, (notFoundText) => {
+                /* istanbul ignore else */
+                if (_.contains(message, notFoundText)) {
+                    context.emit(remoteEvents.NOT_FOUND, message);
+                }
+            });
         });
     }
 }

@@ -15,7 +15,6 @@ module.exports = {
     },
     REMOTE: {
         READY: 'ready',
-        ERROR: 'error',
         MESSAGE: 'message',
         NOT_FOUND: 'not-found'
     },

@@ -134,16 +134,6 @@ describe('Client Entry (index.js)', function () {
                 });
             });
 
-            describe('on:remote-error', function () {
-                beforeEach(function () {
-                    wsClientStub.triggerEvent('remote-error');
-                });
-
-                it('should log a message it couldn\'t start the sicksync process', function() {
-                    expect(utilStub.logSpy.lastCall.args.join(' ')).to.contain('Couldn\'t start sicksync process');
-                });
-            });
-
             describe('on:remote-not-found', function () {
                 beforeEach(function () {
                     wsClientStub.triggerEvent('remote-not-found', 'no sicksync in /usr/bin/which');

@@ -120,14 +120,9 @@ describe('ws-client', function() {
             expect(remoteHelperStub._api.on.getCall(1).args[1]).to.be.a('function');
         });
 
-        it('should listen for the `error` message from the devbox', function() {
-            expect(remoteHelperStub._api.on.getCall(2).args[0]).to.equal('error');
-            expect(remoteHelperStub._api.on.getCall(2).args[1]).to.be.a('function');
-        });
-
         it('should listen for the `not-found` message from the devbox', function() {
-            expect(remoteHelperStub._api.on.getCall(3).args[0]).to.equal('not-found');
-            expect(remoteHelperStub._api.on.getCall(3).args[1]).to.be.a('function');
+            expect(remoteHelperStub._api.on.getCall(2).args[0]).to.equal('not-found');
+            expect(remoteHelperStub._api.on.getCall(2).args[1]).to.be.a('function');
         });
     });
 });

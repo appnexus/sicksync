@@ -82,11 +82,6 @@ function startProject (config, projectConf) {
         process.exit();
     });
 
-    wsClient.on(wsEvents.REMOTE_ERROR, (err) => {
-        localLog(text.SYNC_ON_REMOTE_LOST, err);
-        process.exit();
-    });
-
     wsClient.on(wsEvents.REMOTE_NOT_FOUND, (err) => {
         localLog(text.SYNC_ON_REMOTE_NOT_FOUND, projectConf.hostname, err);
         process.exit();
