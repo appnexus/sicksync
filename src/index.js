@@ -1,6 +1,5 @@
 import program from 'commander';
 import { version } from '../package.json';
-import { check, notify } from './update';
 import { getConfig, printLogo } from './util';
 import generateCommands from './commands';
 
@@ -19,10 +18,6 @@ function SickSync() {
         printLogo();
         program.outputHelp();
     }
-
-    // Run/Display update notifications
-    check();
-    notify();
 };
 
 export default SickSync;
