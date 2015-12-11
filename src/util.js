@@ -24,6 +24,7 @@ function getConfigPath() {
 }
 
 // Returns the config object if it exists, if not an empty object. Loads/saves from cache where possible
+// TODO: `existsSync` is going to be deprecated soon...
 function getConfig() {
     let config = {},
         configPath = getConfigPath();
