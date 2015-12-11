@@ -1,4 +1,8 @@
-## 2.0.0-rc
+## 2.1.0
+- New `doctor` command to quickly troubleshoot why sicksync isn't working. See README.md for more.
+- Updating package deps.
+
+## 2.0.0
 *Overview*
 
 sicksync 2.0.0 Introduces a lot of new features and functionality. These changes are detailed further below, but to summarize:

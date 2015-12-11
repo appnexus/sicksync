@@ -64,6 +64,17 @@ The `--migrate-config` flag will migrate your config file to accomodate the curr
 
 Opens the sicksync config file in the editor of your choice.
 
+`sicksync doctor`
+
+Runs a gamut of tests to see if sicksync is setup properly and working on your destination machines. Checks include:
+
+- If the config file is in the right place.
+- If the config file has the right properties.
+- If the projects have the right properties.
+- If all the destination machines can be shelled into.
+- If all the destination machines have sicksync.
+- If all the destination machines have sicksync at the right version.
+
 `sicksync remote [--port | -p <port>] [--secret | -s <secret>] [--encryption | -e] [--debug | -d]`
 
 Starts the remote process for continous syncing. This likely does not need to be called directly since `sicksync start` takes care of that for you. Since the remote end of sicksync is "dumb", you'll have to manually supply the port number and secret key.
@@ -136,6 +147,8 @@ When true, this will tell `sicksync` to follow and sync files and folders that a
 After this, you'll see when updates are available when running sicksync, and can easily update by running `sicksync update`.
 
 ## Troubleshooting
+
+Before debugging/reading further, please try `sicksync doctor` to see if it can show you where issues may are!
 
 **Q: `sicksync update` doesn't seem to work?**
 
