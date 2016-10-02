@@ -1,6 +1,6 @@
 import Rsync from 'rsync';
 import _ from 'lodash';
-import { hostname } from 'os';
+import { hostname, platform } from 'os';
 import { generateLog, ensureTrailingSlash } from './util';
 
 function bigSync(project) {
@@ -19,7 +19,7 @@ function bigSync(project) {
         _.noop;
 
     let rsync = new Rsync()
-        .shell('ssh')
+        .shell(platform() === 'win32' ? 'C:\\Program Files\\Git\\usr\\bin\\ssh.exe' : 'ssh')
         .flags('az')
         .exclude(project.excludes)
         .source(ensureTrailingSlash(project.sourceLocation))

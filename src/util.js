@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import {platform} from 'os';
 import fs from 'fs-extra';
 import {exec, spawn} from 'child_process';
 import minimatch from 'minimatch';
@@ -154,7 +155,7 @@ function setupPrompter(prompt) {
 }
 
 function shellIntoRemote(remote) {
-    return spawn('ssh',[
+    return spawn(platform() === 'win32' ? 'C:\\Program Files\\Git\\usr\\bin\\ssh.exe' : 'ssh', [
         '-tt',
         remote
     ]);

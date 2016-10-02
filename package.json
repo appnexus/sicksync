@@ -4,12 +4,12 @@
   "description": "Don’t accept the available as the preferable. Go extra mile with extra speed.",
   "main": "src/index.js",
   "scripts": {
-    "preinstall": "./scripts/pre-install.js",
+    "preinstall": "node ./scripts/pre-install.js",
     "test": "istanbul cover _mocha -- test/*.mspec.js test/**/*.mspec.js --compilers js:babel/register",
     "watch": "npm run transpile -- -w",
     "transpile": "babel src --out-dir dist",
     "tdd": "mocha --check-leaks test/*.mspec.js test/**/*.mspec.js --compilers js:babel/register --reporter min -w",
-    "prepublish": "rm -rf ./dist && babel src --out-dir dist"
+    "prepublish": "rimraf ./dist && babel src --out-dir dist"
   },
   "keywords": [
     "sicksync",
@@ -54,6 +54,7 @@
     "istanbul": "^0.4.1",
     "mocha": "^2.0.1",
     "proxyquire": "^1.7.1",
+    "rimraf": "^2.5.4",
     "sinon": "^1.16.1"
   }
 }
