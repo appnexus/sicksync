@@ -15,6 +15,11 @@ sicksync is a CLI to sync your projects code to a remote machine. If you work in
 - NodeJS with npm
 - You can `npm install -g` without `sudo`
 - You can just `ssh to-your-remote-machine` without using a password (ie, ssh keys)
+- On Windows you should have [Cygwin]/[MinGW]/[Babun] installed, with `cygpath`, `ssh`, and `rsync` modules.
+
+[Cygwin]: https://cygwin.com
+[MinGW]: http://www.mingw.org
+[Babun]: http://babun.github.io
 
 ## Install
 Installing `sicksync` is easy, and can easily be added your existing machines after they've been added:
