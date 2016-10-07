@@ -53,6 +53,11 @@ export default {
                     return csv.split(',');
                 }
             },
+            excludesFile: {
+                description: 'Would you like to load excludes from file?',
+                default: '.gitignore,~/.gitignore',
+                before: csv => csv.split(','),
+            },
             prefersEncrypted: {
                 description: 'Would you like to encrypt the sync messages? (yes/no):',
                 before: util.toBoolean,

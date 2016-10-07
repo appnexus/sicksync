@@ -26,6 +26,7 @@ var testConfig = {
         myProject: {
             project: 'myProject',
             excludes: ['.git'],
+            excludesFile: ['.gitignore'],
             sourceLocation: '~/wat',
             destinationLocation: '~/wat',
             hostname: 'yo-dawg',
