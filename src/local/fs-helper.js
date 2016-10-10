@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import fs from 'fs';
+import os from 'os';
 import { watch } from 'chokidar';
 import { EventEmitter } from 'events';
 import path from 'path';
@@ -36,6 +37,10 @@ class FSHelper extends EventEmitter {
     }
 
     onFileChange (evt, sourcepath) {
+        if (os.platform() === 'win32') {
+            sourcepath = sourcepath.replace(/\\/g, '/');
+        }
+
         let relativepath = sourcepath.split(this._baseDir)[1],
             localpath = this._sourceLocation + relativepath,
             fileContents = null;

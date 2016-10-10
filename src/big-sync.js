@@ -1,10 +1,11 @@
 import Rsync from 'rsync';
 import _ from 'lodash';
-import { hostname } from 'os';
+import os from 'os';
+import { execSync } from 'child_process';
 import { generateLog, ensureTrailingSlash } from './util';
 
 function bigSync(project) {
-    let log = generateLog(project.project, hostname());
+    let log = generateLog(project.project, os.hostname());
 
     function consoleLogFromBuffer(buffer) {
         log(buffer.toString());
@@ -17,6 +18,10 @@ function bigSync(project) {
     let onComplete = _.isFunction(_.last(arguments)) ?
         _.last(arguments) :
         _.noop;
+
+    if (os.platform() === 'win32') {
+        project.sourceLocation = execSync('cygpath ' + project.sourceLocation).toString();
+    }
 
     let rsync = new Rsync()
         .shell('ssh')
