@@ -34,6 +34,7 @@ describe('Project-Helper', function () {
                 'sourceLocation',
                 'destinationLocation',
                 'excludes',
+                'excludesFile',
                 'prefersEncrypted',
                 'websocketPort',
                 'followSymLinks',
@@ -52,6 +53,7 @@ describe('Project-Helper', function () {
                 'sourceLocation',
                 'destinationLocation',
                 'excludes',
+                'excludesFile',
                 'prefersEncrypted',
                 'websocketPort',
                 'followSymLinks'

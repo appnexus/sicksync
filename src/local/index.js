@@ -5,6 +5,8 @@
  */
 import _ from 'lodash';
 import os from 'os';
+import untildify from 'untildify';
+import gitignore from 'parse-gitignore';
 import constants from '../../conf/constants';
 import text from '../../conf/text';
 import eventsConf from '../../conf/events';
@@ -46,6 +48,9 @@ function startProject (config, projectConf) {
     let sourceLocation = util.ensureTrailingSlash(projectConf.sourceLocation);
     let destinationLocation = util.ensureTrailingSlash(projectConf.destinationLocation);
     let secret = util.getId();
+
+    // parse excludesFile
+    projectConf.excludes = [].concat.apply(projectConf.excludes, projectConf.excludesFile.map(untildify).map(gitignore));
 
     let fsHelper = new FSHelper({
         sourceLocation: sourceLocation,
