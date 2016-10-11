@@ -1,3 +1,8 @@
 #!/usr/bin/env node
 
-require('../dist/index')();
+try {
+  require('../dist/index')();
+} catch (err) {
+  require('babel/register');
+  require('../src/index')();
+}
