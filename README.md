@@ -118,7 +118,7 @@ The location on your remote machine you wish to apply changes to.
 
 `excludes: {array of relative filepaths or globs}`
 
-An array of file(s) or filepath(s) that, when matched, sicksync will ignore and not send changes. Editor configuration and `.git/*` files are generally ok to ignore. Uses [`minimatch`](https://github.com/isaacs/minimatch) for globbing.
+An array of file(s) or filepath(s) that, when matched, sicksync will ignore and not send changes. Editor configuration and `.git/*` files are generally ok to ignore. Uses [`anymatch`](https://github.com/es128/anymatch) for globbing.
 
 `websocketPort: {number}`
 
