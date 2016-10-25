@@ -8,10 +8,12 @@ import os from 'os';
 import untildify from 'untildify';
 import gitignore from 'parse-gitignore';
 
+import { FSHelper as FSConstructor } from './fs-helper';
+import { WSClient as WSConstructor } from './ws-client';
 import constants from '../../conf/constants';
 import text from '../../conf/text';
 import eventsConf from '../../conf/events';
-import bigSync from '../big-sync';
+import { bigSync } from '../big-sync';
 import {
   uniqInstance,
   ensureTrailingSlash,
@@ -19,9 +21,6 @@ import {
   generateLog,
   getId,
 } from '../util';
-
-const FSHelper = uniqInstance(constants.FS_TOKEN, require('./fs-helper'));
-const WebSocketClient = uniqInstance(constants.WS_TOKEN, require('./ws-client'));
 
 const hostname = os.hostname();
 const wsEvents = eventsConf.WS.LOCAL;
@@ -51,6 +50,9 @@ export function start(config, projects) {
 }
 
 function startProject(config, projectConf) {
+  const FSHelper = uniqInstance(constants.FS_TOKEN, FSConstructor);
+  const WebSocketClient = uniqInstance(constants.WS_TOKEN, WSConstructor);
+
   const localLog = generateLog(projectConf.project, hostname);
   const remoteLog = generateLog(projectConf.project, projectConf.hostname);
   const sourceLocation = ensureTrailingSlash(projectConf.sourceLocation);
@@ -58,7 +60,7 @@ function startProject(config, projectConf) {
   const secret = getId();
 
   // parse excludesFile
-  projectConf.excludes = [].concat.apply(projectConf.excludes, projectConf.excludesFile.map(untildify).map(gitignore));
+  projectConf.excludes = projectConf.excludes.concat(_.map(projectConf.excludesFile, untildify).map(gitignore));
 
   const fsHelper = new FSHelper({
     sourceLocation: sourceLocation,

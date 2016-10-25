@@ -14,9 +14,11 @@ class WSServer extends EventEmitter {
     this._encrypt = params.encrypt;
     this._crypt = new Crypt(this._secret);
 
-    new WebSocketServer({
+    this._ws = new WebSocketServer({
       port: params.port,
-    }).on('connection', this.handleConnect.bind(this));
+    });
+
+    this._ws.on('connection', this.handleConnect.bind(this));
 
     console.info(this._secret, text.SERVER_ON_READY);
   }

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import WebSocket from 'ws';
 import { EventEmitter } from 'events';
-import RemoteHelper from './remote-helper';
+import { RemoteHelper } from './remote-helper';
 
 import CryptHelper from '../crypt';
 import eventsConf from '../../conf/events';
