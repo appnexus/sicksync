@@ -7,14 +7,22 @@ import _ from 'lodash';
 import os from 'os';
 import untildify from 'untildify';
 import gitignore from 'parse-gitignore';
+
 import constants from '../../conf/constants';
 import text from '../../conf/text';
 import eventsConf from '../../conf/events';
-import util from '../util';
 import bigSync from '../big-sync';
+import {
+  uniqInstance,
+  ensureTrailingSlash,
+  getProjectsFromConfig,
+  generateLog,
+  getId,
+} from '../util';
 
-const FSHelper = util.uniqInstance(constants.FS_TOKEN, require('./fs-helper'));
-const WebSocketClient = util.uniqInstance(constants.WS_TOKEN, require('./ws-client'));
+const FSHelper = uniqInstance(constants.FS_TOKEN, require('./fs-helper'));
+const WebSocketClient = uniqInstance(constants.WS_TOKEN, require('./ws-client'));
+
 const hostname = os.hostname();
 const wsEvents = eventsConf.WS.LOCAL;
 const fsEvents = eventsConf.FS.LOCAL;
@@ -23,15 +31,15 @@ function triggerBigSync(project, params, cb) {
   bigSync({
     project: project.project,
     excludes: project.excludes,
-    sourceLocation: util.ensureTrailingSlash(project.sourceLocation),
-    destinationLocation: util.ensureTrailingSlash(project.destinationLocation),
+    sourceLocation: ensureTrailingSlash(project.sourceLocation),
+    destinationLocation: ensureTrailingSlash(project.destinationLocation),
     hostname: project.hostname,
     username: project.username,
   }, params, cb);
 }
 
 function start(config, projects) {
-  const foundProjects = util.getProjectsFromConfig(config, projects);
+  const foundProjects = getProjectsFromConfig(config, projects);
 
   if (_.isEmpty(foundProjects)) {
     return logProjectsNotFound(foundProjects);
@@ -43,11 +51,11 @@ function start(config, projects) {
 }
 
 function startProject(config, projectConf) {
-  const localLog = util.generateLog(projectConf.project, hostname);
-  const remoteLog = util.generateLog(projectConf.project, projectConf.hostname);
-  const sourceLocation = util.ensureTrailingSlash(projectConf.sourceLocation);
-  const destinationLocation = util.ensureTrailingSlash(projectConf.destinationLocation);
-  const secret = util.getId();
+  const localLog = generateLog(projectConf.project, hostname);
+  const remoteLog = generateLog(projectConf.project, projectConf.hostname);
+  const sourceLocation = ensureTrailingSlash(projectConf.sourceLocation);
+  const destinationLocation = ensureTrailingSlash(projectConf.destinationLocation);
+  const secret = getId();
 
     // parse excludesFile
   projectConf.excludes = [].concat.apply(projectConf.excludes, projectConf.excludesFile.map(untildify).map(gitignore));
@@ -122,14 +130,14 @@ function startProject(config, projectConf) {
 }
 
 function once(config, projects, opts) {
-  const foundProjects = util.getProjectsFromConfig(config, projects);
+  const foundProjects = getProjectsFromConfig(config, projects);
 
   if (_.isEmpty(foundProjects)) {
     return logProjectsNotFound(foundProjects);
   }
 
   _.each(foundProjects, (project) => {
-    const localLog = util.generateLog(project.project, hostname);
+    const localLog = generateLog(project.project, hostname);
 
     localLog(text.SYNC_ON_ONCE);
 

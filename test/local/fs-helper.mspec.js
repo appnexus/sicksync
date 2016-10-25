@@ -8,7 +8,7 @@ import fsStub from '../stubs/fs';
 const FSHelper = proxyquire('../../src/local/fs-helper', {
   chokidar: chokidarStub,
   fs: fsStub,
-});
+}).default;
 
 const config = {
   sourceLocation: 'my/home/',

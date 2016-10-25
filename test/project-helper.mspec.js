@@ -5,7 +5,7 @@ import proxyquire from 'proxyquire';
 import mockStub from './stubs/util';
 import consoleStub from './stubs/console';
 
-const projectHelper = proxyquire('../src/project-helper', { './util': mockStub });
+const projectHelper = proxyquire('../src/project-helper', { './util': mockStub }).default;
 
 describe('Project-Helper', function() {
   before(function() {

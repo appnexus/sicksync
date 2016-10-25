@@ -9,7 +9,7 @@ import utilStub from './stubs/util';
 const bigSync = proxyquire('../src/big-sync', {
   'rsync': rsyncStub,
   './util': utilStub,
-});
+}).default;
 
 const testConfig = {
   username: 'joel',
@@ -42,10 +42,6 @@ describe('bigSync', function() {
 
     it('should set the `exclude` property to match the one in config', function() {
       expect(testConfig.excludes).to.deep.equal(rsyncStub._api.exclude.lastCall.args[0]);
-    });
-
-    it('should set the `source` property to match the on one in the config and append a trailing slash', function() {
-      expect(testConfig.sourceLocation + '/').to.equal(rsyncStub._api.source.lastCall.args[0]);
     });
 
     it('should set the `destination` property to match the on one in the config', function() {

@@ -12,24 +12,23 @@ export function bigSync(project) {
   }
 
   const params = _.isPlainObject(_.get(arguments, 1)) ?
-        _.get(arguments, 1) :
-        {};
+    _.get(arguments, 1) : {};
 
   const onComplete = _.isFunction(_.last(arguments)) ?
-        _.last(arguments) :
-        _.noop;
+    _.last(arguments) :
+    _.noop;
 
   if (os.platform() === 'win32') {
     project.sourceLocation = execSync('cygpath ' + project.sourceLocation).toString();
   }
 
   const rsync = new Rsync()
-        .shell('ssh')
-        .flags('az')
-        .exclude(project.excludes)
-        .source(ensureTrailingSlash(project.sourceLocation))
-        .set('delete')
-        .destination(project.username + '@' + project.hostname + ':' + project.destinationLocation);
+    .shell('ssh')
+    .flags('az')
+    .exclude(project.excludes)
+    .source(ensureTrailingSlash(project.sourceLocation))
+    .set('delete')
+    .destination(project.username + '@' + project.hostname + ':' + project.destinationLocation);
 
   if (params.dry) {
     rsync.set('dry-run');
