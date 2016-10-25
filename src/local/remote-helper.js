@@ -26,13 +26,15 @@ class RemoteHelper extends EventEmitter {
     const context = this;
 
     ssh.stdin.write(
-            ['sicksync remote',
-                '-s', context._secret,
-                '-p', context._webSocketPort,
-                context._prefersEncrypted ? '-e' : '',
-                context._debug ? '-d' : '',
-                '\n'].join(' ')
-        );
+      [
+        'sicksync remote',
+        '-s', context._secret,
+        '-p', context._webSocketPort,
+        context._prefersEncrypted ? '-e' : '',
+        context._debug ? '-d' : '',
+        '\n',
+      ].join(' ')
+    );
   }
 
   start() {

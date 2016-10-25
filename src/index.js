@@ -9,9 +9,9 @@ generateCommands(program, config);
 
 function SickSync() {
   program
-        .version(version)
-        .usage('<command> [options]')
-        .parse(process.argv);
+    .version(version)
+    .usage('<command> [options]')
+    .parse(process.argv);
 
     // Run help if no command is provided
   if (!process.argv.slice(2).length) {

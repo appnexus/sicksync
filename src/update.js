@@ -5,7 +5,7 @@ import { exec } from 'child_process';
 import { hostname } from 'os';
 import { basename } from 'path';
 import untildify from 'untildify';
-import util from './util';
+import * as util from './util';
 import { version as currentVersion } from '../package.json';
 import constants from '../conf/constants';
 import text from '../conf/text';
@@ -17,9 +17,9 @@ const updateInfo = fs.existsSync(util.getUpdatePath()) ?
     version: currentVersion,
   };
 
-const getLatestVersion = _.partial(_.ary(latestVersion, 2), 'sicksync');
+export const getLatestVersion = _.partial(_.ary(latestVersion, 2), 'sicksync');
 
-function updateRemote(project) {
+export function updateRemote(project) {
   const ssh = util.shellIntoRemote(project.username + '@' + project.hostname);
 
   const updateRemoteOnce = _.once(function(stdin) {
@@ -46,7 +46,7 @@ function updateRemote(project) {
   });
 }
 
-function updateLocal() {
+export function updateLocal() {
   exec(constants.UPDATE_CMD,  (error, stdout, stderr) => {
     if (!!error || _.contains(stderr, 'ERR!')) {
       return console.info(hostname, text.UPDATE_FAIL, (error || stderr));
@@ -56,15 +56,15 @@ function updateLocal() {
   });
 }
 
-function update(config, opts) {
+export function update(config, opts) {
   if (opts.check) {
     return getLatestVersion(function(err, version) {
       if (err) return;
       console.info(
-                text.UPDATE_AVAILABLE, '\n',
-                'Current version:', currentVersion, '\n',
-                'Latest version:', version
-            );
+        text.UPDATE_AVAILABLE, '\n',
+        'Current version:', currentVersion, '\n',
+        'Latest version:', version
+      );
     });
   }
 
@@ -77,32 +77,32 @@ function update(config, opts) {
   updateLocal();
 }
 
-function notify() {
+export function notify() {
   if (updateInfo.version !== currentVersion) {
     return console.info(
-            text.UPDATE_AVAILABLE, '\n',
-            'Current version:', currentVersion, '\n',
-            'Latest version:', updateInfo.version
-        );
+      text.UPDATE_AVAILABLE, '\n',
+      'Current version:', currentVersion, '\n',
+      'Latest version:', updateInfo.version
+    );
   }
 }
 
-function check() {
+export function check() {
   if (now - updateInfo.lastChecked >= constants.UPDATE_INTERVAL) {
     getLatestVersion(function(err, version) {
       if (err) return;
       fs.writeFileSync(
-                util.getUpdatePath(),
-                JSON.stringify({
-                  version: version,
-                  lastChecked: now,
-                })
-            );
+        util.getUpdatePath(),
+        JSON.stringify({
+          version: version,
+          lastChecked: now,
+        })
+      );
     });
   }
 }
 
-function migrate1to2(config) {
+export function migrate1to2(config) {
   if (_.isEmpty(config)) {
     const configLocation = untildify(constants.CONFIG_FILE_V1);
     config = require(configLocation);
@@ -117,33 +117,22 @@ function migrate1to2(config) {
     retryOnDisconnect: config.retryOnDisconnect,
     projects: [
       _.chain(config)
-                .omit('debug', 'retryOnDisconnect')
-                .mapKeys(function(value, key) {
-                  if (key === 'userName') return 'username';
-                  return key;
-                })
-                .value(),
+        .omit('debug', 'retryOnDisconnect')
+        .mapKeys(function(value, key) {
+          if (key === 'userName') return 'username';
+          return key;
+        })
+        .value(),
     ],
   };
 }
 
-function migrateConfig(config) {
+export function migrateConfig(config) {
   const configVersion = config.version ?
-        config.version.replace(/\./g, '') :
-        null;
+    config.version.replace(/\./g, '') :
+    null;
 
   if (!configVersion) {
     util.writeConfig(migrate1to2(config));
   }
 }
-
-export default {
-  migrate1to2,
-  migrateConfig,
-  update,
-  notify,
-  check,
-  updateLocal,
-  updateRemote,
-  getLatestVersion,
-};

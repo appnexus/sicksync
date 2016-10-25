@@ -38,7 +38,7 @@ function triggerBigSync(project, params, cb) {
   }, params, cb);
 }
 
-function start(config, projects) {
+export function start(config, projects) {
   const foundProjects = getProjectsFromConfig(config, projects);
 
   if (_.isEmpty(foundProjects)) {
@@ -81,10 +81,10 @@ function startProject(config, projectConf) {
       fsHelper.watch();
 
       localLog(
-                text.SYNC_ON_CONNECT,
-                projectConf.hostname, (projectConf.prefersEncrypted) ? 'using' : 'not using',
-                'encryption'
-            );
+        text.SYNC_ON_CONNECT,
+        projectConf.hostname, (projectConf.prefersEncrypted) ? 'using' : 'not using',
+        'encryption'
+      );
     });
   });
 
@@ -101,8 +101,8 @@ function startProject(config, projectConf) {
   });
 
   wsClient.on(wsEvents.REMOTE_MESSAGE, (message) => {
-        // Since WS can be shared amongst projects, filter out
-        // any that are not in this project
+    // Since WS can be shared amongst projects, filter out
+    // any that are not in this project
     if (_.contains(message, destinationLocation)) {
       remoteLog(message);
     }
@@ -129,7 +129,7 @@ function startProject(config, projectConf) {
   });
 }
 
-function once(config, projects, opts) {
+export function once(config, projects, opts) {
   const foundProjects = getProjectsFromConfig(config, projects);
 
   if (_.isEmpty(foundProjects)) {
@@ -155,5 +155,3 @@ function logProjectsNotFound(projects) {
 
   console.info(text.PROJECT_NOT_FOUND, projectsWanted);
 }
-
-export default { start, once };
