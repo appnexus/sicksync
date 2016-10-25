@@ -6,7 +6,7 @@ import proxyquire from 'proxyquire';
 
 const FSHelper = proxyquire('../../src/remote/fs-helper', {
   'fs-extra': fsStub,
-});
+}).default;
 
 const addTest = {
   destinationpath: '~/Projects',

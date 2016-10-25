@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import expect from 'chai';
+import { expect } from 'chai';
 import proxyquire from 'proxyquire';
 import wsStub from '..//stubs/ws-server';
 
@@ -12,7 +12,7 @@ import processStub from '../stubs/process';
 const remote = proxyquire('../../src/remote', {
   './fs-helper': fsHelperStub,
   './ws-server': wsStub,
-});
+}).default;
 
 // Test Data
 const serverOpts = {

@@ -1,4 +1,4 @@
-import expect from 'chai';
+import { expect } from 'chai';
 import proxyquire from 'proxyquire';
 
 // Stubs
@@ -6,7 +6,7 @@ import wsStub from '../stubs/ws';
 import consoleStub from '../stubs/console';
 
 // Inject
-const WSServer = proxyquire('../../src/remote/ws-server', { ws: wsStub });
+const WSServer = proxyquire('../../src/remote/ws-server', { ws: wsStub }).default;
 
 // Mocks
 const testParams = {

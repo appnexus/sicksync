@@ -8,7 +8,7 @@ import wsStub from '../stubs/ws';
 const Client = proxyquire('../../src/local/ws-client', {
   './remote-helper': remoteHelperStub,
   'ws': wsStub,
-});
+}).default;
 
 const params = {
   secret: 'keepitsafe',

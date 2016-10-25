@@ -7,7 +7,7 @@ import proxyquire from 'proxyquire';
 
 const Helper = proxyquire('../../src/local/remote-helper', {
   '../util': utilStub,
-});
+}).default;
 
 const params = {
   username: 'joel',

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import sinon from 'sinon';
-import util from '../../src/util';
+import * as util from '../../src/util';
 
 let _config = {};
 
@@ -25,10 +25,6 @@ const api = _.assign({}, util, {
   setupPrompter: sinon.stub().returns(prompterApi),
   writeConfig: sinon.spy(),
   getUpdatePath: sinon.spy(),
-  uniqInstance: sinon.stub().returnsArg(0),
-  ensureTrailingSlash: sinon.stub().returnsArg(0),
-  getProjectsFromConfig: sinon.stub().returns([]),
-  rebounce: sinon.stub().returnsArg(0),
   generateLog: sinon.stub().returns(function() {
     api.logSpy.apply(null, arguments);
   }),

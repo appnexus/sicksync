@@ -57,7 +57,7 @@ function startProject(config, projectConf) {
   const destinationLocation = ensureTrailingSlash(projectConf.destinationLocation);
   const secret = getId();
 
-    // parse excludesFile
+  // parse excludesFile
   projectConf.excludes = [].concat.apply(projectConf.excludes, projectConf.excludesFile.map(untildify).map(gitignore));
 
   const fsHelper = new FSHelper({
