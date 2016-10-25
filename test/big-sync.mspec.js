@@ -1,17 +1,17 @@
-var expect = require('chai').expect,
-  proxyquire = require('proxyquire'),
+import { expect } from 'chai';
+import proxyquire from 'proxyquire';
 
-    // Mocks
-  rsyncStub = require('./stubs/rsync'),
-  utilStub = require('./stubs/util'),
+// Mocks
+import rsyncStub from './stubs/rsync';
+import utilStub from './stubs/util';
 
-    // Inject
-  bigSync = proxyquire('../src/big-sync', {
-    'rsync': rsyncStub,
-    './util': utilStub,
-  });
+// Inject
+const bigSync = proxyquire('../src/big-sync', {
+  'rsync': rsyncStub,
+  './util': utilStub,
+});
 
-var testConfig = {
+const testConfig = {
   username: 'joel',
   excludes: ['one', 'two', 'three'],
   sourceLocation: '/some/file/path',
@@ -49,7 +49,7 @@ describe('bigSync', function() {
     });
 
     it('should set the `destination` property to match the on one in the config', function() {
-      var destination = testConfig.username + '@' + testConfig.hostname + ':' + testConfig.destinationLocation;
+      const destination = testConfig.username + '@' + testConfig.hostname + ':' + testConfig.destinationLocation;
       expect(destination).to.equal(rsyncStub._api.destination.lastCall.args[0]);
     });
 
@@ -77,14 +77,14 @@ describe('bigSync', function() {
       });
 
       it('should output the status messages', function() {
-        var message = 'Processing';
+        const message = 'Processing';
         rsyncStub._api.output.lastCall.args[0](new Buffer(message));
 
         expect(utilStub.logSpy.lastCall.args[0]).to.contain(message);
       });
 
       it('should output the error messages', function() {
-        var message = 'Processing';
+        const message = 'Processing';
         rsyncStub._api.output.lastCall.args[1](new Buffer(message));
 
         expect(utilStub.logSpy.lastCall.args[0]).to.contain(message);

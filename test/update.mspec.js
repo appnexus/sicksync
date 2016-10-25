@@ -1,24 +1,24 @@
-var expect = require('chai').expect,
-  proxyquire = require('proxyquire'),
+import { expect } from 'chai';
+import proxyquire from 'proxyquire';
 
-    // Stubs
-  fsStub = require('./stubs/fs'),
-  utilStub = require('./stubs/util'),
-  childStub = require('./stubs/child-process'),
-  latestVersionStub = require('./stubs/latest-version'),
-  packageStub = require('./stubs/package'),
-  consoleStub = require('./stubs/console'),
+// Stubs
+import fsStub from './stubs/fs';
+import utilStub from './stubs/util';
+import childStub from './stubs/child-process';
+import latestVersionStub from './stubs/latest-version';
+import packageStub from './stubs/package';
+import consoleStub from './stubs/console';
 
-    // Inject
-  update = proxyquire('../src/update', {
-    'child_process': childStub,
-    'latest-version': latestVersionStub,
-    './util': utilStub,
-    'fs-extra': fsStub,
-    '../package.json': packageStub,
-  });
+// Inject
+const update = proxyquire('../src/update', {
+  'child_process': childStub,
+  'latest-version': latestVersionStub,
+  './util': utilStub,
+  'fs-extra': fsStub,
+  '../package.json': packageStub,
+});
 
-var configV1 = {
+const configV1 = {
   retryOnDisconnect: true,
   debug: true,
   sourceLocation: 'my/project',
@@ -184,7 +184,7 @@ describe('Update', function() {
 
 
     describe('Default behavior', function() {
-      var config = {
+      const config = {
         projects: [{
           project: 'my-project',
           username: 'jgriffith',
@@ -224,7 +224,7 @@ describe('Update', function() {
     });
 
     it('should log any issues if the update failed', function() {
-      var errorMessage = 'ERROR!';
+      const errorMessage = 'ERROR!';
       childStub.exec.lastCall.args[1](errorMessage);
 
       expect(console.info.lastCall.args[1]).to.contain('Update failed! Please run manually');
@@ -232,7 +232,7 @@ describe('Update', function() {
     });
 
     it('should log any issues if the update failed via stderr', function() {
-      var errorMessage = 'ERR!';
+      const errorMessage = 'ERR!';
       childStub.exec.lastCall.args[1](null, null, errorMessage);
 
       expect(console.info.lastCall.args[1]).to.contain('Update failed! Please run manually');
@@ -247,7 +247,7 @@ describe('Update', function() {
   });
 
   describe('#updateRemote', function() {
-    var projectDef = {
+    const projectDef = {
       username: 'joel',
       hostname: 'my-host',
     };

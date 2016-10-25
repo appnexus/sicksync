@@ -1,5 +1,5 @@
-var mockPackage = {};
-var packageVersion = 1;
+const mockPackage = {};
+let packageVersion = 1;
 
 // Hack Alert:
 // Since we have to change this value for tests, and it's static,

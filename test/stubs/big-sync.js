@@ -1,6 +1,6 @@
-var sinon = require('sinon');
+import sinon from 'sinon';
 
-var constructorMock = sinon.spy();
+const constructorMock = sinon.spy();
 
 function resetAll() {
   constructorMock.reset();

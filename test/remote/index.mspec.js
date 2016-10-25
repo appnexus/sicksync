@@ -1,21 +1,21 @@
-var _ = require('lodash'),
-  expect = require('chai').expect,
-  proxyquire = require('proxyquire'),
-  wsStub = require('../stubs/ws-server'),
+import _ from 'lodash';
+import expect from 'chai';
+import proxyquire from 'proxyquire';
+import wsStub from '..//stubs/ws-server';
 
     // Stubs
-  fsHelperStub = require('../stubs/server-fs-helper'),
-  consoleStub = require('../stubs/console'),
-  processStub = require('../stubs/process'),
+import fsHelperStub from '../stubs/server-fs-helper';
+import consoleStub from '../stubs/console';
+import processStub from '../stubs/process';
 
     // Inject
-  remote = proxyquire('../../src/remote', {
-    './fs-helper': fsHelperStub,
-    './ws-server': wsStub,
-  });
+const remote = proxyquire('../../src/remote', {
+  './fs-helper': fsHelperStub,
+  './ws-server': wsStub,
+});
 
 // Test Data
-var serverOpts = {
+const serverOpts = {
   port: 1234,
   secret: 'dirty-little',
   debug: true,
@@ -76,7 +76,7 @@ describe('Remote Entry (index.js)', function() {
 
     describe('file-change events', function() {
       it('should pass along `add` changeType\'s to addFile', function() {
-        var message = {
+        const message = {
           changeType: 'add',
         };
         wsStub.triggerEvent('file-change', message);
@@ -84,7 +84,7 @@ describe('Remote Entry (index.js)', function() {
       });
 
       it('should pass along `addDir` changeType\'s to addDir', function() {
-        var message = {
+        const message = {
           changeType: 'addDir',
         };
         wsStub.triggerEvent('file-change', message);
@@ -92,7 +92,7 @@ describe('Remote Entry (index.js)', function() {
       });
 
       it('should pass along `change` changeType\'s to addFile', function() {
-        var message = {
+        const message = {
           changeType: 'change',
         };
         wsStub.triggerEvent('file-change', message);
@@ -100,7 +100,7 @@ describe('Remote Entry (index.js)', function() {
       });
 
       it('should pass along `unlink` changeType\'s to removePath', function() {
-        var message = {
+        const message = {
           changeType: 'unlink',
         };
         wsStub.triggerEvent('file-change', message);
@@ -108,7 +108,7 @@ describe('Remote Entry (index.js)', function() {
       });
 
       it('should pass along `unlink` changeType\'s to removePath', function() {
-        var message = {
+        const message = {
           changeType: 'unlink',
         };
         wsStub.triggerEvent('file-change', message);
@@ -116,7 +116,7 @@ describe('Remote Entry (index.js)', function() {
       });
 
       it('should pass along `unlinkDir` changeType\'s to removePath', function() {
-        var message = {
+        const message = {
           changeType: 'unlinkDir',
         };
         wsStub.triggerEvent('file-change', message);
@@ -124,7 +124,7 @@ describe('Remote Entry (index.js)', function() {
       });
 
       it('should do nothing if the change type isn\'t known', function() {
-        var message = {
+        const message = {
           changeType: 'wat!!',
         };
         wsStub.triggerEvent('file-change', message);

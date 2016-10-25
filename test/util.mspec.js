@@ -1,17 +1,17 @@
-var expect = require('chai').expect,
-  proxyquire = require('proxyquire'),
-  sinon = require('sinon'),
+import { expect } from 'chai';
+import proxyquire from 'proxyquire';
+import sinon from 'sinon';
 
-  constantsStub = require('./stubs/constants'),
-  fsStub = require('./stubs/fs.js'),
-  childStub = require('./stubs/child-process'),
-  consoleStub = require('./stubs/console'),
+import constantsStub from './stubs/constants';
+import fsStub from './stubs/fs.js';
+import childStub from './stubs/child-process';
+import consoleStub from './stubs/console';
 
-  util = proxyquire('../src/util', {
-    '../conf/constants': constantsStub,
-    'fs-extra': fsStub,
-    'child_process': childStub,
-  });
+const util = proxyquire('../src/util', {
+  '../conf/constants': constantsStub,
+  'fs-extra': fsStub,
+  'child_process': childStub,
+});
 
 describe('util', function() {
   before(function() {
@@ -36,7 +36,7 @@ describe('util', function() {
   });
 
   describe('#getConfig', function() {
-    var constantsMock = {
+    const constantsMock = {
       CONFIG_FILE: 'iShouldntBeHereHopefully',
       SICKSYNC_DIR: '~/.sicksync',
     };
@@ -79,8 +79,8 @@ describe('util', function() {
     });
 
     it('should call `fs.outputFileSyncSpy` with the right arguments', function() {
-      var parsedFsCall = null;
-      var configObject = {
+      let parsedFsCall = null;
+      const configObject = {
         some: 'object',
         syncsRemotely: false,
       };
@@ -96,8 +96,8 @@ describe('util', function() {
 
   describe('#isExcluded', function() {
     it('should return true if the filepath is excluded', function() {
-      var fileToExclude = 'some/file/path';
-      var pathsToExclude = [
+      const fileToExclude = 'some/file/path';
+      const pathsToExclude = [
         'some/file/path',
       ];
 
@@ -105,8 +105,8 @@ describe('util', function() {
     });
 
     it('should return true if the filepath contains text in the excluded array', function() {
-      var fileToExclude = 'some/file/path';
-      var pathsToExclude = [
+      const fileToExclude = 'some/file/path';
+      const pathsToExclude = [
         'some/**',
       ];
 
@@ -114,8 +114,8 @@ describe('util', function() {
     });
 
     it('should return false if the filepath isn\'t excluded', function() {
-      var fileToExclude = 'some/file/path';
-      var pathsToExclude = [
+      const fileToExclude = 'some/file/path';
+      const pathsToExclude = [
         'another/file/path',
       ];
 
@@ -124,13 +124,13 @@ describe('util', function() {
   });
 
   describe('#rebounce', function() {
-    var desiredFn = sinon.spy();
-    var fallbackFn = sinon.spy();
-    var numTimes = 4;
-    var throttleTime = 10;
+    const desiredFn = sinon.spy();
+    const fallbackFn = sinon.spy();
+    const numTimes = 4;
+    const throttleTime = 10;
 
     describe('when `numTimes` limit isn\'t hit', function() {
-      var rebouncedFn = null;
+      let rebouncedFn = null;
 
       beforeEach(function(done) {
         rebouncedFn = util.rebounce(desiredFn, fallbackFn, numTimes, throttleTime);
@@ -158,7 +158,7 @@ describe('util', function() {
     });
 
     describe('when `numTimes` limit is hit', function() {
-      var rebouncedFn = null;
+      let rebouncedFn = null;
 
       beforeEach(function(done) {
         rebouncedFn = util.rebounce(desiredFn, fallbackFn, numTimes, throttleTime);
@@ -210,7 +210,7 @@ describe('util', function() {
     });
 
     describe('when `throttleTime` limit is hit', function() {
-      var rebouncedFn = null;
+      let rebouncedFn = null;
 
       beforeEach(function(done) {
         rebouncedFn = util.rebounce(desiredFn, fallbackFn, numTimes, throttleTime);
@@ -287,7 +287,7 @@ describe('util', function() {
   });
 
   describe('#setupPrompter', function() {
-    var promptMock = {
+    const promptMock = {
       start: sinon.spy(),
     };
 
@@ -310,9 +310,9 @@ describe('util', function() {
     describe('#generateLog', function() {
 
       it('should return a logging function that prepends the project name and hostname', function() {
-        var host = 'myhost';
-        var project = 'myproject';
-        var message = 'wat';
+        const host = 'myhost';
+        const project = 'myproject';
+        const message = 'wat';
         util.generateLog(project, host)(message);
 
         expect(console.info.lastCall.args[0]).to.contain(project);
@@ -321,13 +321,13 @@ describe('util', function() {
       });
 
       it('should treat only one argument as the hostname', function() {
-        var host = 'myhost';
+        const host = 'myhost';
         util.generateLog(host)('wat');
         expect(console.info.lastCall.args[1]).to.contain(host);
       });
 
       it('should log message when no hosts or projects are passed in', function() {
-        var message = 'wat';
+        const message = 'wat';
         util.generateLog()(message);
         expect(console.info.lastCall.args[2]).to.contain(message);
       });
@@ -344,7 +344,7 @@ describe('util', function() {
 
   describe('#shellIntoRemote', function() {
     it('should shell into the remote passed and return', function() {
-      var host = 'myhost';
+      const host = 'myhost';
 
       util.shellIntoRemote(host);
 
@@ -355,14 +355,14 @@ describe('util', function() {
   });
 
   describe('#uniqInstance', function() {
-    var ConstructorSpy = sinon.spy();
+    const ConstructorSpy = sinon.spy();
 
     afterEach(function() {
       ConstructorSpy.reset();
     });
 
     it('should return copies of an instance if the tokens match', function() {
-      var testConstructor = util.uniqInstance('myToken', ConstructorSpy);
+      const testConstructor = util.uniqInstance('myToken', ConstructorSpy);
 
       testConstructor({ myToken: 'isTheSame' });
       testConstructor({ myToken: 'isTheSame' });
@@ -371,7 +371,7 @@ describe('util', function() {
     });
 
     it('should return copies of an instance if the tokens match and `New` is used', function() {
-      var TestConstructor = util.uniqInstance('myToken', ConstructorSpy);
+      const TestConstructor = util.uniqInstance('myToken', ConstructorSpy);
 
       new TestConstructor({ myToken: 'isTheSame' });
       new TestConstructor({ myToken: 'isTheSame' });
@@ -380,7 +380,7 @@ describe('util', function() {
     });
 
     it('should return new instances if the tokens do not match', function() {
-      var testConstructor = util.uniqInstance('myToken', ConstructorSpy);
+      const testConstructor = util.uniqInstance('myToken', ConstructorSpy);
 
       testConstructor({ myToken: 'isNot' });
       testConstructor({ myToken: 'theSame' });
@@ -389,7 +389,7 @@ describe('util', function() {
     });
 
     it('should pass through instances like normal if there are problems storing them', function() {
-      var testConstructor = util.uniqInstance('tokenWontExist', ConstructorSpy);
+      const testConstructor = util.uniqInstance('tokenWontExist', ConstructorSpy);
 
       testConstructor({ myToken: 'isTheSame' });
       testConstructor({ myToken: 'isTheSame' });

@@ -1,7 +1,7 @@
-var _ = require('lodash'),
-  sinon = require('sinon');
+import _ from 'lodash';
+import sinon from 'sinon';
 
-var api = {
+const api = {
   exec: sinon.spy(),
   spawn: sinon.spy(),
 };

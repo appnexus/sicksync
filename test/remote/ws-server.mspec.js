@@ -1,17 +1,15 @@
-var expect = require('chai').expect,
-  proxyquire = require('proxyquire'),
+import expect from 'chai';
+import proxyquire from 'proxyquire';
 
-    // Stubs
-  wsStub = require('../stubs/ws'),
-  consoleStub = require('../stubs/console'),
+// Stubs
+import wsStub from '../stubs/ws';
+import consoleStub from '../stubs/console';
 
-    // Inject
-  WSServer = proxyquire('../../src/remote/ws-server', {
-    'ws': wsStub,
-  });
+// Inject
+const WSServer = proxyquire('../../src/remote/ws-server', { ws: wsStub });
 
 // Mocks
-var testParams = {
+const testParams = {
   encrypt: false,
   hostname: 'coolhost',
   secret: 'valid',
@@ -36,7 +34,7 @@ describe('ws-server', function() {
   });
 
   describe('default behaviour', function() {
-    var wsserver;
+    let wsserver;
 
     beforeEach(function() {
       wsserver = new WSServer(testParams);
@@ -49,7 +47,7 @@ describe('ws-server', function() {
 
     describe('when a client connects', function() {
       beforeEach(function() {
-                // Invoke the `connection` handler
+        // Invoke the `connection` handler
         wsStub._api.on.getCall(0).args[1](wsStub._api);
       });
 
@@ -67,7 +65,7 @@ describe('ws-server', function() {
       });
 
       describe('when the secret does not match', function() {
-        var badMessage = {
+        const badMessage = {
           subject: 'file',
           contents: 'some-contents',
           secret: 'i dont match!',
@@ -76,27 +74,27 @@ describe('ws-server', function() {
         it('should emit an `unauthorized` event', function(done) {
           wsserver.on('unauthorized', done);
 
-                    // Invoke the message handler
+          // Invoke the message handler
           wsStub._api.on.getCall(1).args[1](JSON.stringify(badMessage));
         });
       });
 
       describe('and sends a `file` message', function() {
-        var emittedMessage = null;
-        var fileMessage = {
+        let emittedMessage = null;
+        const fileMessage = {
           subject: 'file',
           contents: 'some-contents',
           secret: testParams.secret,
         };
 
         beforeEach(function(done) {
-                    // Register the file-event
+          // Register the file-event
           wsserver.on('file-change', function(message) {
             emittedMessage = message;
             done();
           });
 
-                    // Invoke the message handler
+          // Invoke the message handler
           wsStub._api.on.getCall(1).args[1](JSON.stringify(fileMessage));
         });
 

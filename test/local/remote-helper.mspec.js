@@ -1,13 +1,15 @@
-var expect = require('chai').expect,
-  _ = require('lodash'),
-  text = require('../../conf/text'),
-  utilStub = require('../stubs/util'),
-  proxyquire = require('proxyquire'),
-  Helper = proxyquire('../../src/local/remote-helper', {
-    '../util': utilStub,
-  });
+import { expect } from 'chai';
+import _ from 'lodash';
 
-var params = {
+import text from '../../conf/text';
+import utilStub from '../stubs/util';
+import proxyquire from 'proxyquire';
+
+const Helper = proxyquire('../../src/local/remote-helper', {
+  '../util': utilStub,
+});
+
+const params = {
   username: 'joel',
   hostname: 'myhost',
   secret: 'dirty-little-secret',
@@ -17,7 +19,7 @@ var params = {
 };
 
 describe('remote-helper', function() {
-  var helper = null;
+  let helper = null;
 
   beforeEach(function() {
     helper = new Helper(params);
@@ -46,8 +48,8 @@ describe('remote-helper', function() {
     });
 
     it('should emit a message event if the message contains the secret', function(done) {
-      var message = 'some message!';
-      var event = params.secret + ' ' + message;
+      const message = 'some message!';
+      const event = params.secret + ' ' + message;
       helper.start();
       helper.once('message', function(data) {
         expect(data).to.contain(message);
@@ -57,7 +59,7 @@ describe('remote-helper', function() {
     });
 
     it('should emit an error event when the command isn\'t found', function(done) {
-      var errorMessage = 'command not found';
+      const errorMessage = 'command not found';
       helper.start();
       helper.once('not-found', function(data) {
         expect(data).to.contain(errorMessage);
@@ -67,7 +69,7 @@ describe('remote-helper', function() {
     });
 
     it('should emit an error event when the command isn\'t in the $PATH', function(done) {
-      var notInPathMessage = 'no sicksync in';
+      const notInPathMessage = 'no sicksync in';
       helper.start();
       helper.once('not-found', function(data) {
         expect(data).to.contain(notInPathMessage);
@@ -87,7 +89,7 @@ describe('remote-helper', function() {
       });
 
       it('should only happen once', function(done) {
-        var message = params.secret + ' some message!';
+        const message = params.secret + ' some message!';
         helper.start();
         helper.once('message', function() {
           expect(utilStub._ssh.stdin.write.calledOnce).to.be.true;
@@ -100,7 +102,7 @@ describe('remote-helper', function() {
       it('should pass in the config flags when executing', function(done) {
         helper.start();
         helper.once('ready', function() {
-          var remoteCmd = utilStub._ssh.stdin.write.lastCall.args[0];
+          const remoteCmd = utilStub._ssh.stdin.write.lastCall.args[0];
           expect(remoteCmd).to.contain('-s dirty-little-secret');
           expect(remoteCmd).to.contain('-p 1234');
           done();
@@ -109,7 +111,7 @@ describe('remote-helper', function() {
       });
 
       it('should exclude the `debug` and `encrypt` flags if not present in config', function(done) {
-        var noDebugOrExcludeConfig = _.clone(params);
+        const noDebugOrExcludeConfig = _.clone(params);
 
         noDebugOrExcludeConfig.debug = false;
         noDebugOrExcludeConfig.prefersEncrypted = false;
@@ -117,7 +119,7 @@ describe('remote-helper', function() {
         helper = new Helper(noDebugOrExcludeConfig);
         helper.start();
         helper.once('ready', function() {
-          var remoteCmd = utilStub._ssh.stdin.write.lastCall.args[0];
+          const remoteCmd = utilStub._ssh.stdin.write.lastCall.args[0];
           expect(remoteCmd).to.not.contain('-e');
           expect(remoteCmd).to.not.contain('-d');
           done();

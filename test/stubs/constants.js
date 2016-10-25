@@ -1,12 +1,12 @@
-var _ = require('lodash');
+import _ from 'lodash';
 
-var originalProps = {
+const originalProps = {
   SICKSYNC_DIR: '~/.sicksync',
   UPDATE_FILE: 'update.json',
   CONFIG_FILE: 'config.json',
 };
 
-var props = _.clone(originalProps);
+let props = _.clone(originalProps);
 
 function setProp(prop, newVal) {
   props[prop] = newVal;

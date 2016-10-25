@@ -1,13 +1,11 @@
-var expect = require('chai').expect,
-  proxyquire = require('proxyquire'),
+import { expect } from 'chai';
+import proxyquire from 'proxyquire';
 
-    // Stubs
-  mockStub = require('./stubs/util'),
-  consoleStub = require('./stubs/console'),
+// Stubs
+import mockStub from './stubs/util';
+import consoleStub from './stubs/console';
 
-  projectHelper = proxyquire('../src/project-helper', {
-    './util': mockStub,
-  });
+const projectHelper = proxyquire('../src/project-helper', { './util': mockStub });
 
 describe('Project-Helper', function() {
   before(function() {
@@ -28,49 +26,55 @@ describe('Project-Helper', function() {
       projectHelper.add({});
 
       expect(mockStub._prompt.get.lastCall.args[0].properties).to.have.all.keys(
-                'project',
-                'hostname',
-                'username',
-                'sourceLocation',
-                'destinationLocation',
-                'excludes',
-                'excludesFile',
-                'prefersEncrypted',
-                'websocketPort',
-                'followSymLinks',
-                'retryOnDisconnect',
-                'debug'
-            );
+        'project',
+        'hostname',
+        'username',
+        'sourceLocation',
+        'destinationLocation',
+        'excludes',
+        'excludesFile',
+        'prefersEncrypted',
+        'websocketPort',
+        'followSymLinks',
+        'retryOnDisconnect',
+        'debug'
+      );
     });
 
     it('should query for only project-related information on current installs', function() {
-      projectHelper.add({ retryOnDisconnect: true, debug: true });
+      projectHelper.add({
+        retryOnDisconnect: true,
+        debug: true,
+      });
 
       expect(mockStub._prompt.get.lastCall.args[0].properties).to.have.all.keys(
-                'project',
-                'hostname',
-                'username',
-                'sourceLocation',
-                'destinationLocation',
-                'excludes',
-                'excludesFile',
-                'prefersEncrypted',
-                'websocketPort',
-                'followSymLinks'
-            );
+        'project',
+        'hostname',
+        'username',
+        'sourceLocation',
+        'destinationLocation',
+        'excludes',
+        'excludesFile',
+        'prefersEncrypted',
+        'websocketPort',
+        'followSymLinks'
+      );
     });
 
     it('should log an error message if there was a problem getting the project info', function() {
-      var errorText = 'User canceled';
+      const errorText = 'User canceled';
 
-      projectHelper.add({ retryOnDisconnect: true, debug: true });
-            // Trigger a failure
+      projectHelper.add({
+        retryOnDisconnect: true,
+        debug: true,
+      });
+      // Trigger a failure
       mockStub._prompt.get.lastCall.args[1](errorText);
       expect(console.info.lastCall.args[0]).to.contain(errorText);
     });
 
     it('provide a helper function for creating excludes', function() {
-      var excludesHelper = null;
+      let excludesHelper = null;
 
       projectHelper.add({});
 
@@ -81,8 +85,8 @@ describe('Project-Helper', function() {
 
     describe('on success', function() {
       it('set globals if they weren\'t present, and adds a project', function() {
-        var writeConfigCall = null;
-        var result = {
+        let writeConfigCall = null;
+        const result = {
           project: 'joels thing',
           hostname: 'myhost',
           debug: true,
@@ -90,7 +94,7 @@ describe('Project-Helper', function() {
         };
 
         projectHelper.add({});
-                // Trigger success
+        // Trigger success
         mockStub._prompt.get.lastCall.args[1](null, result);
         writeConfigCall = mockStub.writeConfig.lastCall.args[0];
 
@@ -104,8 +108,8 @@ describe('Project-Helper', function() {
       });
 
       it('should not set globals if they were already there', function() {
-        var writeConfigCall = null;
-        var result = {
+        let writeConfigCall = null;
+        const result = {
           project: 'joels thing',
           hostname: 'myhost',
           debug: true,
@@ -117,7 +121,7 @@ describe('Project-Helper', function() {
           retryOnDisconnect: false,
         });
 
-                // Trigger success
+        // Trigger success
         mockStub._prompt.get.lastCall.args[1](null, result);
         writeConfigCall = mockStub.writeConfig.lastCall.args[0];
 
@@ -129,8 +133,8 @@ describe('Project-Helper', function() {
 
   describe('#remove', function() {
     it('should remove project(s) from the config if it finds them', function() {
-      var projectsToRemove = ['one', 'two'];
-      var config = {
+      const projectsToRemove = ['one', 'two'];
+      const config = {
         projects: [{
           project: 'one',
         }, {
@@ -146,8 +150,8 @@ describe('Project-Helper', function() {
     });
 
     it('should do nothing for projects it cannot find', function() {
-      var projectsToRemove = ['not there'];
-      var config = {
+      const projectsToRemove = ['not there'];
+      const config = {
         projects: [{
           project: 'one',
         }, {
@@ -171,7 +175,7 @@ describe('Project-Helper', function() {
     });
 
     it('should print information for all projects if no project is passed', function() {
-      var config = {
+      const config = {
         projects: [{
           project: 'joels deal',
           host: 'my-host',
@@ -185,7 +189,7 @@ describe('Project-Helper', function() {
     });
 
     it('should print information only the project specified if passed', function() {
-      var config = {
+      const config = {
         projects: [{
           project: 'joels deal',
           host: 'my-host',

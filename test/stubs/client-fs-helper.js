@@ -1,13 +1,13 @@
-var _ = require('lodash'),
-  sinon = require('sinon');
+import _ from 'lodash';
+import sinon from 'sinon';
 
-var api = {
+const api = {
   on: sinon.spy(),
   watch: sinon.spy(),
   pauseWatch: sinon.spy(),
 };
 
-var mockConstructor = sinon.stub().returns(api);
+const mockConstructor = sinon.stub().returns(api);
 
 function resetAll() {
   _.forIn(api, function(method) {

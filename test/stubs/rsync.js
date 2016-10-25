@@ -1,7 +1,7 @@
-var _ = require('lodash'),
-  sinon = require('sinon');
+import _ from 'lodash';
+import sinon from 'sinon';
 
-var api = {
+const api = {
   shell: sinon.stub().returnsThis(),
   flags: sinon.stub().returnsThis(),
   exclude: sinon.stub().returnsThis(),
@@ -13,7 +13,7 @@ var api = {
   execute: sinon.stub().callsArg(0),
 };
 
-var mockConstructor = sinon.stub().returns(api);
+const mockConstructor = sinon.stub().returns(api);
 
 function resetAll() {
   _.forIn(api, function(method) {

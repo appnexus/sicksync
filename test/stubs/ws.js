@@ -1,10 +1,12 @@
-var _ = require('lodash'),
-  sinon = require('sinon');
+import _ from 'lodash';
+import sinon from 'sinon';
 
-var api = {
+const api = {
   on: sinon.spy(),
   send: sinon.spy(),
 };
+
+const mockConstructor = sinon.stub().returns(api);
 
 function resetAll() {
   _.forIn(api, function(method) {
@@ -13,7 +15,7 @@ function resetAll() {
 }
 
 function getEventCall(event) {
-  var callArgs = null;
+  let callArgs = null;
 
   _.forIn(api.on.getCalls(), function(call) {
     if (call.args[0] === event) {
@@ -25,13 +27,11 @@ function getEventCall(event) {
 }
 
 function triggerEventWithArgs(event) {
-  var args = _.drop(arguments);
-  var eventCall = getEventCall(event);
+  const args = _.drop(arguments);
+  const eventCall = getEventCall(event);
 
   eventCall.args[1].appy(null, args);
 }
-
-var mockConstructor = sinon.stub().returns(api);
 
 module.exports = mockConstructor;
 module.exports.Server = mockConstructor;

@@ -1,20 +1,23 @@
-var _ = require('lodash'),
-  expect = require('chai').expect,
-  proxyquire = require('proxyquire'),
-  chokidarStub = require('../stubs/chokidar'),
-  fsStub = require('../stubs/fs'),
-  FSHelper = proxyquire('../../src/local/fs-helper', {
-    chokidar: chokidarStub,
-    fs: fsStub,
-  }),
-  config = {
-    sourceLocation: 'my/home/',
-    destinationLocation: 'my/remote/box/',
-    excludes: ['.git'],
-  };
+import _ from 'lodash';
+import { expect } from 'chai';
+
+import proxyquire from 'proxyquire';
+import chokidarStub from '../stubs/chokidar';
+import fsStub from '../stubs/fs';
+
+const FSHelper = proxyquire('../../src/local/fs-helper', {
+  chokidar: chokidarStub,
+  fs: fsStub,
+});
+
+const config = {
+  sourceLocation: 'my/home/',
+  destinationLocation: 'my/remote/box/',
+  excludes: ['.git'],
+};
 
 describe('local fs-helper', function() {
-  var fsHelper = null;
+  let fsHelper = null;
 
   beforeEach(function() {
     fsHelper = new FSHelper(config);
@@ -47,7 +50,7 @@ describe('local fs-helper', function() {
     });
 
     it('should pass in an empty array of ignores if none are there', function() {
-      var noExcludesConfig = _.clone(config);
+      const noExcludesConfig = _.clone(config);
 
       delete noExcludesConfig.excludes;
 
@@ -70,7 +73,7 @@ describe('local fs-helper', function() {
     });
 
     describe('fs events', function() {
-      var localPath = 'file/path';
+      const localPath = 'file/path';
 
       beforeEach(function() {
         fsHelper.watch();

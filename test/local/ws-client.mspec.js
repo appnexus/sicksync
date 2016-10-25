@@ -1,14 +1,16 @@
-var expect = require('chai').expect,
-  _ = require('lodash'),
-  remoteHelperStub = require('../stubs/remote-helper'),
-  wsStub = require('../stubs/ws'),
-  proxyquire = require('proxyquire'),
-  Client = proxyquire('../../src/local/ws-client', {
-    './remote-helper': remoteHelperStub,
-    'ws': wsStub,
-  });
+import { expect } from 'chai';
+import _ from 'lodash';
+import proxyquire from 'proxyquire';
 
-var params = {
+import remoteHelperStub from '../stubs/remote-helper';
+import wsStub from '../stubs/ws';
+
+const Client = proxyquire('../../src/local/ws-client', {
+  './remote-helper': remoteHelperStub,
+  'ws': wsStub,
+});
+
+const params = {
   secret: 'keepitsafe',
   prefersEncrypted: false,
   retryOnDisconnect: true,
@@ -18,7 +20,7 @@ var params = {
 };
 
 describe('ws-client', function() {
-  var ws = null;
+  let ws = null;
 
   beforeEach(function() {
     ws = new Client(params);
@@ -60,7 +62,7 @@ describe('ws-client', function() {
 
   describe('onOpen', function() {
     beforeEach(function() {
-            // Trigger `open`
+      // Trigger `open`
       wsStub._api.on.getCall(0).args[1]();
     });
 
@@ -81,28 +83,28 @@ describe('ws-client', function() {
     });
 
     it('should emit a `disconnected` event when `retryOnDisconnect` is false', function(done) {
+      const noRetryParams = _.clone(params);
       wsStub._api.on.reset();
-      var noRetryParams = _.clone(params);
       noRetryParams.retryOnDisconnect = false;
 
-      var wsNoRetry = new Client(noRetryParams);
+      const wsNoRetry = new Client(noRetryParams);
       wsNoRetry.once('disconnected', done);
 
-            // Trigger `close`
+      // Trigger `close`
       wsStub._api.on.getCall(1).args[1]();
     });
   });
 
   describe('onError', function() {
     beforeEach(function() {
-            // Trigger `error`
+      // Trigger `error`
       wsStub._api.on.getCall(2).args[1]();
     });
 
     it('should emit an `reconnecting` event', function(done) {
       ws.on('reconnecting', done);
 
-            // Trigger `error`
+      // Trigger `error`
       wsStub._api.on.getCall(2).args[1]();
     });
 

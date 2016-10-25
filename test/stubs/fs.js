@@ -1,9 +1,9 @@
-var _ = require('lodash'),
-  sinon = require('sinon');
+import _ from 'lodash';
+import sinon from 'sinon';
 
-var existsSyncReturns = false;
+let existsSyncReturns = false;
 
-var api = {
+const api = {
   readFileSync: sinon.stub().returnsArg(0),
   writeFileSync: sinon.spy(),
   outputFile: sinon.spy(),

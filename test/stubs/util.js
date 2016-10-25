@@ -1,9 +1,10 @@
-var _ = require('lodash'),
-  sinon = require('sinon'),
-  util = require('../../src/util'),
-  _config = {};
+import _ from 'lodash';
+import sinon from 'sinon';
+import util from '../../src/util';
 
-var sshApi = {
+let _config = {};
+
+const sshApi = {
   stdout: {
     on: sinon.spy(),
   },
@@ -13,11 +14,11 @@ var sshApi = {
   kill: sinon.spy(),
 };
 
-var prompterApi = {
+const prompterApi = {
   get: sinon.spy(),
 };
 
-var api = _.assign({}, util, {
+const api = _.assign({}, util, {
   logSpy: sinon.spy(),
   getConfig: sinon.stub().returns(_config),
   shellIntoRemote: sinon.stub().returns(sshApi),

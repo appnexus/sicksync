@@ -1,5 +1,6 @@
-var sinon = require('sinon'),
-  oldInfo = console.info;
+import sinon from 'sinon';
+
+const oldInfo = console.info;
 
 function resetAll() {
   console.info.reset();

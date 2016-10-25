@@ -1,8 +1,9 @@
-var _ = require('lodash'),
-  _process = global.process,
-  sinon = require('sinon');
+import _ from 'lodash';
+import sinon from 'sinon';
 
-var api = {
+const _process = global.process;
+
+const api = {
   exit: sinon.spy(),
 };
 

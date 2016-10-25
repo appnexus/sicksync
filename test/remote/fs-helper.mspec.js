@@ -1,23 +1,24 @@
-var _ = require('lodash'),
-  expect = require('chai').expect,
-  fsStub = require('../stubs/fs'),
-  untildify = require('untildify'),
-  proxyquire = require('proxyquire'),
-  FSHelper = proxyquire('../../src/remote/fs-helper', {
-    'fs-extra': fsStub,
-  });
+import _ from 'lodash';
+import { expect } from 'chai';
+import fsStub from '../stubs/fs';
+import untildify from 'untildify';
+import proxyquire from 'proxyquire';
 
-var addTest = {
+const FSHelper = proxyquire('../../src/remote/fs-helper', {
+  'fs-extra': fsStub,
+});
+
+const addTest = {
   destinationpath: '~/Projects',
   contents: 'pretty cool',
 };
 
-var addDirTest = {
+const addDirTest = {
   destinationpath: '~/Projects',
 };
 
 describe('remote fs-helper', function() {
-  var fsHelper = null;
+  let fsHelper = null;
 
   beforeEach(function() {
     fsHelper = new FSHelper();

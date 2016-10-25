@@ -1,25 +1,25 @@
-var _ = require('lodash'),
-  expect = require('chai').expect,
-  proxyquire = require('proxyquire'),
+import _ from 'lodash';
+import { expect } from 'chai';
+import proxyquire from 'proxyquire';
 
-    // Stubs
-  utilStub = require('../stubs/util'),
-  processStub = require('../stubs/process'),
-  bigSyncStub = require('../stubs/big-sync'),
-  fsHelperStub = require('../stubs/client-fs-helper'),
-  wsClientStub = require('../stubs/ws-client'),
+// Stubs
+import utilStub from '../stubs/util';
+import processStub from '../stubs/process';
+import bigSyncStub from '../stubs/big-sync';
+import fsHelperStub from '../stubs/client-fs-helper';
+import wsClientStub from '../stubs/ws-client';
 
-    // Entry
-  entry = proxyquire('../../src/local', {
-    './fs-helper': fsHelperStub,
-    './ws-client': wsClientStub,
-    '../big-sync': bigSyncStub,
-    '../util': utilStub,
-    'process': processStub,
-  });
+// Entry
+const entry = proxyquire('../../src/local', {
+  './fs-helper': fsHelperStub,
+  './ws-client': wsClientStub,
+  '../big-sync': bigSyncStub,
+  '../util': utilStub,
+  'process': processStub,
+});
 
 // Test Data
-var testConfig = {
+const testConfig = {
   retryOnDisconnect: true,
   debug: true,
   projects: {
@@ -37,7 +37,7 @@ var testConfig = {
     },
   },
 };
-var projectConfig = testConfig.projects.myProject;
+const projectConfig = testConfig.projects.myProject;
 
 describe('Client Entry (index.js)', function() {
 
@@ -64,8 +64,8 @@ describe('Client Entry (index.js)', function() {
 
     describe('WSClient', function() {
       it('should instantiate a new WSClient with the appropriate params', function() {
-        var params = wsClientStub.lastCall.args[0],
-          projectConfig = testConfig.projects.myProject;
+        const params = wsClientStub.lastCall.args[0];
+        const projectConfig = testConfig.projects.myProject;
 
         expect(params.username).to.equal(projectConfig.username);
         expect(params.hostname).to.equal(projectConfig.hostname);
@@ -81,7 +81,7 @@ describe('Client Entry (index.js)', function() {
         });
 
         it('should trigger a bigSync', function() {
-          var bigSyncParams = bigSyncStub.lastCall.args[0];
+          const bigSyncParams = bigSyncStub.lastCall.args[0];
 
           expect(bigSyncParams.project).to.equal(projectConfig.project);
           expect(bigSyncParams.excludes).to.eql(projectConfig.excludes);
@@ -94,7 +94,7 @@ describe('Client Entry (index.js)', function() {
 
         it('should start the file watch and log that it\'s connected', function() {
           bigSyncStub.triggerBigSyncComplete();
-          var loggedMessage = utilStub.logSpy.lastCall.args.join(' ');
+          const loggedMessage = utilStub.logSpy.lastCall.args.join(' ');
 
           expect(fsHelperStub._api.watch.called).to.be.true;
 
@@ -104,7 +104,7 @@ describe('Client Entry (index.js)', function() {
         });
 
         it('should log a message indicating that it\'s using encryption', function() {
-          var encryptionConfig = _.clone(testConfig);
+          const encryptionConfig = _.clone(testConfig);
           encryptionConfig.projects.myProject.prefersEncrypted = true;
 
           entry.start(encryptionConfig, ['myProject']);
@@ -141,7 +141,7 @@ describe('Client Entry (index.js)', function() {
         });
 
         it('should log a message sicksync wasn\'t found in the $PATH', function() {
-          var message = utilStub.logSpy.lastCall.args.join(' ');
+          const message = utilStub.logSpy.lastCall.args.join(' ');
           expect(message).to.contain('no sicksync in /usr/bin/which');
           expect(message).to.contain('Couldn\'t find sicksync in $PATH on');
         });
@@ -161,7 +161,7 @@ describe('Client Entry (index.js)', function() {
     });
 
     describe('FSClient', function() {
-      var fileChange = {
+      const fileChange = {
         relativepath: 'my/file/change.txt',
         localpath: projectConfig.destinationLocation + '/' + 'my/file/change.txt',
         changeType: 'add',
@@ -173,7 +173,7 @@ describe('Client Entry (index.js)', function() {
         });
 
         it('should log a message on file changes', function() {
-          var loggedMessage = utilStub.logSpy.lastCall.args.join(' ');
+          const loggedMessage = utilStub.logSpy.lastCall.args.join(' ');
 
           expect(loggedMessage).to.contain('>');
           expect(loggedMessage).to.contain(fileChange.changeType);
@@ -181,7 +181,7 @@ describe('Client Entry (index.js)', function() {
         });
 
         it('should send the file through the ws client and add in the appropriate properties', function() {
-          var sendCall = wsClientStub._api.send.lastCall.args[0];
+          const sendCall = wsClientStub._api.send.lastCall.args[0];
 
           expect(sendCall.destinationpath).to.equal(projectConfig.destinationLocation + '/' + fileChange.relativepath);
           expect(sendCall.subject).to.equal('file');
@@ -202,7 +202,7 @@ describe('Client Entry (index.js)', function() {
         });
 
         it('should trigger a bigSync', function() {
-          var bigSyncParams = bigSyncStub.lastCall.args[0];
+          const bigSyncParams = bigSyncStub.lastCall.args[0];
 
           expect(bigSyncParams.project).to.equal(projectConfig.project);
           expect(bigSyncParams.excludes).to.eql(projectConfig.excludes);
@@ -240,7 +240,7 @@ describe('Client Entry (index.js)', function() {
     });
 
     it('should call bigSync with the appropriate params', function() {
-      var bigSyncParams = bigSyncStub.lastCall.args[0];
+      const bigSyncParams = bigSyncStub.lastCall.args[0];
 
       expect(bigSyncParams.project).to.equal(projectConfig.project);
       expect(bigSyncParams.excludes).to.eql(projectConfig.excludes);
