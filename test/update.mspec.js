@@ -16,7 +16,7 @@ const update = proxyquire('../src/update', {
   './util': utilStub,
   'fs-extra': fsStub,
   '../package.json': packageStub,
-}).default;
+});
 
 const configV1 = {
   retryOnDisconnect: true,

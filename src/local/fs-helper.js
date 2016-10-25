@@ -11,7 +11,7 @@ import eventsConf from '../../conf/events';
 
 const fsEvents = eventsConf.FS.LOCAL;
 
-class FSHelper extends EventEmitter {
+export class FSHelper extends EventEmitter {
   constructor(params) {
     super();
 
@@ -64,5 +64,3 @@ class FSHelper extends EventEmitter {
     this._paused = false;
   }
 }
-
-export default FSHelper;

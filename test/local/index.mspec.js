@@ -16,7 +16,7 @@ const entry = proxyquire('../../src/local', {
   '../big-sync': bigSyncStub,
   '../util': utilStub,
   'process': processStub,
-}).default;
+});
 
 // Test Data
 const testConfig = {

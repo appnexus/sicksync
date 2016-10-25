@@ -5,9 +5,9 @@ import text from '../../conf/text';
 import utilStub from '../stubs/util';
 import proxyquire from 'proxyquire';
 
-const Helper = proxyquire('../../src/local/remote-helper', {
+const { RemoteHelper } = proxyquire('../../src/local/remote-helper', {
   '../util': utilStub,
-}).default;
+});
 
 const params = {
   username: 'joel',
@@ -22,7 +22,7 @@ describe('remote-helper', function() {
   let helper = null;
 
   beforeEach(function() {
-    helper = new Helper(params);
+    helper = new RemoteHelper(params);
   });
 
   afterEach(function() {
@@ -116,7 +116,7 @@ describe('remote-helper', function() {
         noDebugOrExcludeConfig.debug = false;
         noDebugOrExcludeConfig.prefersEncrypted = false;
 
-        helper = new Helper(noDebugOrExcludeConfig);
+        helper = new RemoteHelper(noDebugOrExcludeConfig);
         helper.start();
         helper.once('ready', function() {
           const remoteCmd = utilStub._ssh.stdin.write.lastCall.args[0];

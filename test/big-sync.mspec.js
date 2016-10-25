@@ -6,10 +6,10 @@ import rsyncStub from './stubs/rsync';
 import utilStub from './stubs/util';
 
 // Inject
-const bigSync = proxyquire('../src/big-sync', {
+const { bigSync } = proxyquire('../src/big-sync', {
   'rsync': rsyncStub,
   './util': utilStub,
-}).default;
+});
 
 const testConfig = {
   username: 'joel',

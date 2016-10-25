@@ -9,7 +9,7 @@ import eventsConf from '../../conf/events';
 const wsEvents = eventsConf.WS.LOCAL;
 const remoteEvents = eventsConf.REMOTE;
 
-class WSClient extends EventEmitter {
+export class WSClient extends EventEmitter {
   constructor(params) {
     super();
 
@@ -60,5 +60,3 @@ class WSClient extends EventEmitter {
     this._ws.send(this._crypt.stringifyAndEncrypt(obj, this._prefersEncrypted));
   }
 }
-
-export default WSClient;

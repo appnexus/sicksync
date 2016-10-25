@@ -7,7 +7,7 @@ import eventsConf from '../../conf/events';
 const fsEvents = eventsConf.FS.REMOTE;
 const wsEvents = eventsConf.WS.REMOTE;
 
-function startRemote(opts) {
+export function startRemote(opts) {
   if (!_.isNumber(opts.port)) return console.info(text.REMOTE_MISSING_PORT);
   if (!_.isString(opts.secret)) return console.info(text.REMOTE_MISSING_SECRET);
 
@@ -66,5 +66,3 @@ function startRemote(opts) {
   fsHelper.on(fsEvents.ADD_DIR_ERROR, errorLog);
   fsHelper.on(fsEvents.DELETE_ERROR, errorLog);
 }
-
-export default startRemote;

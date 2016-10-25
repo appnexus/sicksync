@@ -5,10 +5,10 @@ import proxyquire from 'proxyquire';
 import chokidarStub from '../stubs/chokidar';
 import fsStub from '../stubs/fs';
 
-const FSHelper = proxyquire('../../src/local/fs-helper', {
+const { FSHelper } = proxyquire('../../src/local/fs-helper', {
   chokidar: chokidarStub,
   fs: fsStub,
-}).default;
+});
 
 const config = {
   sourceLocation: 'my/home/',

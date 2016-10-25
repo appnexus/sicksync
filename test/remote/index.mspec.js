@@ -9,10 +9,10 @@ import consoleStub from '../stubs/console';
 import processStub from '../stubs/process';
 
     // Inject
-const remote = proxyquire('../../src/remote', {
+const { startRemote } = proxyquire('../../src/remote', {
   './fs-helper': fsHelperStub,
   './ws-server': wsStub,
-}).default;
+});
 
 // Test Data
 const serverOpts = {
@@ -40,7 +40,7 @@ describe('Remote Entry (index.js)', function() {
   });
 
   it('should warn when the there is no port passed in', function() {
-    remote({
+    startRemote({
       secret: 'my-secret',
     });
 
@@ -48,7 +48,7 @@ describe('Remote Entry (index.js)', function() {
   });
 
   it('should warn when the there is no secret passed in', function() {
-    remote({
+    startRemote({
       port: 1234,
     });
 
@@ -57,7 +57,7 @@ describe('Remote Entry (index.js)', function() {
 
   describe('Server Events', function() {
     beforeEach(function() {
-      remote(serverOpts);
+      startRemote(serverOpts);
     });
 
     it('should log a message and exit if an unauthorized message happens', function() {
@@ -138,7 +138,7 @@ describe('Remote Entry (index.js)', function() {
 
   describe('File Events', function() {
     beforeEach(function() {
-      remote(serverOpts);
+      startRemote(serverOpts);
     });
 
     it('should log files that have been added', function() {

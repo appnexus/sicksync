@@ -137,6 +137,12 @@ export const info = (config, projects) => {
   }
 
   _.each(projects, (project) => {
-    printProjectInfo(_.findWhere(config.projects, { project }));
+    const foundProject = _.findWhere(config.projects, { project });
+
+    if (foundProject) {
+      printProjectInfo(_.findWhere(config.projects, { project }));
+    } else {
+      console.info(yellow(`Couldn't locate ${project} inside your config file, add it with 'sicksync add'!`));
+    }
   });
 };

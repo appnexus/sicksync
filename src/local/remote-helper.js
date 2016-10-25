@@ -10,7 +10,7 @@ const COMMAND_NOT_FOUND = [
   'command not found',
 ];
 
-class RemoteHelper extends EventEmitter {
+export class RemoteHelper extends EventEmitter {
   constructor(params) {
     super();
 
@@ -70,5 +70,3 @@ class RemoteHelper extends EventEmitter {
     });
   }
 }
-
-export default RemoteHelper;

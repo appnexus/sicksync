@@ -41,5 +41,3 @@ export function bigSync(project) {
 
   rsync.execute(onComplete);
 }
-
-export default bigSync;

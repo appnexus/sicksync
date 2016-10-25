@@ -5,7 +5,7 @@ import { FS } from '../../conf/events';
 
 const fsEvents = FS.REMOTE;
 
-class FSHelper extends EventEmitter {
+export class FSHelper extends EventEmitter {
 
   constructor() {
     super();
@@ -35,5 +35,3 @@ class FSHelper extends EventEmitter {
     });
   }
 }
-
-export default FSHelper;

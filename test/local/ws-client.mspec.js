@@ -5,10 +5,10 @@ import proxyquire from 'proxyquire';
 import remoteHelperStub from '../stubs/remote-helper';
 import wsStub from '../stubs/ws';
 
-const Client = proxyquire('../../src/local/ws-client', {
+const { WSClient } = proxyquire('../../src/local/ws-client', {
   './remote-helper': remoteHelperStub,
   'ws': wsStub,
-}).default;
+});
 
 const params = {
   secret: 'keepitsafe',
@@ -23,7 +23,7 @@ describe('ws-client', function() {
   let ws = null;
 
   beforeEach(function() {
-    ws = new Client(params);
+    ws = new WSClient(params);
   });
 
   afterEach(function() {
@@ -87,7 +87,7 @@ describe('ws-client', function() {
       wsStub._api.on.reset();
       noRetryParams.retryOnDisconnect = false;
 
-      const wsNoRetry = new Client(noRetryParams);
+      const wsNoRetry = new WSClient(noRetryParams);
       wsNoRetry.once('disconnected', done);
 
       // Trigger `close`
