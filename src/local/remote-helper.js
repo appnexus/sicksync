@@ -46,8 +46,6 @@ export class RemoteHelper extends EventEmitter {
     ssh.stdout.on('data', (data) => {
       const message = data.toString();
 
-      console.log(message);
-
       // Boot sicksync (once!)
       bootSicksync(ssh);
 
