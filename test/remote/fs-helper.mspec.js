@@ -1,100 +1,100 @@
 var _ = require('lodash'),
-    expect = require('chai').expect,
-    fsStub = require('../stubs/fs'),
-    untildify = require('untildify'),
-    proxyquire = require('proxyquire'),
-    FSHelper = proxyquire('../../src/remote/fs-helper', {
-        'fs-extra': fsStub
-    });
+  expect = require('chai').expect,
+  fsStub = require('../stubs/fs'),
+  untildify = require('untildify'),
+  proxyquire = require('proxyquire'),
+  FSHelper = proxyquire('../../src/remote/fs-helper', {
+    'fs-extra': fsStub,
+  });
 
 var addTest = {
-    destinationpath: '~/Projects',
-    contents: 'pretty cool'
+  destinationpath: '~/Projects',
+  contents: 'pretty cool',
 };
 
 var addDirTest = {
-    destinationpath: '~/Projects'
+  destinationpath: '~/Projects',
 };
 
 describe('remote fs-helper', function() {
-    var fsHelper = null;
+  var fsHelper = null;
 
-    beforeEach(function() {
-        fsHelper = new FSHelper();
+  beforeEach(function() {
+    fsHelper = new FSHelper();
+  });
+
+  afterEach(function() {
+    fsStub.resetAll();
+  });
+
+  describe('#addFile', function() {
+    it('should untildify the file', function() {
+      fsHelper.addFile(addTest);
+      expect(fsStub.outputFile.lastCall.args[0]).to.equal(untildify(addTest.destinationpath));
     });
 
-    afterEach(function() {
-        fsStub.resetAll();
+    it('should pass the contents to the fs-extra write', function() {
+      fsHelper.addFile(addTest);
+
+      expect(fsStub.outputFile.lastCall.args[1]).to.eql(addTest.contents);
     });
 
-    describe('#addFile', function() {
-        it('should untildify the file', function() {
-            fsHelper.addFile(addTest);
-            expect(fsStub.outputFile.lastCall.args[0]).to.equal(untildify(addTest.destinationpath));
-        });
+    it('should emit an event when the file has written successfully', function(done) {
+      fsHelper.on('add-file', _.ary(done, 0));
+      fsHelper.addFile(addTest);
 
-        it('should pass the contents to the fs-extra write', function() {
-            fsHelper.addFile(addTest);
-
-            expect(fsStub.outputFile.lastCall.args[1]).to.eql(addTest.contents);
-        });
-
-        it('should emit an event when the file has written successfully', function(done) {
-            fsHelper.on('add-file', _.ary(done, 0));
-            fsHelper.addFile(addTest);
-
-            fsStub.outputFile.lastCall.args[2](null);
-        });
-
-        it('should emit an event when the file wasn\'t written', function(done) {
-            fsHelper.on('add-file-error', _.ary(done, 0));
-            fsHelper.addFile(addTest);
-
-            fsStub.outputFile.lastCall.args[2]('File not written');
-        });
+      fsStub.outputFile.lastCall.args[2](null);
     });
 
-    describe('#addDir', function() {
-        it('should untildify the file', function() {
-            fsHelper.addDir(addDirTest);
+    it('should emit an event when the file wasn\'t written', function(done) {
+      fsHelper.on('add-file-error', _.ary(done, 0));
+      fsHelper.addFile(addTest);
 
-            expect(fsStub.mkdirs.lastCall.args[0]).to.equal(untildify(addDirTest.destinationpath));
-        });
+      fsStub.outputFile.lastCall.args[2]('File not written');
+    });
+  });
 
-        it('should emit an event when the file has written successfully', function(done) {
-            fsHelper.on('add-dir', _.ary(done, 0));
-            fsHelper.addDir(addDirTest);
+  describe('#addDir', function() {
+    it('should untildify the file', function() {
+      fsHelper.addDir(addDirTest);
 
-            fsStub.mkdirs.lastCall.args[1](null);
-        });
-
-        it('should emit an event when the file wasn\'t written', function(done) {
-            fsHelper.on('add-dir-error', _.ary(done, 0));
-            fsHelper.addDir(addDirTest);
-
-            fsStub.mkdirs.lastCall.args[1]('File not written');
-        });
+      expect(fsStub.mkdirs.lastCall.args[0]).to.equal(untildify(addDirTest.destinationpath));
     });
 
-    describe('#removePath', function() {
-        it('should untildify the file', function() {
-            fsHelper.removePath(addDirTest);
+    it('should emit an event when the file has written successfully', function(done) {
+      fsHelper.on('add-dir', _.ary(done, 0));
+      fsHelper.addDir(addDirTest);
 
-            expect(fsStub.delete.lastCall.args[0]).to.equal(untildify(addDirTest.destinationpath));
-        });
-
-        it('should emit an event when the file has written successfully', function(done) {
-            fsHelper.on('delete', _.ary(done, 0));
-            fsHelper.removePath(addDirTest);
-
-            fsStub.delete.lastCall.args[1](null);
-        });
-
-        it('should emit an event when the file wasn\'t written', function(done) {
-            fsHelper.on('delete-error', _.ary(done, 0));
-            fsHelper.removePath(addDirTest);
-
-            fsStub.delete.lastCall.args[1]('File not written');
-        });
+      fsStub.mkdirs.lastCall.args[1](null);
     });
+
+    it('should emit an event when the file wasn\'t written', function(done) {
+      fsHelper.on('add-dir-error', _.ary(done, 0));
+      fsHelper.addDir(addDirTest);
+
+      fsStub.mkdirs.lastCall.args[1]('File not written');
+    });
+  });
+
+  describe('#removePath', function() {
+    it('should untildify the file', function() {
+      fsHelper.removePath(addDirTest);
+
+      expect(fsStub.delete.lastCall.args[0]).to.equal(untildify(addDirTest.destinationpath));
+    });
+
+    it('should emit an event when the file has written successfully', function(done) {
+      fsHelper.on('delete', _.ary(done, 0));
+      fsHelper.removePath(addDirTest);
+
+      fsStub.delete.lastCall.args[1](null);
+    });
+
+    it('should emit an event when the file wasn\'t written', function(done) {
+      fsHelper.on('delete-error', _.ary(done, 0));
+      fsHelper.removePath(addDirTest);
+
+      fsStub.delete.lastCall.args[1]('File not written');
+    });
+  });
 });

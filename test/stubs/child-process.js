@@ -1,15 +1,15 @@
 var _ = require('lodash'),
-    sinon = require('sinon');
+  sinon = require('sinon');
 
 var api = {
-    exec: sinon.spy(),
-    spawn: sinon.spy()
+  exec: sinon.spy(),
+  spawn: sinon.spy(),
 };
 
 function resetAll() {
-    _.forIn(api, function(method) {
-        if (_.isFunction(method.reset)) method.reset();
-    });
+  _.forIn(api, function(method) {
+    if (_.isFunction(method.reset)) method.reset();
+  });
 }
 
 module.exports = api;

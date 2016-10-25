@@ -1,27 +1,27 @@
 var _ = require('lodash'),
-    sinon = require('sinon');
+  sinon = require('sinon');
 
 var api = {
-    addFile: sinon.spy(),
-    addDir: sinon.spy(),
-    removePath: sinon.spy(),
-    on: sinon.spy()
+  addFile: sinon.spy(),
+  addDir: sinon.spy(),
+  removePath: sinon.spy(),
+  on: sinon.spy(),
 };
 
 var mockConstructor = sinon.stub().returns(api);
 
 function resetAll() {
-    _.forIn(api, function(method) {
-        if (_.isFunction(method.reset)) method.reset();
-    });
+  _.forIn(api, function(method) {
+    if (_.isFunction(method.reset)) method.reset();
+  });
 }
 
 function triggerFSCall(callName, data) {
-    _.each(api.on.getCalls(), function(call) {
-        if (call.args[0] === callName) {
-            call.args[1](data);
-        }
-    });
+  _.each(api.on.getCalls(), function(call) {
+    if (call.args[0] === callName) {
+      call.args[1](data);
+    }
+  });
 }
 
 module.exports = mockConstructor;

@@ -1,24 +1,24 @@
 var _ = require('lodash'),
-    _process = global.process,
-    sinon = require('sinon');
+  _process = global.process,
+  sinon = require('sinon');
 
 var api = {
-    exit: sinon.spy()
+  exit: sinon.spy(),
 };
 
 function resetAll() {
-    _.forIn(api, function(method) {
-        if (_.isFunction(method.reset)) method.reset();
-    });
+  _.forIn(api, function(method) {
+    if (_.isFunction(method.reset)) method.reset();
+  });
 }
 
 function inject() {
-    process.exit = api.exit;
+  process.exit = api.exit;
 }
 
 function restore() {
-    process.exit = _process.exit;
-    resetAll();
+  process.exit = _process.exit;
+  resetAll();
 }
 
 module.exports = api;

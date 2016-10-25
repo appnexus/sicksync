@@ -3,7 +3,7 @@ var sinon = require('sinon');
 var api = sinon.spy();
 
 function resetAll() {
-    api.reset();
+  api.reset();
 }
 
 module.exports = api;

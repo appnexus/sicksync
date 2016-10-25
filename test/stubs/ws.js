@@ -1,34 +1,34 @@
 var _ = require('lodash'),
-    sinon = require('sinon');
+  sinon = require('sinon');
 
 var api = {
-    on: sinon.spy(),
-    send: sinon.spy()
+  on: sinon.spy(),
+  send: sinon.spy(),
 };
 
 function resetAll() {
-    _.forIn(api, function(method) {
-        if (_.isFunction(method.reset)) method.reset();
-    });
+  _.forIn(api, function(method) {
+    if (_.isFunction(method.reset)) method.reset();
+  });
 }
 
 function getEventCall(event) {
-    var callArgs = null;
+  var callArgs = null;
 
-    _.forIn(api.on.getCalls(), function(call) {
-        if (call.args[0] === event) {
-            callArgs = call;
-        }
-    });
+  _.forIn(api.on.getCalls(), function(call) {
+    if (call.args[0] === event) {
+      callArgs = call;
+    }
+  });
 
-    return callArgs;
+  return callArgs;
 }
 
 function triggerEventWithArgs(event) {
-    var args = _.drop(arguments);
-    var eventCall = getEventCall(event);
+  var args = _.drop(arguments);
+  var eventCall = getEventCall(event);
 
-    eventCall.args[1].appy(null, args);
+  eventCall.args[1].appy(null, args);
 }
 
 var mockConstructor = sinon.stub().returns(api);

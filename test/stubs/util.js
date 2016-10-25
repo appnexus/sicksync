@@ -1,51 +1,51 @@
 var _ = require('lodash'),
-    sinon = require('sinon'),
-    util = require('../../src/util'),
-    _config = {};
+  sinon = require('sinon'),
+  util = require('../../src/util'),
+  _config = {};
 
 var sshApi = {
-    stdout: {
-        on: sinon.spy()
-    },
-    stdin: {
-        write: sinon.spy()
-    },
-    kill: sinon.spy()
+  stdout: {
+    on: sinon.spy(),
+  },
+  stdin: {
+    write: sinon.spy(),
+  },
+  kill: sinon.spy(),
 };
 
 var prompterApi = {
-    get: sinon.spy()
+  get: sinon.spy(),
 };
 
 var api = _.assign({}, util, {
-    logSpy: sinon.spy(),
-    getConfig: sinon.stub().returns(_config),
-    shellIntoRemote: sinon.stub().returns(sshApi),
-    setupPrompter: sinon.stub().returns(prompterApi),
-    writeConfig: sinon.spy(),
-    getUpdatePath: sinon.spy(),
-    generateLog: sinon.stub().returns(function() {
-        api.logSpy.apply(null, arguments);
-    })
+  logSpy: sinon.spy(),
+  getConfig: sinon.stub().returns(_config),
+  shellIntoRemote: sinon.stub().returns(sshApi),
+  setupPrompter: sinon.stub().returns(prompterApi),
+  writeConfig: sinon.spy(),
+  getUpdatePath: sinon.spy(),
+  generateLog: sinon.stub().returns(function() {
+    api.logSpy.apply(null, arguments);
+  }),
 });
 
 function triggerStdout(message) {
-    sshApi.stdout.on.lastCall.args[1](new Buffer(message));
-};
+  sshApi.stdout.on.lastCall.args[1](new Buffer(message));
+}
 
 function resetAll() {
-    sshApi.stdout.on.reset();
-    sshApi.stdin.write.reset();
-    sshApi.kill.reset();
-    prompterApi.get.reset();
+  sshApi.stdout.on.reset();
+  sshApi.stdin.write.reset();
+  sshApi.kill.reset();
+  prompterApi.get.reset();
 
-    _.forIn(api, function(method) {
-        if (_.isFunction(method.reset)) method.reset();
-    });
+  _.forIn(api, function(method) {
+    if (_.isFunction(method.reset)) method.reset();
+  });
 }
 
 function setConfig(config) {
-    _config = config;
+  _config = config;
 }
 
 module.exports = api;

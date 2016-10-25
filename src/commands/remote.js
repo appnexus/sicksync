@@ -1,7 +1,7 @@
 import remote from '../remote';
 
 function sicksyncRemoteCommand(program) {
-    program
+  program
         .command('remote')
         .description('Starts the remote process of sicksync. Must be ran on the remote machine.')
         .option('-s, --secret <secret>', 'A secret used to only allow known subscribers (should match with your config).')
@@ -9,6 +9,6 @@ function sicksyncRemoteCommand(program) {
         .option('-e, --encrypt', 'Enable encryption on messages (should match with your config)')
         .option('-d, --debug', 'Show debug messages')
         .action(remote);
-};
+}
 
 export default sicksyncRemoteCommand;

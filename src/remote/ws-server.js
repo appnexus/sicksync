@@ -4,44 +4,44 @@ import Crypt from '../crypt';
 import text from '../../conf/text';
 import { WS as WSEvents } from '../../conf/events';
 
-let wsEvents = WSEvents.REMOTE;
+const wsEvents = WSEvents.REMOTE;
 
 class WSServer extends EventEmitter {
-    constructor (params) {
-        super();
+  constructor(params) {
+    super();
 
-        this._secret = params.secret;
-        this._encrypt = params.encrypt;
-        this._crypt = new Crypt(this._secret);
+    this._secret = params.secret;
+    this._encrypt = params.encrypt;
+    this._crypt = new Crypt(this._secret);
 
-        new WebSocketServer({ 
-            port: params.port 
-        }).on('connection', this.handleConnect.bind(this));
+    new WebSocketServer({
+      port: params.port,
+    }).on('connection', this.handleConnect.bind(this));
 
-        console.info(this._secret, text.SERVER_ON_READY);
+    console.info(this._secret, text.SERVER_ON_READY);
+  }
+
+  handleConnect(ws) {
+    ws.on('message', this.handleMessage.bind(this));
+    ws.on('close', this.connectionClosed.bind(this));
+  }
+
+  handleMessage(message) {
+    const parsedMessage = this._crypt.decryptAndParse(message, this._encrypt);
+
+    if (parsedMessage.secret !== this._secret) {
+      return this.emit(wsEvents.UNAUTHORIZED);
     }
-
-    handleConnect (ws) {
-        ws.on('message', this.handleMessage.bind(this));
-        ws.on('close', this.connectionClosed.bind(this));
-    }
-
-    handleMessage (message) {
-        let parsedMessage = this._crypt.decryptAndParse(message, this._encrypt);
-
-        if (parsedMessage.secret !== this._secret) {
-            return this.emit(wsEvents.UNAUTHORIZED);
-        }
 
         /* istanbul ignore else */
-        if (parsedMessage.subject === 'file') {
-            return this.emit(wsEvents.FILE_CHANGE, parsedMessage);
-        }
+    if (parsedMessage.subject === 'file') {
+      return this.emit(wsEvents.FILE_CHANGE, parsedMessage);
     }
+  }
 
-    connectionClosed () {
-        this.emit(wsEvents.CONNECTION_CLOSED);
-    }
+  connectionClosed() {
+    this.emit(wsEvents.CONNECTION_CLOSED);
+  }
 }
 
 export default WSServer;
