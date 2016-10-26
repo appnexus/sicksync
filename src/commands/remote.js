@@ -1,4 +1,4 @@
-import remote from '../remote';
+import { startRemote } from '../remote';
 
 function sicksyncRemoteCommand(program) {
   program
@@ -8,7 +8,7 @@ function sicksyncRemoteCommand(program) {
     .option('-p, --port <port>', 'The port in which to listen for incoming sync messages (should match with your config).', parseInt)
     .option('-e, --encrypt', 'Enable encryption on messages (should match with your config)')
     .option('-d, --debug', 'Show debug messages')
-    .action(remote);
+    .action(startRemote);
 }
 
 export default sicksyncRemoteCommand;

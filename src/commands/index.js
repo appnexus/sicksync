@@ -7,6 +7,8 @@ export function generateCommands(program, config) {
       require('./' + file).default(program, config);
     }
   });
+
+  return program;
 }
 
 export default generateCommands;

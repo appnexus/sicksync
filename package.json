@@ -49,7 +49,7 @@
     "ws": "^0.8.0"
   },
   "bin": {
-    "sicksync": "./bin/sicksync.js"
+    "sicksync": "./dist/index.js"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",

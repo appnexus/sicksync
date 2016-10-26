@@ -8,7 +8,6 @@ const COMMAND_NOT_FOUND = [
   'sicksync not found',
   'no sicksync in',
   'command not found',
-  'Error',
 ];
 
 export class RemoteHelper extends EventEmitter {
@@ -43,8 +42,18 @@ export class RemoteHelper extends EventEmitter {
     const bootSicksync = _.once(this._startRemoteSicksync.bind(this));
     const ssh = util.shellIntoRemote(this._username + '@' + this._hostname);
 
+    ssh.on('close', (data) => {
+      context.emit(remoteEvents.NOT_FOUND, data.toString());
+    });
+
+    ssh.stderr.on('close', (data) => {
+      context.emit(remoteEvents.NOT_FOUND, data.toString());
+    });
+
     ssh.stdout.on('data', (data) => {
       const message = data.toString();
+
+      console.log('>>>', message);
 
       // Boot sicksync (once!)
       bootSicksync(ssh);
@@ -64,6 +73,7 @@ export class RemoteHelper extends EventEmitter {
       // Not found/Not installed
       _.each(COMMAND_NOT_FOUND, (notFoundText) => {
         /* istanbul ignore else */
+        console.log(_.contains(message, notFoundText));
         if (_.contains(message, notFoundText)) {
           context.emit(remoteEvents.NOT_FOUND, message);
         }

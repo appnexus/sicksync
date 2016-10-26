@@ -6,7 +6,7 @@ coverage/
 temp/
 
 # Node Modules
-node_modules
+node_modules/
 
 # Logs and system
 npm-debug.log
