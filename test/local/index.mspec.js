@@ -11,9 +11,9 @@ import wsClientStub from '../stubs/ws-client';
 
 // Entry
 const entry = proxyquire('../../src/local', {
-  './fs-helper': fsHelperStub,
-  './ws-client': wsClientStub,
-  '../big-sync': bigSyncStub,
+  './fs-helper': { FSHelper: fsHelperStub },
+  './ws-client': { WSClient: wsClientStub },
+  '../big-sync': { bigSync: bigSyncStub },
   '../util': utilStub,
   'process': processStub,
 });

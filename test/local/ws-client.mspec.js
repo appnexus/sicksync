@@ -6,7 +6,7 @@ import remoteHelperStub from '../stubs/remote-helper';
 import wsStub from '../stubs/ws';
 
 const { WSClient } = proxyquire('../../src/local/ws-client', {
-  './remote-helper': remoteHelperStub,
+  './remote-helper': { RemoteHelper: remoteHelperStub },
   'ws': wsStub,
 });
 

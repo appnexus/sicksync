@@ -6,7 +6,9 @@ import wsStub from '../stubs/ws';
 import consoleStub from '../stubs/console';
 
 // Inject
-const WSServer = proxyquire('../../src/remote/ws-server', { ws: wsStub }).default;
+const { WSServer } = proxyquire('../../src/remote/ws-server', {
+  ws: wsStub,
+});
 
 // Mocks
 const testParams = {

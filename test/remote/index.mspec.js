@@ -10,8 +10,8 @@ import processStub from '../stubs/process';
 
     // Inject
 const { startRemote } = proxyquire('../../src/remote', {
-  './fs-helper': fsHelperStub,
-  './ws-server': wsStub,
+  './fs-helper': { FSHelper: fsHelperStub },
+  './ws-server': { WSServer: wsStub },
 });
 
 // Test Data
