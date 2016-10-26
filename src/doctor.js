@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { Promise } from 'es6-promise';
 import chalk from 'chalk';
 import fs from 'fs-extra';
 
