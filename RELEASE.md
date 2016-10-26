@@ -1,3 +1,9 @@
+## 2.2.0
+- Windows support! It now works on Windows.
+- `.gitignore` support! It can now take parse excludes from `.gitignore` file with `excludesFile` option.
+- Fixes an issue where excluded paths were still being watched by file watchers.
+- Replaced dependency `minimatch` with `anymatch`.
+
 ## 2.1.0
 - New `doctor` command to quickly troubleshoot why sicksync isn't working. See README.md for more.
 - Updating package deps.
