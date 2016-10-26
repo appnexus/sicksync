@@ -30,13 +30,13 @@ export function updateRemote(project) {
   ssh.stdout.on('data', (data) => {
     const message = data.toString();
 
-    if (_.contains(message, 'sicksync@')) {
+    if (_.includes(message, 'sicksync@')) {
       console.info(project.hostname, text.UPDATE_SUCCESS);
 
       return ssh.kill('SIGINT');
     }
 
-    if (_.contains(message, 'ERR!')) {
+    if (_.includes(message, 'ERR!')) {
       console.info(project.hostname, text.UPDATE_FAIL);
 
       return ssh.kill('SIGINT');
@@ -48,7 +48,7 @@ export function updateRemote(project) {
 
 export function updateLocal() {
   exec(constants.UPDATE_CMD,  (error, stdout, stderr) => {
-    if (!!error || _.contains(stderr, 'ERR!')) {
+    if (!!error || _.includes(stderr, 'ERR!')) {
       return console.info(hostname, text.UPDATE_FAIL, (error || stderr));
     }
 

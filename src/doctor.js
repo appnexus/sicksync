@@ -108,7 +108,7 @@ export function hasSicksyncRemote({ username, hostname }) {
     ssh.stdout.on('data', (data) => {
       const message = data.toString();
 
-      if (_.contains(message, 'no sicksync in')) {
+      if (_.includes(message, 'no sicksync in')) {
         clearAndKill();
         console.info(chalk.red(`Couldn't start sicksync on ${hostname} with user ${username}!`));
         console.info(`Check to ensure it's installed globally on ${hostname}: 'npm i -g sicksync'`);
@@ -116,7 +116,7 @@ export function hasSicksyncRemote({ username, hostname }) {
         reject(false);
       }
 
-      if (_.contains(message, '/sicksync')) {
+      if (_.includes(message, '/sicksync')) {
         clearAndKill();
         console.info(chalk.green(`Successfully found sicksync on host ${hostname} with user ${username}!`));
         resolve(true);

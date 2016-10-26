@@ -207,7 +207,7 @@ export function getProjectsFromConfig(config, projects) {
   }
 
   _.each(projects, (project) => {
-    const projectConf = _.findWhere(config.projects, { project });
+    const projectConf = _.find(config.projects, { project });
 
     if (!_.isEmpty(projectConf)) {
       foundProjects.push(projectConf);

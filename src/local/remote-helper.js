@@ -49,12 +49,12 @@ export class RemoteHelper extends EventEmitter {
       bootSicksync(ssh);
 
       // If we get a 'ready' flag back from the server, emit a ready event
-      if (_.contains(message, readyFlag)) {
+      if (_.includes(message, readyFlag)) {
         return context.emit(remoteEvents.READY);
       }
 
       // If the message contains the devboxes name, emit the message
-      if (_.contains(message, context._secret)) {
+      if (_.includes(message, context._secret)) {
         const cleanedMessage = message.replace(context._secret, '').replace('\n', '');
 
         return context.emit(remoteEvents.MESSAGE, cleanedMessage);
@@ -63,7 +63,7 @@ export class RemoteHelper extends EventEmitter {
       // Not found/Not installed
       _.each(COMMAND_NOT_FOUND, (notFoundText) => {
         /* istanbul ignore else */
-        if (_.contains(message, notFoundText)) {
+        if (_.includes(message, notFoundText)) {
           context.emit(remoteEvents.NOT_FOUND, message);
         }
       });

@@ -59,13 +59,15 @@ function startProject(config, projectConf) {
   const destinationLocation = ensureTrailingSlash(projectConf.destinationLocation);
   const secret = getId();
 
-  // parse excludesFile
-  projectConf.excludes = projectConf.excludes;
-
   const fsHelper = new FSHelper({
     sourceLocation: sourceLocation,
-    excludes: projectConf.excludes,
     followSymlinks: projectConf.followSymlinks,
+    excludes: _.concat(projectConf.excludes, _.chain(projectConf.excludesFile)
+      .map(untildify)
+      .map(gitignore)
+      .flatten()
+      .value()
+    ),
   });
 
   const wsClient = new WebSocketClient({
@@ -105,7 +107,7 @@ function startProject(config, projectConf) {
   wsClient.on(wsEvents.REMOTE_MESSAGE, (message) => {
     // Since WS can be shared amongst projects, filter out
     // any that are not in this project
-    if (_.contains(message, destinationLocation)) {
+    if (_.includes(message, destinationLocation)) {
       remoteLog(message);
     }
   });
