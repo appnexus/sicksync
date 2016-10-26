@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import FSHelper from './fs-helper';
-import Server from './ws-server';
+import { FSHelper } from './fs-helper';
+import { WSServer } from './ws-server';
 import text from '../../conf/text';
 import eventsConf from '../../conf/events';
 
@@ -15,7 +15,7 @@ export function startRemote(opts) {
   const receivedLog = _.partial(log, '<');
   const errorLog = _.partial(log, 'ERR');
 
-  const wss = new Server({
+  const wss = new WSServer({
     port: opts.port,
     secret: opts.secret,
     debug: opts.debug,

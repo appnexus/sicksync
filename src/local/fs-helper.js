@@ -37,12 +37,13 @@ export class FSHelper extends EventEmitter {
   }
 
   onFileChange(evt, sourcepath) {
+    const relativepath = sourcepath.split(this._baseDir)[1];
+    const localpath = this._sourceLocation + relativepath;
+
     if (os.platform() === 'win32') {
       sourcepath = sourcepath.replace(/\\/g, '/');
     }
 
-    const relativepath = sourcepath.split(this._baseDir)[1];
-    const localpath = this._sourceLocation + relativepath;
     let fileContents = null;
 
     if (this._paused || util.isExcluded(relativepath, this._excludes)) return;

@@ -20,6 +20,12 @@ export class WSClient extends EventEmitter {
     this._hostname = params.hostname;
     this._webSocketPort = params.websocketPort;
     this._username = params.username;
+
+    this._startDevBox();
+    this._connect();
+  }
+
+  _startDevBox() {
     this._devbox = new RemoteHelper({
       secret: this._secret,
       websocketPort: this._webSocketPort,
@@ -28,8 +34,6 @@ export class WSClient extends EventEmitter {
       prefersEncrypted: this._prefersEncrypted,
       debug: this._debug,
     });
-
-    this._connect();
   }
 
   _connect() {
@@ -48,7 +52,7 @@ export class WSClient extends EventEmitter {
 
   _reconnect() {
     this.emit('reconnecting');
-
+    this._startDevBox();
     this._devbox.start();
     this._devbox.on(remoteEvents.READY, this._connect.bind(this));
     this._devbox.on(remoteEvents.MESSAGE, _.partial(this.emit.bind(this), wsEvents.REMOTE_MESSAGE));

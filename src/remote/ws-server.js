@@ -6,7 +6,7 @@ import { WS as WSEvents } from '../../conf/events';
 
 const wsEvents = WSEvents.REMOTE;
 
-class WSServer extends EventEmitter {
+export class WSServer extends EventEmitter {
   constructor(params) {
     super();
 
@@ -45,5 +45,3 @@ class WSServer extends EventEmitter {
     this.emit(wsEvents.CONNECTION_CLOSED);
   }
 }
-
-export default WSServer;

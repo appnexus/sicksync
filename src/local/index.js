@@ -60,7 +60,7 @@ function startProject(config, projectConf) {
   const secret = getId();
 
   // parse excludesFile
-  projectConf.excludes = projectConf.excludes.concat(_.map(projectConf.excludesFile, untildify).map(gitignore));
+  projectConf.excludes = projectConf.excludes;
 
   const fsHelper = new FSHelper({
     sourceLocation: sourceLocation,
