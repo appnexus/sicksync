@@ -48,10 +48,8 @@ export default {
             },
             excludes: {
                 description: 'Are there any files you\'d like to exclude? Use a comma separated list (supports globbing)',
-                default: '.git/**,.git/**/*,.idea/*,**/*.swp,**/*.svn',
-                before: function(csv) {
-                    return csv.split(',');
-                }
+                default: '.git,.idea,*.swp,*.svn',
+                before: csv => csv.split(','),
             },
             excludesFile: {
                 description: 'Would you like to load excludes from file?',
