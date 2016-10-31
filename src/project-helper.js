@@ -3,7 +3,7 @@ import { sep } from 'path';
 import prompter from 'prompt';
 import { green, yellow } from 'chalk';
 import { version } from '../package.json';
-import util from './util';
+import * as util from './util';
 
 const sicksyncSetup = util.setupPrompter(prompter);
 
@@ -79,14 +79,6 @@ export const add = (config) => {
     };
   }
 
-  if (_.isUndefined(config.retryOnDisconnect)) {
-    questions.retryOnDisconnect = {
-      description: 'Would you like sicksync to retry connecting if it gets disconnected?',
-      default: 'yes',
-      before: util.toBoolean,
-    };
-  }
-
   sicksyncSetup.get({
     properties: questions,
   }, (err, result) => {
@@ -95,11 +87,6 @@ export const add = (config) => {
     if (_.isUndefined(config.debug)) {
       config.debug = result.debug;
       delete result.debug;
-    }
-
-    if (_.isUndefined(config.retryOnDisconnect)) {
-      config.retryOnDisconnect = result.retryOnDisconnect;
-      delete result.retryOnDisconnect;
     }
 
     // Save our project in the main config

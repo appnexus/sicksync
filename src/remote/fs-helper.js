@@ -28,7 +28,7 @@ export class FSHelper extends EventEmitter {
   }
 
   removePath(message) {
-    fs.delete(untildify(message.destinationpath), (err) => {
+    fs.remove(untildify(message.destinationpath), (err) => {
       if (err) return this.emit(fsEvents.DELETE_ERROR, err);
 
       this.emit(fsEvents.DELETE, message.destinationpath);

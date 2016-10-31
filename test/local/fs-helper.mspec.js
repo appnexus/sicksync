@@ -13,7 +13,7 @@ const { FSHelper } = proxyquire('../../src/local/fs-helper', {
 const config = {
   sourceLocation: 'my/home/',
   destinationLocation: 'my/remote/box/',
-  excludes: ['.git'],
+  excludes: ['.git/**'],
 };
 
 describe('local fs-helper', function() {
@@ -82,8 +82,7 @@ describe('local fs-helper', function() {
       it('should pass along the file contents', function(done) {
         fsHelper.once('file-change', function(data) {
           expect(data.contents).to.be.a('string');
-          expect(data.localpath).to.equal(config.sourceLocation + localPath);
-          expect(data.relativepath).to.equal(localPath);
+          expect(data.sourcepath).to.equal(config.sourceLocation + localPath);
           done();
         });
         chokidarStub.triggerFsEvent('add', config.sourceLocation + localPath);
@@ -101,7 +100,7 @@ describe('local fs-helper', function() {
         fsHelper.once('file-change', function() {
           expect.fail('File changes shouldn\'t happen when ignored.');
         });
-        chokidarStub.triggerFsEvent('unlink', config.sourceLocation + '.git');
+        chokidarStub.triggerFsEvent('unlink', '.git/some/file');
       });
 
       it('should not emit events when the watch is paused', function() {
@@ -114,7 +113,7 @@ describe('local fs-helper', function() {
 
       it('should emit events when unpaused', function(done) {
         fsHelper.once('file-change', function(data) {
-          expect(data.relativepath).to.contain(localPath);
+          expect(data.sourcepath).to.contain(localPath);
           done();
         });
         fsHelper.pauseWatch();

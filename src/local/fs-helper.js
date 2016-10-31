@@ -38,22 +38,18 @@ export class FSHelper extends EventEmitter {
   }
 
   onFileChange(evt, sourcepath) {
-    const relativepath = sourcepath.split(this._baseDir)[1];
-    const localpath = this._sourceLocation + relativepath;
-
     if (os.platform() === 'win32') {
       sourcepath = sourcepath.replace(/\\/g, '/');
     }
 
     let fileContents = null;
 
-    if (this._paused || util.isExcluded(relativepath, this._excludes)) return;
+    if (this._paused || util.isExcluded(sourcepath, this._excludes)) return;
     if (evt === 'add' || evt === 'change') fileContents = fs.readFileSync(sourcepath).toString();
 
     this.emit(fsEvents.CHANGE, {
+      sourcepath,
       changeType: evt,
-      relativepath: relativepath,
-      localpath: localpath,
       contents: fileContents,
     });
   }

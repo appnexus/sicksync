@@ -16,13 +16,12 @@ export class WSClient extends EventEmitter {
     this._secret = params.secret;
     this._prefersEncrypted = params.prefersEncrypted;
     this._crypt = new CryptHelper(this._secret);
-    this._retryOnDisconnect = params.retryOnDisconnect;
     this._hostname = params.hostname;
     this._webSocketPort = params.websocketPort;
     this._username = params.username;
 
     this._startDevBox();
-    this._connect();
+    this._reconnect();
   }
 
   _startDevBox() {
@@ -44,9 +43,6 @@ export class WSClient extends EventEmitter {
   }
 
   _handleDisconnect() {
-    if (this._retryOnDisconnect) {
-      return this._reconnect();
-    }
     this.emit(wsEvents.DISCONNECTED);
   }
 

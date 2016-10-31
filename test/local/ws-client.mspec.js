@@ -13,7 +13,6 @@ const { WSClient } = proxyquire('../../src/local/ws-client', {
 const params = {
   secret: 'keepitsafe',
   prefersEncrypted: false,
-  retryOnDisconnect: true,
   hostname: 'somehost',
   websocketPort: 1234,
   username: 'joel',
@@ -24,6 +23,8 @@ describe('ws-client', function() {
 
   beforeEach(function() {
     ws = new WSClient(params);
+    // Emit an `on` call to indicate that remote end is ready
+    remoteHelperStub._api.on.firstCall.args[1]();
   });
 
   afterEach(function() {
@@ -69,29 +70,6 @@ describe('ws-client', function() {
     it('should emit a `ready` event', function(done) {
       ws.on('ready', done);
       wsStub._api.on.getCall(0).args[1]();
-    });
-  });
-
-  describe('onClose', function() {
-    beforeEach(function() {
-            // Trigger `close`
-      wsStub._api.on.getCall(1).args[1]();
-    });
-
-    it('should attempt to re-awaken the devbox if `retryOnDisconnect` is true', function() {
-      expect(remoteHelperStub._api.start.called).to.be.true;
-    });
-
-    it('should emit a `disconnected` event when `retryOnDisconnect` is false', function(done) {
-      const noRetryParams = _.clone(params);
-      wsStub._api.on.reset();
-      noRetryParams.retryOnDisconnect = false;
-
-      const wsNoRetry = new WSClient(noRetryParams);
-      wsNoRetry.once('disconnected', done);
-
-      // Trigger `close`
-      wsStub._api.on.getCall(1).args[1]();
     });
   });
 

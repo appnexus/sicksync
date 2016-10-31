@@ -114,15 +114,11 @@ export function migrate1to2(config) {
   return {
     version: currentVersion,
     debug: config.debug,
-    retryOnDisconnect: config.retryOnDisconnect,
     projects: [
-      _.chain(config)
-        .omit('debug', 'retryOnDisconnect')
-        .mapKeys(function(value, key) {
-          if (key === 'userName') return 'username';
-          return key;
-        })
-        .value(),
+      _.mapKeys(config, (value, key) => {
+        if (key === 'userName') return 'username';
+        return key;
+      }),
     ],
   };
 }

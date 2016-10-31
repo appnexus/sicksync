@@ -35,7 +35,7 @@ export class WSServer extends EventEmitter {
       return this.emit(wsEvents.UNAUTHORIZED);
     }
 
-        /* istanbul ignore else */
+    /* istanbul ignore else */
     if (parsedMessage.subject === 'file') {
       return this.emit(wsEvents.FILE_CHANGE, parsedMessage);
     }

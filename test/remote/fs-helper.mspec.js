@@ -81,21 +81,21 @@ describe('remote fs-helper', function() {
     it('should untildify the file', function() {
       fsHelper.removePath(addDirTest);
 
-      expect(fsStub.delete.lastCall.args[0]).to.equal(untildify(addDirTest.destinationpath));
+      expect(fsStub.remove.lastCall.args[0]).to.equal(untildify(addDirTest.destinationpath));
     });
 
     it('should emit an event when the file has written successfully', function(done) {
       fsHelper.on('delete', _.ary(done, 0));
       fsHelper.removePath(addDirTest);
 
-      fsStub.delete.lastCall.args[1](null);
+      fsStub.remove.lastCall.args[1](null);
     });
 
     it('should emit an event when the file wasn\'t written', function(done) {
       fsHelper.on('delete-error', _.ary(done, 0));
       fsHelper.removePath(addDirTest);
 
-      fsStub.delete.lastCall.args[1]('File not written');
+      fsStub.remove.lastCall.args[1]('File not written');
     });
   });
 });

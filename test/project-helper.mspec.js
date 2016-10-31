@@ -36,14 +36,12 @@ describe('Project-Helper', function() {
         'prefersEncrypted',
         'websocketPort',
         'followSymLinks',
-        'retryOnDisconnect',
         'debug'
       );
     });
 
     it('should query for only project-related information on current installs', function() {
       projectHelper.add({
-        retryOnDisconnect: true,
         debug: true,
       });
 
@@ -65,7 +63,6 @@ describe('Project-Helper', function() {
       const errorText = 'User canceled';
 
       projectHelper.add({
-        retryOnDisconnect: true,
         debug: true,
       });
       // Trigger a failure
@@ -90,7 +87,6 @@ describe('Project-Helper', function() {
           project: 'joels thing',
           hostname: 'myhost',
           debug: true,
-          retryOnDisconnect: true,
         };
 
         projectHelper.add({});
@@ -99,11 +95,9 @@ describe('Project-Helper', function() {
         writeConfigCall = mockStub.writeConfig.lastCall.args[0];
 
         expect(writeConfigCall.debug).to.be.true;
-        expect(writeConfigCall.retryOnDisconnect).to.be.true;
         expect(writeConfigCall.projects[0].project).to.equal(result.project);
         expect(writeConfigCall.projects[0].hostname).to.equal(result.hostname);
         expect(writeConfigCall.projects[0].debug).to.be.a('undefined');
-        expect(writeConfigCall.projects[0].retryOnDisconnect).to.be.a('undefined');
         expect(writeConfigCall.version).to.not.be.a('undefined');
       });
 
@@ -113,12 +107,10 @@ describe('Project-Helper', function() {
           project: 'joels thing',
           hostname: 'myhost',
           debug: true,
-          retryOnDisconnect: true,
         };
 
         projectHelper.add({
           debug: false,
-          retryOnDisconnect: false,
         });
 
         // Trigger success
@@ -126,7 +118,6 @@ describe('Project-Helper', function() {
         writeConfigCall = mockStub.writeConfig.lastCall.args[0];
 
         expect(writeConfigCall.debug).to.be.false;
-        expect(writeConfigCall.retryOnDisconnect).to.be.false;
       });
     });
   });

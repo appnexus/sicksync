@@ -9,7 +9,7 @@ const api = {
   outputFile: sinon.spy(),
   outputFileSync: sinon.spy(),
   mkdirs: sinon.spy(),
-  delete: sinon.spy(),
+  remove: sinon.spy(),
   existsSync: sinon.stub().returns(existsSyncReturns),
 };
 

@@ -20,7 +20,6 @@ const entry = proxyquire('../../src/local', {
 
 // Test Data
 const testConfig = {
-  retryOnDisconnect: true,
   debug: true,
   projects: {
     myProject: {
@@ -72,7 +71,6 @@ describe('Client Entry (index.js)', function() {
         expect(params.websocketPort).to.equal(projectConfig.websocketPort);
         expect(params.secret).to.be.a('string');
         expect(params.prefersEncrypted).to.equal(projectConfig.prefersEncrypted);
-        expect(params.retryOnDisconnect).to.equal(testConfig.retryOnDisconnect);
       });
 
       describe('on:ready', function() {
@@ -162,8 +160,7 @@ describe('Client Entry (index.js)', function() {
 
     describe('FSClient', function() {
       const fileChange = {
-        relativepath: 'my/file/change.txt',
-        localpath: projectConfig.destinationLocation + '/' + 'my/file/change.txt',
+        sourcepath: 'my/file/change.txt',
         changeType: 'add',
       };
 
@@ -174,16 +171,15 @@ describe('Client Entry (index.js)', function() {
 
         it('should log a message on file changes', function() {
           const loggedMessage = utilStub.logSpy.lastCall.args.join(' ');
-
           expect(loggedMessage).to.contain('>');
           expect(loggedMessage).to.contain(fileChange.changeType);
-          expect(loggedMessage).to.contain(fileChange.localpath);
+          expect(loggedMessage).to.contain(fileChange.sourcepath);
         });
 
         it('should send the file through the ws client and add in the appropriate properties', function() {
           const sendCall = wsClientStub._api.send.lastCall.args[0];
 
-          expect(sendCall.destinationpath).to.equal(projectConfig.destinationLocation + '/' + fileChange.relativepath);
+          expect(sendCall.destinationpath).to.equal(projectConfig.destinationLocation + '/' + fileChange.sourcepath);
           expect(sendCall.subject).to.equal('file');
         });
       });

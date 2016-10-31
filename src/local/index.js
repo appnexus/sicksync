@@ -76,7 +76,6 @@ function startProject(config, projectConf) {
     websocketPort: projectConf.websocketPort,
     secret: secret,
     prefersEncrypted: projectConf.prefersEncrypted,
-    retryOnDisconnect: config.retryOnDisconnect,
   });
 
     // WS events
@@ -114,10 +113,10 @@ function startProject(config, projectConf) {
 
     // FS events
   fsHelper.on(fsEvents.CHANGE, (fileChange) => {
-    fileChange.destinationpath = destinationLocation + fileChange.relativepath;
+    fileChange.destinationpath = destinationLocation + fileChange.sourcepath;
     fileChange.subject = 'file';
 
-    localLog('>', fileChange.changeType, fileChange.localpath);
+    localLog('>', fileChange.changeType, fileChange.sourcepath);
 
     wsClient.send(fileChange);
   });

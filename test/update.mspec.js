@@ -19,7 +19,6 @@ const update = proxyquire('../src/update', {
 });
 
 const configV1 = {
-  retryOnDisconnect: true,
   debug: true,
   sourceLocation: 'my/project',
   destinationLocation: 'somewhere/outthere',
@@ -56,11 +55,6 @@ describe('Update', function() {
   });
 
   describe('#migrate1to2', function() {
-    it('should make the retryOnDisconnect and debug flags global', function() {
-      expect(update.migrate1to2(configV1).debug).to.equal(configV1.debug);
-      expect(update.migrate1to2(configV1).retryOnDisconnect).to.equal(configV1.retryOnDisconnect);
-    });
-
     it('should migrate userName to username', function() {
       expect(update.migrate1to2(configV1).projects[0].username).to.equal(configV1.userName);
       expect(update.migrate1to2(configV1).projects[0].userName).to.be.an('undefined');
@@ -72,16 +66,17 @@ describe('Update', function() {
 
     it('should copy all other properties to that projects definition', function() {
       expect(update.migrate1to2(configV1).projects[0]).to.have.keys(
-                'project',
-                'sourceLocation',
-                'destinationLocation',
-                'hostname',
-                'username',
-                'excludes',
-                'prefersEncrypted',
-                'websocketPort',
-                'followSymLinks'
-            );
+        'debug',
+        'project',
+        'sourceLocation',
+        'destinationLocation',
+        'hostname',
+        'username',
+        'excludes',
+        'prefersEncrypted',
+        'websocketPort',
+        'followSymLinks'
+      );
     });
   });
 

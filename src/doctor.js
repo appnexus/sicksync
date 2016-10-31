@@ -14,10 +14,6 @@ const configShape = {
     type: 'Boolean',
     func: _.isBoolean,
   },
-  retryOnDisconnect: {
-    type: 'Boolean',
-    func: _.isBoolean,
-  },
   projects: {
     type: 'Array',
     func: _.isArray,
