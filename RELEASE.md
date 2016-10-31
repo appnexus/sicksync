@@ -1,4 +1,4 @@
-## Latest
+## 3.0.0
 ### Breaking changes
 - No more `retryOnDisconnect` options, feel free to remove them from your configuration(s).
 - Dropping support for Node < 4.x.x. Node 4 is now a requirement going forward.
