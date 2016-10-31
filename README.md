@@ -4,7 +4,7 @@
 [![npm version](https://badge.fury.io/js/sicksync.svg)](http://badge.fury.io/js/sicksync)
 [![Build Status](https://travis-ci.org/appnexus/sicksync.svg?branch=master)](https://travis-ci.org/appnexus/sicksync)
 [![Coverage Status](https://coveralls.io/repos/github/appnexus/sicksync/badge.svg?branch=feature%2Fcoveralls)](https://coveralls.io/github/appnexus/sicksync?branch=feature%2Fcoveralls)
-[![Build Dependencies](https://david-dm.org/appnexus/sicksync.png)](https://david-dm.org/appnexus/sicksync)
+[![Build Dependencies](https://david-dm.org/appnexus/sicksync.svg)](https://david-dm.org/appnexus/sicksync)
 
 Has scp got you down? rsync just not fast enough? Well, we hear your pain, and that's why there's sicksync.
 
