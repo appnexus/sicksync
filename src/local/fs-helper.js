@@ -15,14 +15,15 @@ export class FSHelper extends EventEmitter {
   constructor(params) {
     super();
 
-    this._sourceLocation = params.sourceLocation;
+    this._sourceLocation = untildify(params.sourceLocation);
     this._excludes = params.excludes || [];
     this._followSymLinks = params.followSymlinks || false;
     this._baseDir = path.parse(this._sourceLocation).base + '/';
     this._paused = true;
 
     // Node/watcher only work with full file-paths (no ~'s)
-    this._watcher = watch(untildify(this._sourceLocation), {
+    this._watcher = watch(this._sourceLocation, {
+      cwd: this._sourceLocation,
       ignored: this._excludes,
       persistent: true,
       followSymlinks: this._followSymlinks,

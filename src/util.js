@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import fs from 'fs-extra';
 import { exec, spawn } from 'child_process';
-import minimatch from 'minimatch';
+import anymatch from 'anymatch';
 import chalk from 'chalk';
 import path from 'path';
 import untildify from 'untildify';
@@ -52,13 +52,7 @@ export function writeConfig(configFile) {
 
 // Given a file path, check to see if it's in the excludes array
 export function isExcluded(filepath, excludes) {
-  let result = false;
-
-  excludes.forEach(function(exclude) {
-    if (minimatch(filepath, exclude)) result = true;
-  });
-
-  return result;
+  return anymatch(excludes, filepath);
 }
 
 // Log messages with Hostname prepended

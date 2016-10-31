@@ -3,7 +3,7 @@ import { sep } from 'path';
 import prompter from 'prompt';
 import { green, yellow } from 'chalk';
 import { version } from '../package.json';
-import * as util from './util';
+import util from './util';
 
 const sicksyncSetup = util.setupPrompter(prompter);
 
@@ -47,10 +47,8 @@ export const add = (config) => {
     },
     excludes: {
       description: 'Are there any files you\'d like to exclude? Use a comma separated list (supports globbing)',
-      default: '.git/**,.git/**/*,.idea/*,**/*.swp,**/*.svn',
-      before: function(csv) {
-        return csv.split(',');
-      },
+      default: '.git,.idea,*.swp,*.svn',
+      before: (csv) => csv.split(','),
     },
     excludesFile: {
       description: 'Would you like to load excludes from file?',
@@ -104,12 +102,12 @@ export const add = (config) => {
       delete result.retryOnDisconnect;
     }
 
-          // Save our project in the main config
+    // Save our project in the main config
     config.version = version;
     config.projects = config.projects || [];
     config.projects.push(result);
 
-          // Write
+    // Write
     util.writeConfig(config);
   });
 };
@@ -137,12 +135,6 @@ export const info = (config, projects) => {
   }
 
   _.each(projects, (project) => {
-    const foundProject = _.find(config.projects, { project });
-
-    if (foundProject) {
-      printProjectInfo(_.find(config.projects, { project }));
-    } else {
-      console.info(yellow(`Couldn't locate ${project} inside your config file, add it with 'sicksync add'!`));
-    }
+    printProjectInfo(_.find(config.projects, { project }));
   });
 };
