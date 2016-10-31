@@ -1,13 +1,13 @@
-var sinon = require('sinon');
+import sinon from 'sinon';
 
-var constructorMock = sinon.spy();
+const constructorMock = sinon.spy();
 
 function resetAll() {
-    constructorMock.reset();
+  constructorMock.reset();
 }
 
 function triggerBigSyncComplete() {
-    constructorMock.lastCall.args[2]();
+  constructorMock.lastCall.args[2]();
 }
 
 module.exports = constructorMock;

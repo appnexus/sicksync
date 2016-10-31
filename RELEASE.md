@@ -1,3 +1,19 @@
+## Latest
+### Breaking changes
+- No more `retryOnDisconnect` options, feel free to remove them from your configuration(s).
+- Dropping support for Node < 4.x.x. Node 4 is now a requirement going forward.
+
+### New features
+- Preliminary windows support (thanks @laggingreflex).
+- Reading excludes from a file (thanks @laggingreflex).
+- Better overall performance.
+
+### Bugfixes
+- Sending an `unlink` will no longer result in the remote host closing.
+- No more message duplication on reconnect.
+- Exclude functionality is now stable (thanks @laggingreflex).
+
+
 ## 2.1.0
 - New `doctor` command to quickly troubleshoot why sicksync isn't working. See README.md for more.
 - Updating package deps.

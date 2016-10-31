@@ -5,11 +5,12 @@
   "main": "src/index.js",
   "scripts": {
     "preinstall": "node ./scripts/pre-install.js",
-    "test": "istanbul cover _mocha -- test/*.mspec.js test/**/*.mspec.js --compilers js:babel/register",
+    "test": "istanbul cover -x 'test/**/*.mspec.js test/*.mspec.js' _mocha -- test/*.mspec.js test/**/*.mspec.js --compilers js:babel-register",
     "watch": "npm run transpile -- -w",
     "transpile": "babel src --out-dir dist",
-    "tdd": "mocha --check-leaks test/*.mspec.js test/**/*.mspec.js --compilers js:babel/register --reporter min -w",
-    "prepublish": "rimraf ./dist && babel src --out-dir dist"
+    "tdd": "mocha --check-leaks test/*.mspec.js test/**/*.mspec.js --compilers js:babel-register --reporter min -w",
+    "prepublish": "rimraf ./dist && babel src --out-dir dist",
+    "lint": "eslint src test"
   },
   "keywords": [
     "sicksync",
@@ -34,27 +35,31 @@
   "dependencies": {
     "anymatch": "^1.3.0",
     "chalk": "^1.1.1",
-    "chokidar": "^1.0.5",
+    "chokidar": "^1.6.1",
     "commander": "^2.8.1",
-    "es6-promise": "^3.0.2",
-    "fs-extra": "^0.26.0",
+    "fs-extra": "^0.30.0",
     "latest-version": "^2.0.0",
-    "lodash": "^3.10.1",
+    "lodash": "^4.16.4",
     "parse-gitignore": "^0.3.1",
-    "prompt": "^0.2.14",
+    "prompt": "^1.0.0",
     "rimraf": "^2.5.4",
-    "rsync": "^0.4.0",
-    "untildify": "^2.1.0",
-    "ws": "^0.8.0"
+    "rsync": "^0.5.0",
+    "untildify": "^3.0.2",
+    "ws": "^1.1.1"
   },
   "bin": {
-    "sicksync": "./bin/sicksync.js"
+    "sicksync": "./dist/index.js"
   },
   "devDependencies": {
-    "babel": "^5.8.21",
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.18.0",
+    "babel-preset-es2015-node4": "^2.1.0",
+    "babel-register": "^6.18.0",
     "chai": "^3.2.0",
-    "istanbul": "^0.4.1",
-    "mocha": "^2.0.1",
+    "eslint": "^3.8.1",
+    "eslint-plugin-import": "^2.0.1",
+    "istanbul": "^1.1.0-alpha.1",
+    "mocha": "^3.1.2",
     "proxyquire": "^1.7.1",
     "sinon": "^1.16.1"
   }

@@ -1,27 +1,27 @@
-var _ = require('lodash'),
-    sinon = require('sinon');
+import _ from 'lodash';
+import sinon from 'sinon';
 
-var existsSyncReturns = false;
+let existsSyncReturns = false;
 
-var api = {
-    readFileSync: sinon.stub().returnsArg(0),
-    writeFileSync: sinon.spy(),
-    outputFile: sinon.spy(),
-    outputFileSync: sinon.spy(),
-    mkdirs: sinon.spy(),
-    delete: sinon.spy(),
-    existsSync: sinon.stub().returns(existsSyncReturns)
+const api = {
+  readFileSync: sinon.stub().returnsArg(0),
+  writeFileSync: sinon.spy(),
+  outputFile: sinon.spy(),
+  outputFileSync: sinon.spy(),
+  mkdirs: sinon.spy(),
+  remove: sinon.spy(),
+  existsSync: sinon.stub().returns(existsSyncReturns),
 };
 
 function resetAll() {
-    existsSyncReturns = false;
-    _.forIn(api, function(method) {
-        if (_.isFunction(method.reset)) method.reset();
-    });
+  existsSyncReturns = false;
+  _.forIn(api, function(method) {
+    if (_.isFunction(method.reset)) method.reset();
+  });
 }
 
 function setExistsSyncFlag(value) {
-    existsSyncReturns = value;
+  existsSyncReturns = value;
 }
 
 module.exports = api;

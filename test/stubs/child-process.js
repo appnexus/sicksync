@@ -1,15 +1,15 @@
-var _ = require('lodash'),
-    sinon = require('sinon');
+import _ from 'lodash';
+import sinon from 'sinon';
 
-var api = {
-    exec: sinon.spy(),
-    spawn: sinon.spy()
+const api = {
+  exec: sinon.spy(),
+  spawn: sinon.spy(),
 };
 
 function resetAll() {
-    _.forIn(api, function(method) {
-        if (_.isFunction(method.reset)) method.reset();
-    });
+  _.forIn(api, function(method) {
+    if (_.isFunction(method.reset)) method.reset();
+  });
 }
 
 module.exports = api;

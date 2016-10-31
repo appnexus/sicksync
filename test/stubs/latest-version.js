@@ -1,9 +1,9 @@
-var sinon = require('sinon');
+import sinon from 'sinon';
 
-var api = sinon.spy();
+const api = sinon.spy();
 
 function resetAll() {
-    api.reset();
+  api.reset();
 }
 
 module.exports = api;

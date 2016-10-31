@@ -1,24 +1,24 @@
-var _ = require('lodash'),
-    sinon = require('sinon');
+import _ from 'lodash';
+import sinon from 'sinon';
 
-var api = {
-    shell: sinon.stub().returnsThis(),
-    flags: sinon.stub().returnsThis(),
-    exclude: sinon.stub().returnsThis(),
-    source: sinon.stub().returnsThis(),
-    destination: sinon.stub().returnsThis(),
-    output: sinon.stub().returnsThis(),
-    set: sinon.stub().returnsThis(),
-    progress: sinon.stub().returnsThis(),
-    execute: sinon.stub().callsArg(0)
+const api = {
+  shell: sinon.stub().returnsThis(),
+  flags: sinon.stub().returnsThis(),
+  exclude: sinon.stub().returnsThis(),
+  source: sinon.stub().returnsThis(),
+  destination: sinon.stub().returnsThis(),
+  output: sinon.stub().returnsThis(),
+  set: sinon.stub().returnsThis(),
+  progress: sinon.stub().returnsThis(),
+  execute: sinon.stub().callsArg(0),
 };
 
-var mockConstructor = sinon.stub().returns(api);
+const mockConstructor = sinon.stub().returns(api);
 
 function resetAll() {
-    _.forIn(api, function(method) {
-        if (_.isFunction(method.reset)) method.reset();
-    });
+  _.forIn(api, function(method) {
+    if (_.isFunction(method.reset)) method.reset();
+  });
 }
 
 module.exports = mockConstructor;

@@ -4,43 +4,40 @@ import os from 'os';
 import { execSync } from 'child_process';
 import { generateLog, ensureTrailingSlash } from './util';
 
-function bigSync(project) {
-    let log = generateLog(project.project, os.hostname());
+export function bigSync(project) {
+  const log = generateLog(project.project, os.hostname());
 
-    function consoleLogFromBuffer(buffer) {
-        log(buffer.toString());
-    }
+  function consoleLogFromBuffer(buffer) {
+    log(buffer.toString());
+  }
 
-    let params = _.isPlainObject(_.get(arguments, 1)) ?
-        _.get(arguments, 1) :
-        {};
+  const params = _.isPlainObject(_.get(arguments, 1)) ?
+    _.get(arguments, 1) : {};
 
-    let onComplete = _.isFunction(_.last(arguments)) ?
-        _.last(arguments) :
-        _.noop;
+  const onComplete = _.isFunction(_.last(arguments)) ?
+    _.last(arguments) :
+    _.noop;
 
-    if (os.platform() === 'win32') {
-        project.sourceLocation = execSync('cygpath ' + project.sourceLocation).toString();
-    }
+  if (os.platform() === 'win32') {
+    project.sourceLocation = execSync('cygpath ' + project.sourceLocation).toString();
+  }
 
-    let rsync = new Rsync()
-        .shell('ssh')
-        .flags('az')
-        .exclude(project.excludes)
-        .source(ensureTrailingSlash(project.sourceLocation))
-        .set('delete')
-        .destination(project.username + '@' + project.hostname + ':' + project.destinationLocation);
+  const rsync = new Rsync()
+    .shell('ssh')
+    .flags('az')
+    .exclude(project.excludes)
+    .source(ensureTrailingSlash(project.sourceLocation))
+    .set('delete')
+    .destination(project.username + '@' + project.hostname + ':' + project.destinationLocation);
 
-    if (params.dry) {
-        rsync.set('dry-run');
-    }
+  if (params.dry) {
+    rsync.set('dry-run');
+  }
 
-    if (params.debug) {
-        rsync.progress();
-        rsync.output(consoleLogFromBuffer, consoleLogFromBuffer);
-    }
+  if (params.debug) {
+    rsync.progress();
+    rsync.output(consoleLogFromBuffer, consoleLogFromBuffer);
+  }
 
-    rsync.execute(onComplete);
-};
-
-export default bigSync;
+  rsync.execute(onComplete);
+}

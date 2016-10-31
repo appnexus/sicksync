@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import fs from 'fs-extra';
-import {exec, spawn} from 'child_process';
+import { exec, spawn } from 'child_process';
 import anymatch from 'anymatch';
 import chalk from 'chalk';
 import path from 'path';
@@ -9,76 +9,70 @@ import constants from '../conf/constants';
 import text from '../conf/text';
 
 // Returns the path to the sicksync dir
-function getSicksyncDir() {
-    return untildify(constants.SICKSYNC_DIR);
+export function getSicksyncDir() {
+  return untildify(constants.SICKSYNC_DIR);
 }
 
 // Return the path to the update json
-function getUpdatePath() {
-    return getSicksyncDir() + '/' + constants.UPDATE_FILE;
+export function getUpdatePath() {
+  return getSicksyncDir() + '/' + constants.UPDATE_FILE;
 }
 
 // Returns the path the the config file
-function getConfigPath() {
-    return getSicksyncDir() + '/' + constants.CONFIG_FILE;
+export function getConfigPath() {
+  return getSicksyncDir() + '/' + constants.CONFIG_FILE;
 }
 
 // Returns the config object if it exists, if not an empty object. Loads/saves from cache where possible
 // TODO: `existsSync` is going to be deprecated soon...
-function getConfig() {
-    let config = {},
-        configPath = getConfigPath();
+export function getConfig() {
+  const configPath = getConfigPath();
+  let config = {};
 
-    if (fs.existsSync(configPath)) {
-        config = require(configPath);
-    }
+  if (fs.existsSync(configPath)) {
+    config = require(configPath);
+  }
 
-    // Return a cloned copy of config to avoid indirect changes
-    return _.cloneDeep(config);
+  // Return a cloned copy of config to avoid indirect changes
+  return _.cloneDeep(config);
 }
 
 // Randomly generate a unique ID
-function getId() {
-    return Math.random().toString(36).substr(2, 9) + Date.now();
+export function getId() {
+  return Math.random().toString(36).substr(2, 9) + Date.now();
 }
 
 // Write out the config file with a provided <obj>
-function writeConfig(configFile) {
-    let configPath = getConfigPath();
+export function writeConfig(configFile) {
+  const configPath = getConfigPath();
 
-    fs.outputFileSync(configPath, JSON.stringify(configFile, null, 4));
-    console.info(text.CONFIG_SAVED);
+  fs.outputFileSync(configPath, JSON.stringify(configFile, null, 4));
+  console.info(text.CONFIG_SAVED);
 }
 
 // Given a file path, check to see if it's in the excludes array
-function isExcluded(filepath, excludes) {
-    let result = false;
-
-    excludes.forEach(function(exclude) {
-        if (anymatch(filepath, exclude)) result = true;
-    });
-
-    return result;
+export function isExcluded(filepath, excludes) {
+  return anymatch(excludes, filepath);
 }
 
 // Log messages with Hostname prepended
-function generateLog(projectName, hostname) {
-    let args = _.slice(arguments);
+export function generateLog(projectName, hostname) {
+  const args = _.slice(arguments);
 
-    // If only one argument it's the hostname
-    if (args.length === 1) {
-        projectName = null;
-        hostname = args[0];
-    }
+  // If only one argument it's the hostname
+  if (args.length === 1) {
+    projectName = null;
+    hostname = args[0];
+  }
 
-    return function log() {
-        let args = [
-            projectName ? chalk.blue('[' + projectName + ']') : '',
-            hostname ? chalk.green('[' + hostname + ']') : ''
-        ].concat([].slice.call(arguments));
+  return function log() {
+    const args = [
+      projectName ? chalk.blue('[' + projectName + ']') : '',
+      hostname ? chalk.green('[' + hostname + ']') : '',
+    ].concat([].slice.call(arguments));
 
-        console.info.apply(console, args);
-    };
+    console.info.apply(console, args);
+  };
 }
 
 //
@@ -90,149 +84,129 @@ function generateLog(projectName, hostname) {
 // The basic idea is that we want to limit calls to function to a
 // certain # of times in a given time-frame. If it breaks over that,
 // then we fallback to another function, and halt previous desired calls
-function rebounce(primaryFn, secondaryFn, fallOverAmount, coolDown) {
-    let timesCalled = 0;
-    let timeOutIds = [];
-    let fallbackCalled = false;
+export function rebounce(primaryFn, secondaryFn, fallOverAmount, coolDown) {
+  const timeOutIds = [];
+  let timesCalled = 0;
+  let fallbackCalled = false;
 
-    return function rebounced() {
-        let args = arguments;
-        timesCalled++;
+  return function rebounced() {
+    const args = arguments;
+    timesCalled++;
 
-        timeOutIds.push(setTimeout(function() {
-            timesCalled = 0;
-            primaryFn.apply(null, args);
-        }, coolDown));
+    timeOutIds.push(setTimeout(function() {
+      timesCalled = 0;
+      primaryFn.apply(null, args);
+    }, coolDown));
 
-        if (timesCalled >= fallOverAmount) {
-            timeOutIds.forEach(clearTimeout);
+    if (timesCalled >= fallOverAmount) {
+      timeOutIds.forEach(clearTimeout);
 
-            /* istanbul ignore else */
-            if (!fallbackCalled) {
-                timesCalled = 0;
-                fallbackCalled = true;
-                secondaryFn.apply(null, arguments);
-                setTimeout(function() {
-                    fallbackCalled = false;
-                }, coolDown);
-            }
-        }
-    };
+      /* istanbul ignore else */
+      if (!fallbackCalled) {
+        timesCalled = 0;
+        fallbackCalled = true;
+        secondaryFn.apply(null, arguments);
+        setTimeout(function() {
+          fallbackCalled = false;
+        }, coolDown);
+      }
+    }
+  };
 }
 
-function ensureTrailingSlash(path) {
-    return (path.substring(path.length - 1) === '/') ? path : path + '/';
+export function ensureTrailingSlash(path) {
+  return (path.substring(path.length - 1) === '/') ? path : path + '/';
 }
 
-function open(parameter) {
-    return exec('open ' + parameter);
+export function open(parameter) {
+  return exec('open ' + parameter);
 }
 
-function toBoolean(param) {
-    let lowerParam = param.toLowerCase();
-    if (lowerParam.indexOf('y') > -1) {
-        return true;
-    }
+export function toBoolean(param) {
+  const lowerParam = param.toLowerCase();
 
-    if (lowerParam.indexOf('n') > -1) {
-        return false;
-    }
+  if (lowerParam.indexOf('y') > -1) {
+    return true;
+  }
 
-    if (lowerParam === 'true' || lowerParam === 'false') {
-        return JSON.parse(lowerParam);
-    }
-
+  if (lowerParam.indexOf('n') > -1) {
     return false;
+  }
+
+  if (lowerParam === 'true' || lowerParam === 'false') {
+    return JSON.parse(lowerParam);
+  }
+
+  return false;
 }
 
-function setupPrompter(prompt) {
-    prompt.message = '';
-    prompt.delimiter = '';
-    prompt.start();
+export function setupPrompter(prompt) {
+  prompt.message = '';
+  prompt.delimiter = '';
+  prompt.start();
 
-    return prompt;
+  return prompt;
 }
 
-function shellIntoRemote(remote) {
-    return spawn('ssh',[
-        '-tt',
-        remote
-    ]);
+export function shellIntoRemote(remote) {
+  return spawn('ssh', [
+    '-tt',
+    remote,
+  ]);
 }
 
-function printLogo() {
-    console.info(chalk.blue(fs.readFileSync(path.resolve(__dirname, '../conf/logo.txt')).toString()));
+export function printLogo() {
+  console.info(chalk.blue(fs.readFileSync(path.resolve(__dirname, '../conf/logo.txt')).toString()));
 }
 
-function uniqInstance(tokenPath, Constructor) {
-    let instances = {};
+export function uniqInstance(tokenPath, Constructor) {
+  const instances = {};
 
-    return function(args) {
-        let token = _.get(args, tokenPath, null);
+  return function(args) {
+    const token = _.get(args, tokenPath, null);
 
-        if (_.get(instances, token, null)) {
-            return instances[token];
-        }
-
-        if (!_.isNull(token)) {
-            instances[token] = new Constructor(args);
-            return instances[token];
-        }
-
-        return new Constructor(args);
-    };
-}
-
-function getProjectFromCwd(config) {
-    return _.chain(config.projects)
-        .filter((project) => {
-            return _.isEqual(
-                ensureTrailingSlash(untildify(project.sourceLocation)),
-                ensureTrailingSlash(process.cwd())
-            );
-        })
-        .value();
-}
-
-function getProjectsFromConfig(config, projects) {
-    let foundProjects = [];
-
-    if (_.isEmpty(projects)) {
-        let cwdProject = getProjectFromCwd(config);
-
-        if (cwdProject) {
-            foundProjects = cwdProject;
-        }
+    if (_.get(instances, token, null)) {
+      return instances[token];
     }
 
-    _.each(projects, (project) => {
-        let projectConf = _.findWhere(config.projects, { project });
+    if (!_.isNull(token)) {
+      instances[token] = new Constructor(args);
+      return instances[token];
+    }
 
-        if (!_.isEmpty(projectConf)) {
-            foundProjects.push(projectConf);
-        }
-    });
-
-    return foundProjects;
+    return new Constructor(args);
+  };
 }
 
-export default {
-    getSicksyncDir,
-    getUpdatePath,
-    getConfigPath,
-    getConfig,
-    getId,
-    writeConfig,
-    isExcluded,
-    getProjectsFromConfig,
-    getProjectFromCwd,
-    setupPrompter,
-    shellIntoRemote,
-    printLogo,
-    uniqInstance,
-    open,
-    toBoolean,
-    ensureTrailingSlash,
-    rebounce,
-    generateLog
-};
+export function getProjectFromCwd(config) {
+  return _.chain(config.projects)
+    .filter((project) => {
+      return _.isEqual(
+        ensureTrailingSlash(untildify(project.sourceLocation)),
+        ensureTrailingSlash(process.cwd())
+      );
+    })
+    .value();
+}
+
+export function getProjectsFromConfig(config, projects) {
+  let foundProjects = [];
+
+  if (_.isEmpty(projects)) {
+    const cwdProject = getProjectFromCwd(config);
+
+    if (cwdProject) {
+      foundProjects = cwdProject;
+    }
+  }
+
+  _.each(projects, (project) => {
+    const projectConf = _.find(config.projects, { project });
+
+    if (!_.isEmpty(projectConf)) {
+      foundProjects.push(projectConf);
+    }
+  });
+
+  return foundProjects;
+}

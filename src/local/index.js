@@ -7,145 +7,154 @@ import _ from 'lodash';
 import os from 'os';
 import untildify from 'untildify';
 import gitignore from 'parse-gitignore';
+
+import { FSHelper as FSConstructor } from './fs-helper';
+import { WSClient as WSConstructor } from './ws-client';
 import constants from '../../conf/constants';
 import text from '../../conf/text';
 import eventsConf from '../../conf/events';
-import util from '../util';
-import bigSync from '../big-sync';
+import { bigSync } from '../big-sync';
+import {
+  uniqInstance,
+  ensureTrailingSlash,
+  getProjectsFromConfig,
+  generateLog,
+  getId,
+} from '../util';
 
-let FSHelper = util.uniqInstance(constants.FS_TOKEN, require('./fs-helper')),
-    WebSocketClient = util.uniqInstance(constants.WS_TOKEN, require('./ws-client')),
-    hostname = os.hostname(),
-    wsEvents = eventsConf.WS.LOCAL,
-    fsEvents = eventsConf.FS.LOCAL;
+const hostname = os.hostname();
+const wsEvents = eventsConf.WS.LOCAL;
+const fsEvents = eventsConf.FS.LOCAL;
 
 function triggerBigSync(project, params, cb) {
-    bigSync({
-        project: project.project,
-        excludes: project.excludes,
-        sourceLocation: util.ensureTrailingSlash(project.sourceLocation),
-        destinationLocation: util.ensureTrailingSlash(project.destinationLocation),
-        hostname: project.hostname,
-        username: project.username
-    }, params, cb);
+  bigSync({
+    project: project.project,
+    excludes: project.excludes,
+    sourceLocation: ensureTrailingSlash(project.sourceLocation),
+    destinationLocation: ensureTrailingSlash(project.destinationLocation),
+    hostname: project.hostname,
+    username: project.username,
+  }, params, cb);
 }
 
-function start(config, projects) {
-    let foundProjects = util.getProjectsFromConfig(config, projects);
+export function start(config, projects) {
+  const foundProjects = getProjectsFromConfig(config, projects);
 
-    if (_.isEmpty(foundProjects)) {
-        return logProjectsNotFound(foundProjects);
-    }
+  if (_.isEmpty(foundProjects)) {
+    return logProjectsNotFound(foundProjects);
+  }
 
-    _.each(foundProjects, (project) => {
-        startProject(config, project);
-    });
+  _.each(foundProjects, (project) => {
+    startProject(config, project);
+  });
 }
 
-function startProject (config, projectConf) {
-    let localLog = util.generateLog(projectConf.project, hostname);
-    let remoteLog = util.generateLog(projectConf.project, projectConf.hostname);
-    let sourceLocation = util.ensureTrailingSlash(projectConf.sourceLocation);
-    let destinationLocation = util.ensureTrailingSlash(projectConf.destinationLocation);
-    let secret = util.getId();
+function startProject(config, projectConf) {
+  const FSHelper = uniqInstance(constants.FS_TOKEN, FSConstructor);
+  const WebSocketClient = uniqInstance(constants.WS_TOKEN, WSConstructor);
 
-    // parse excludesFile
-    projectConf.excludes = [].concat.apply(projectConf.excludes, projectConf.excludesFile.map(untildify).map(gitignore));
+  const localLog = generateLog(projectConf.project, hostname);
+  const remoteLog = generateLog(projectConf.project, projectConf.hostname);
+  const sourceLocation = ensureTrailingSlash(projectConf.sourceLocation);
+  const destinationLocation = ensureTrailingSlash(projectConf.destinationLocation);
+  const secret = getId();
 
-    let fsHelper = new FSHelper({
-        sourceLocation: sourceLocation,
-        excludes: projectConf.excludes,
-        followSymlinks: projectConf.followSymlinks
-    });
+  const fsHelper = new FSHelper({
+    sourceLocation: sourceLocation,
+    followSymlinks: projectConf.followSymlinks,
+    excludes: _.concat(projectConf.excludes, _.chain(projectConf.excludesFile)
+      .map(untildify)
+      .map(gitignore)
+      .flatten()
+      .value()
+    ),
+  });
 
-    let wsClient = new WebSocketClient({
-        username: projectConf.username,
-        hostname: projectConf.hostname,
-        websocketPort: projectConf.websocketPort,
-        secret: secret,
-        prefersEncrypted: projectConf.prefersEncrypted,
-        retryOnDisconnect: config.retryOnDisconnect
-    });
+  const wsClient = new WebSocketClient({
+    username: projectConf.username,
+    hostname: projectConf.hostname,
+    websocketPort: projectConf.websocketPort,
+    secret: secret,
+    prefersEncrypted: projectConf.prefersEncrypted,
+  });
 
     // WS events
-    wsClient.on(wsEvents.READY, () => {
-        triggerBigSync(projectConf, { debug: config.debug }, () => {
-            fsHelper.watch();
+  wsClient.on(wsEvents.READY, () => {
+    triggerBigSync(projectConf, { debug: config.debug }, () => {
+      fsHelper.watch();
 
-            localLog(
-                text.SYNC_ON_CONNECT,
-                projectConf.hostname, (projectConf.prefersEncrypted) ? 'using' : 'not using',
-                'encryption'
-            );
-        });
+      localLog(
+        text.SYNC_ON_CONNECT,
+        projectConf.hostname, (projectConf.prefersEncrypted) ? 'using' : 'not using',
+        'encryption'
+      );
     });
+  });
 
-    wsClient.on(wsEvents.RECONNECTING, _.partial(_.ary(localLog, 1), text.SYNC_ON_RECONNECT));
+  wsClient.on(wsEvents.RECONNECTING, _.partial(_.ary(localLog, 1), text.SYNC_ON_RECONNECT));
 
-    wsClient.on(wsEvents.DISCONNECTED, () => {
-        localLog(text.SYNC_ON_DISCONNECT);
-        process.exit();
-    });
+  wsClient.on(wsEvents.DISCONNECTED, () => {
+    localLog(text.SYNC_ON_DISCONNECT);
+    process.exit();
+  });
 
-    wsClient.on(wsEvents.REMOTE_NOT_FOUND, (err) => {
-        localLog(text.SYNC_ON_REMOTE_NOT_FOUND, projectConf.hostname, err);
-        process.exit();
-    });
+  wsClient.on(wsEvents.REMOTE_NOT_FOUND, (err) => {
+    localLog(text.SYNC_ON_REMOTE_NOT_FOUND, projectConf.hostname, err);
+    process.exit();
+  });
 
-    wsClient.on(wsEvents.REMOTE_MESSAGE, (message) => {
-        // Since WS can be shared amongst projects, filter out
-        // any that are not in this project
-        if (_.contains(message, destinationLocation)) {
-            remoteLog(message);
-        }
-    });
+  wsClient.on(wsEvents.REMOTE_MESSAGE, (message) => {
+    // Since WS can be shared amongst projects, filter out
+    // any that are not in this project
+    if (_.includes(message, destinationLocation)) {
+      remoteLog(message);
+    }
+  });
 
     // FS events
-    fsHelper.on(fsEvents.CHANGE, (fileChange) => {
-        fileChange.destinationpath = destinationLocation + fileChange.relativepath;
-        fileChange.subject = 'file';
+  fsHelper.on(fsEvents.CHANGE, (fileChange) => {
+    fileChange.destinationpath = destinationLocation + fileChange.sourcepath;
+    fileChange.subject = 'file';
 
-        localLog('>', fileChange.changeType, fileChange.localpath);
-        
-        wsClient.send(fileChange);
+    localLog('>', fileChange.changeType, fileChange.sourcepath);
+
+    wsClient.send(fileChange);
+  });
+
+  fsHelper.on(fsEvents.LARGE, () => {
+    localLog(text.SYNC_ON_LARGE_CHANGE);
+    fsHelper.pauseWatch();
+
+    triggerBigSync(projectConf, { debug: config.debug }, () => {
+      localLog(text.SYNC_ON_LARGE_CHANGE_DONE);
+      fsHelper.watch();
     });
-
-    fsHelper.on(fsEvents.LARGE, () => {
-        localLog(text.SYNC_ON_LARGE_CHANGE);
-        fsHelper.pauseWatch();
-
-        triggerBigSync(projectConf, { debug: config.debug }, () => {
-            localLog(text.SYNC_ON_LARGE_CHANGE_DONE);
-            fsHelper.watch();
-        });
-    });
+  });
 }
 
-function once(config, projects, opts) {
-    let foundProjects = util.getProjectsFromConfig(config, projects);
+export function once(config, projects, opts) {
+  const foundProjects = getProjectsFromConfig(config, projects);
 
-    if (_.isEmpty(foundProjects)) {
-        return logProjectsNotFound(foundProjects);
-    }
+  if (_.isEmpty(foundProjects)) {
+    return logProjectsNotFound(foundProjects);
+  }
 
-    _.each(foundProjects, (project) => {
-        let localLog = util.generateLog(project.project, hostname);
-        
-        localLog(text.SYNC_ON_ONCE);
+  _.each(foundProjects, (project) => {
+    const localLog = generateLog(project.project, hostname);
 
-        triggerBigSync(project, {
-            dry: opts.dryRun,
-            debug: config.debug
-        }, _.partial(localLog, text.SYNC_ON_ONCE_DONE));
-    });
+    localLog(text.SYNC_ON_ONCE);
+
+    triggerBigSync(project, {
+      dry: opts.dryRun,
+      debug: config.debug,
+    }, _.partial(localLog, text.SYNC_ON_ONCE_DONE));
+  });
 }
 
 function logProjectsNotFound(projects) {
-    let projectsWanted = projects.length ?
+  const projectsWanted = projects.length ?
         projects :
         process.cwd();
 
-    console.info(text.PROJECT_NOT_FOUND, projectsWanted);
+  console.info(text.PROJECT_NOT_FOUND, projectsWanted);
 }
-
-export default { start, once };
