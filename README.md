@@ -49,7 +49,7 @@ If `[projects...]` isn't passed in, sicksync will try and find the project based
 
 `sicksync once [-n | --dry-run] [projects...]`
 
-Runs a one-time sync, which is simply `rsync` under-the-hood. This happens automatically everytime you run `sicksync start`, and if you have the `retryOnDisconnect` flag will run on reconnect.
+Runs a one-time sync, which is simply `rsync` under-the-hood. This happens automatically everytime you run `sicksync start`.
 
 If `[projects...]` isn't passed in, sicksync will try and find the project based on your current working directory.
 
@@ -61,7 +61,7 @@ Removes the projects from sicksync's internal config. This is a destructive acti
 
 Updates sicksync locally, as well as _all of your remote machines_. This _will_ run `npm i -g sicksync` internally, and does not do it as a `sudo`, so care should be taken if you haven't setup `npm` accordingly. [Please see this article for more information](https://docs.npmjs.com/getting-started/fixing-npm-permissions).
 
-The `--check` flag will see check what version of sicksync is available and print the version difference. 
+The `--check` flag will see check what version of sicksync is available and print the version difference.
 
 The `--migrate-config` flag will migrate your config file to accomodate the current version of sicksync. See the "Migrating To..." below for more information on migrating.
 
@@ -95,10 +95,6 @@ There are currently only two options you can configure globally, and are applied
 `debug: {boolean}`
 
 Flag that will turn on or off debug messages during the syncing process.
-
-`retryOnDisconnect: {boolean}`
-
-When true, this will tell `sicksync` to re-attempt to connect when the server disconnects. Using `CTRL+C` will not trigger a retry locally. Also runs a one-time sync beforehand to ensure any lost changes find their way home.
 
 ### Project Options
 
@@ -169,7 +165,7 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # Set this to your npm globally installed packages
-export PATH=$PATH:'/home/jgriffith/.npm/bin' 
+export PATH=$PATH:'/home/jgriffith/.npm/bin'
 ```
 
 **Q: I'm seeing `Error: Module did not self-register.` when running sicksync.**
