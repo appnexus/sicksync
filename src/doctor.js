@@ -1,3 +1,5 @@
+import os from 'os';
+import { spawnSync } from 'child_process';
 import _ from 'lodash';
 import chalk from 'chalk';
 import fs from 'fs-extra';
@@ -233,6 +235,38 @@ export function projectHasRightShape(project) {
   });
 }
 
+export function hasCygwinOnWindows(project) {
+  return new Promise((resolve, reject) => {
+    let erroredCommands = []
+    function test({command, args = [], expectError}) {
+      const output = spawnSync(command, args, {encoding: 'utf8'});
+      if (output.output) {
+        const [, stdout, stderr] = output.output;
+        if (stdout && stdout.match(command)) return;
+        if (expectError && stderr.match(expectError)) return;
+      }
+      erroredCommands.push(command)
+    }
+    [{
+      command: 'cygpath', args: ['--version'],
+    }, {
+      command: 'ssh', args: ['-V'], expectError: 'OpenSSH' // ssh -V outputs to stderr
+    }, {
+      command: 'rsync', args: ['--version']
+    }].forEach(test);
+    if (!erroredCommands.length) {
+      console.info(chalk.green(`Your Windows has Cygwin and all the required modules!`));
+      return resolve(true);
+    }
+    erroredCommands = '`' + erroredCommands.join('`, `') + '`';
+    const errMsg = 'Couldn\'t run: ' + erroredCommands + '. '
+    + 'Please make sure you have Cygwin/MinGW/Babun installed, '
+    + 'with ' + erroredCommands + ' module(s)';
+    console.info(chalk.red(errMsg));
+    reject(false);
+  });
+}
+
 export function checkAll(config) {
   console.info(chalk.yellow('* Checking if config is present...'));
 
@@ -245,6 +279,14 @@ export function checkAll(config) {
       console.info(chalk.yellow('\n* Checking projects in config file...'));
 
       return Promise.all(_.map(config.projects, projectHasRightShape));
+    })
+    .then(() => {
+      if (os.platform() === 'win32') {
+        console.info(chalk.yellow('\n* Checking Cygwin on Windows...'));
+        return hasCygwinOnWindows();
+      } else {
+        return Promise.resolve(true);
+      }
     })
     .then(() => {
       console.info(chalk.yellow('\n* Checking host for each project'));
