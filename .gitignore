@@ -4,6 +4,7 @@ coverage/
 
 # Ignore temp
 temp/
+.nyc_output/
 
 # Node Modules
 node_modules/
