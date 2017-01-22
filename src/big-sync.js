@@ -19,7 +19,8 @@ export function bigSync(project) {
     _.noop;
 
   if (os.platform() === 'win32') {
-    project.sourceLocation = execSync('cygpath ' + project.sourceLocation).toString();
+    project.sourceLocation = execSync('cygpath ' + project.sourceLocation, { encoding: 'utf8' })
+      .replace(/[\n\r]/g, '');
   }
 
   const rsync = new Rsync()
