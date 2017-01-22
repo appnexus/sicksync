@@ -80,7 +80,7 @@ function startProject(config, projectConf) {
 
     // WS events
   wsClient.on(wsEvents.READY, () => {
-    triggerBigSync(projectConf, { debug: config.debug }, () => {
+    triggerBigSync(projectConf, _.pick(config, ['debug', 'delete']), () => {
       fsHelper.watch();
 
       localLog(
