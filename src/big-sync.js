@@ -28,8 +28,11 @@ export function bigSync(project) {
     .flags('az')
     .exclude(project.excludes)
     .source(ensureTrailingSlash(project.sourceLocation))
-    .set('delete')
     .destination(project.username + '@' + project.hostname + ':' + project.destinationLocation);
+
+  if (params.delete === true) {
+    rsync.set('delete')
+  }
 
   if (params.dry) {
     rsync.set('dry-run');
