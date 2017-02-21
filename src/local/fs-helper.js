@@ -45,7 +45,13 @@ export class FSHelper extends EventEmitter {
     let fileContents = null;
 
     if (this._paused || util.isExcluded(sourcepath, this._excludes)) return;
-    if (evt === 'add' || evt === 'change') fileContents = fs.readFileSync(sourcepath).toString();
+    if (evt === 'add' || evt === 'change') {
+      try {
+        fileContents = fs.readFileSync(sourcepath).toString();
+      } catch (err) {
+        console.warn(`WARNING: Couldn't sync file.`, err.message);
+      }
+    }
 
     this.emit(fsEvents.CHANGE, {
       sourcepath,
