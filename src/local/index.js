@@ -81,7 +81,7 @@ function startProject(config, projectConf) {
 
     // WS events
   wsClient.on(wsEvents.READY, () => {
-    if (!projectConf.disableRsync) {
+    if (!(config.disableRsync || projectConf.disableRsync)) {
       triggerBigSync(projectConf, _.pick(config, ['debug', 'delete']), () => {
         fsHelper.watch();
 
@@ -128,7 +128,7 @@ function startProject(config, projectConf) {
     localLog(text.SYNC_ON_LARGE_CHANGE);
     fsHelper.pauseWatch();
 
-    if (!projectConf.disableRsync) {
+    if (!(config.disableRsync || projectConf.disableRsync)) {
       triggerBigSync(projectConf, { debug: config.debug }, () => {
         localLog(text.SYNC_ON_LARGE_CHANGE_DONE);
         fsHelper.watch();
@@ -149,7 +149,7 @@ export function once(config, projects, opts) {
 
     localLog(text.SYNC_ON_ONCE);
 
-    if (!project.disableRsync) {
+    if (!(config.disableRsync || project.disableRsync)) {
       triggerBigSync(project, {
         dry: opts.dryRun,
         debug: config.debug,

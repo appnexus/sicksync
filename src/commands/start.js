@@ -8,7 +8,7 @@ function sicksyncStartCommand(program, config) {
     .option('-D, --disable-deletion', 'Do not delete files on the server')
     .option('-R, --disable-rsync', 'Do not do rsync on bigger file changes')
     .action((projects, options) =>
-      start(_.extend(config, _.pick(options, ['disableDeletion'])), projects));
+      start(_.extend(config, _.pick(options, ['disableDeletion', 'disableRsync'])), projects));
 }
 
 export default sicksyncStartCommand;
