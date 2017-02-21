@@ -5,9 +5,9 @@ function sicksyncStartCommand(program, config) {
   program
     .command('start [projects...]')
     .description('Starts the continuous sicksync process for the given project(s)')
-    .option('-D, --no-delete', 'Do not delete remote files on inital rsync')
+    .option('-D, --disable-deletion', 'Do not delete files on the server')
     .action((projects, options) =>
-      start(_.extend(config, _.pick(options, ['delete'])), projects))
+      start(_.extend(config, _.pick(options, ['disableDeletion'])), projects));
 }
 
 export default sicksyncStartCommand;

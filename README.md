@@ -114,6 +114,10 @@ The location on your remote machine you wish to apply changes to.
 
 `excludes: {array of relative filepaths or globs}`
 
+`disableDeletion: {boolean}`
+
+When true, this will prevent `sicksync` from deleting files on the server. Defaults to `false`. It can also be switched with the command-line switch `-D` or `--disable-deletion`
+
 An array of file(s) or filepath(s) that, when matched, sicksync will ignore and not send changes. Editor configuration and `.git/*` files are generally ok to ignore. Uses [`anymatch`](https://github.com/es128/anymatch) for globbing.
 
 `websocketPort: {number}`

@@ -34,6 +34,7 @@ function triggerBigSync(project, params, cb) {
     destinationLocation: ensureTrailingSlash(project.destinationLocation),
     hostname: project.hostname,
     username: project.username,
+    disableDeletion: project.disableDeletion,
   }, params, cb);
 }
 
