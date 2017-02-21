@@ -136,6 +136,10 @@ Flag that will turn on or off encrypted sync messages.
 
 When true, this will tell `sicksync` to follow and sync files and folders that are symlinked. Defaults to `false` in setup.
 
+`triggerBigSync: {boolean}`
+
+When false, this will tell `sicksync` **not** to do rsync for any big file changes. (default: true)
+
 ## Migrating to from 1.x to 2.x
 
 2.x introduces a number of new and breaking changes. It's worthwhile to upgrade, as sicksync now has better reliabitiliy, new functionality, and extensibility in 2.x. Aside from command-line changes, sicksync 2.x also introduces a breaking config change as well. Below are the steps you'll need to run in order to migrate to sicksync 2.x:

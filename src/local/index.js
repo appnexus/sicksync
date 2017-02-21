@@ -80,15 +80,17 @@ function startProject(config, projectConf) {
 
     // WS events
   wsClient.on(wsEvents.READY, () => {
-    triggerBigSync(projectConf, _.pick(config, ['debug', 'delete']), () => {
-      fsHelper.watch();
+    if (projectConf.triggerBigSync !== false) {
+      triggerBigSync(projectConf, _.pick(config, ['debug', 'delete']), () => {
+        fsHelper.watch();
 
-      localLog(
-        text.SYNC_ON_CONNECT,
-        projectConf.hostname, (projectConf.prefersEncrypted) ? 'using' : 'not using',
-        'encryption'
-      );
-    });
+        localLog(
+          text.SYNC_ON_CONNECT,
+          projectConf.hostname, (projectConf.prefersEncrypted) ? 'using' : 'not using',
+          'encryption'
+        );
+      });
+    }
   });
 
   wsClient.on(wsEvents.RECONNECTING, _.partial(_.ary(localLog, 1), text.SYNC_ON_RECONNECT));
@@ -125,10 +127,12 @@ function startProject(config, projectConf) {
     localLog(text.SYNC_ON_LARGE_CHANGE);
     fsHelper.pauseWatch();
 
-    triggerBigSync(projectConf, { debug: config.debug }, () => {
-      localLog(text.SYNC_ON_LARGE_CHANGE_DONE);
-      fsHelper.watch();
-    });
+    if (projectConf.triggerBigSync !== false) {
+      triggerBigSync(projectConf, { debug: config.debug }, () => {
+        localLog(text.SYNC_ON_LARGE_CHANGE_DONE);
+        fsHelper.watch();
+      });
+    }
   });
 }
 
@@ -144,10 +148,12 @@ export function once(config, projects, opts) {
 
     localLog(text.SYNC_ON_ONCE);
 
-    triggerBigSync(project, {
-      dry: opts.dryRun,
-      debug: config.debug,
-    }, _.partial(localLog, text.SYNC_ON_ONCE_DONE));
+    if (project.triggerBigSync !== false) {
+      triggerBigSync(project, {
+        dry: opts.dryRun,
+        debug: config.debug,
+      }, _.partial(localLog, text.SYNC_ON_ONCE_DONE));
+    }
   });
 }
 
