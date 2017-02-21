@@ -43,5 +43,11 @@ export function bigSync(project) {
     rsync.output(consoleLogFromBuffer, consoleLogFromBuffer);
   }
 
-  rsync.execute(onComplete);
+  return new Promise((resolve, reject) => {
+    rsync.execute((err, ...result) => {
+      onComplete(err, ...result);
+      if (err) reject(err);
+      else resolve(...result);
+    });
+  });
 }
