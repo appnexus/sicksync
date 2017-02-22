@@ -76,6 +76,7 @@ function startProject(config, projectConf) {
     websocketPort: projectConf.websocketPort,
     secret: secret,
     prefersEncrypted: projectConf.prefersEncrypted,
+    forceReconnect: projectConf.forceReconnect,
   });
 
     // WS events
