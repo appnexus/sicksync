@@ -5,8 +5,6 @@
  */
 import _ from 'lodash';
 import os from 'os';
-import untildify from 'untildify';
-import gitignore from 'parse-gitignore';
 
 import { FSHelper as FSConstructor } from './fs-helper';
 import { WSClient as WSConstructor } from './ws-client';
@@ -20,6 +18,7 @@ import {
   getProjectsFromConfig,
   generateLog,
   getId,
+  processExcludes,
 } from '../util';
 
 const hostname = os.hostname();
@@ -29,7 +28,7 @@ const fsEvents = eventsConf.FS.LOCAL;
 function triggerBigSync(project, params, cb) {
   bigSync({
     project: project.project,
-    excludes: project.excludes,
+    excludes: processExcludes(project),
     sourceLocation: ensureTrailingSlash(project.sourceLocation),
     destinationLocation: ensureTrailingSlash(project.destinationLocation),
     hostname: project.hostname,
@@ -62,12 +61,7 @@ function startProject(config, projectConf) {
   const fsHelper = new FSHelper({
     sourceLocation: sourceLocation,
     followSymlinks: projectConf.followSymlinks,
-    excludes: _.concat(projectConf.excludes, _.chain(projectConf.excludesFile)
-      .map(untildify)
-      .map(gitignore)
-      .flatten()
-      .value()
-    ),
+    excludes: processExcludes(projectConf),
   });
 
   const wsClient = new WebSocketClient({

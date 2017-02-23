@@ -5,6 +5,7 @@ import anymatch from 'anymatch';
 import chalk from 'chalk';
 import path from 'path';
 import untildify from 'untildify';
+import gitignore from 'parse-gitignore';
 import constants from '../conf/constants';
 import text from '../conf/text';
 
@@ -210,3 +211,13 @@ export function getProjectsFromConfig(config, projects) {
 
   return foundProjects;
 }
+
+export function processExcludes({ excludes = [], excludesFile = [] } = {}) {
+  return _.concat(excludes, _.chain(excludesFile)
+      .map(untildify)
+      .map(gitignore)
+      .flatten()
+      .value()
+    );
+}
+
