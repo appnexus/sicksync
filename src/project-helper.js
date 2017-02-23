@@ -60,6 +60,16 @@ export const add = (config) => {
       before: util.toBoolean,
       default: 'no',
     },
+    disableDeletion: {
+      description: 'Prevent sicksync from deleting files on the remote server? (yes/no):',
+      before: util.toBoolean,
+      default: 'no',
+    },
+    disableRsync: {
+      description: 'Prevent sicksync from doing rsync on big file changes? (yes/no):',
+      default: 'no',
+      before: util.toBoolean,
+    },
     websocketPort: {
       description: 'What port should sicksync use for this project?',
       default: 8675,

@@ -25,15 +25,16 @@ const hostname = os.hostname();
 const wsEvents = eventsConf.WS.LOCAL;
 const fsEvents = eventsConf.FS.LOCAL;
 
-function triggerBigSync(project, params, cb) {
-  bigSync({
+function triggerBigSync(project, params) {
+  return bigSync({
     project: project.project,
     excludes: processExcludes(project),
     sourceLocation: ensureTrailingSlash(project.sourceLocation),
     destinationLocation: ensureTrailingSlash(project.destinationLocation),
     hostname: project.hostname,
     username: project.username,
-  }, params, cb);
+    disableDeletion: project.disableDeletion,
+  }, params);
 }
 
 export function start(config, projects) {
@@ -74,16 +75,16 @@ function startProject(config, projectConf) {
   });
 
     // WS events
-  wsClient.on(wsEvents.READY, () => {
-    triggerBigSync(projectConf, _.pick(config, ['debug', 'delete']), () => {
-      fsHelper.watch();
-
-      localLog(
-        text.SYNC_ON_CONNECT,
-        projectConf.hostname, (projectConf.prefersEncrypted) ? 'using' : 'not using',
-        'encryption'
-      );
-    });
+  wsClient.on(wsEvents.READY, async () => {
+    if (!(config.disableRsync || projectConf.disableRsync)) {
+      await triggerBigSync(projectConf, _.pick(config, ['debug', 'delete']));
+    }
+    fsHelper.watch();
+    localLog(
+      text.SYNC_ON_CONNECT,
+      projectConf.hostname, (projectConf.prefersEncrypted) ? 'using' : 'not using',
+      'encryption'
+    );
   });
 
   wsClient.on(wsEvents.RECONNECTING, _.partial(_.ary(localLog, 1), text.SYNC_ON_RECONNECT));
@@ -116,14 +117,14 @@ function startProject(config, projectConf) {
     wsClient.send(fileChange);
   });
 
-  fsHelper.on(fsEvents.LARGE, () => {
+  fsHelper.on(fsEvents.LARGE, async () => {
     localLog(text.SYNC_ON_LARGE_CHANGE);
     fsHelper.pauseWatch();
-
-    triggerBigSync(projectConf, { debug: config.debug }, () => {
-      localLog(text.SYNC_ON_LARGE_CHANGE_DONE);
-      fsHelper.watch();
-    });
+    if (!(config.disableRsync || projectConf.disableRsync)) {
+      await triggerBigSync(projectConf, { debug: config.debug });
+    }
+    localLog(text.SYNC_ON_LARGE_CHANGE_DONE);
+    fsHelper.watch();
   });
 }
 
@@ -134,15 +135,18 @@ export function once(config, projects, opts) {
     return logProjectsNotFound(foundProjects);
   }
 
-  _.each(foundProjects, (project) => {
+  _.each(foundProjects, async (project) => {
     const localLog = generateLog(project.project, hostname);
 
     localLog(text.SYNC_ON_ONCE);
 
-    triggerBigSync(project, {
-      dry: opts.dryRun,
-      debug: config.debug,
-    }, _.partial(localLog, text.SYNC_ON_ONCE_DONE));
+    if (!(config.disableRsync || project.disableRsync)) {
+      await triggerBigSync(project, {
+        dry: opts.dryRun,
+        debug: config.debug,
+      });
+    }
+    localLog(text.SYNC_ON_ONCE_DONE);
   });
 }
 
