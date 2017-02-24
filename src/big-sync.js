@@ -30,8 +30,8 @@ export function bigSync(project) {
     .source(ensureTrailingSlash(project.sourceLocation))
     .destination(project.username + '@' + project.hostname + ':' + project.destinationLocation);
 
-  if (params.delete === true) {
-    rsync.set('delete')
+  if (!params.noDelete) {
+    rsync.set('delete');
   }
 
   if (params.dry) {

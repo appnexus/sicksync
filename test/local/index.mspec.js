@@ -25,7 +25,7 @@ const testConfig = {
     myProject: {
       project: 'myProject',
       excludes: ['.git'],
-      excludesFile: ['.gitignore'],
+      excludesFile: [''],
       sourceLocation: '~/wat',
       destinationLocation: '~/wat',
       hostname: 'yo-dawg',
