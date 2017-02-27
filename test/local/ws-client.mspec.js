@@ -33,7 +33,7 @@ describe('ws-client', function() {
 
   describe('connection', function() {
     it('should register callbacks via the `on` method', function() {
-      expect(wsStub._api.on.called).to.be.false;
+      expect(wsStub._api.on.called).to.be.true;
     });
 
     it('should register a callback for the `open` message', function() {

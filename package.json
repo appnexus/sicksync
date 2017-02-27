@@ -8,7 +8,7 @@
     "prepublish": "rimraf ./dist && babel src --out-dir dist",
     "transpile": "babel src --out-dir dist",
     "watch": "npm run transpile -- -w",
-    "mocha": "mocha --compilers js:babel-register test",
+    "mocha": "mocha --compilers js:babel-register --recursive test",
     "test": "nyc --reporter=lcov --reporter=text npm run mocha",
     "tdd": "npm run mocha -- --check-leaks --reporter min -w",
     "lint": "eslint src test"
