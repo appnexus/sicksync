@@ -237,7 +237,7 @@ export function projectHasRightShape(project) {
 
 export function hasCygwinOnWindows(project) {
   return new Promise((resolve, reject) => {
-    let erroredCommands = []
+    let erroredCommands = [];
     function test({command, args = [], expectError}) {
       const output = spawnSync(command, args, {encoding: 'utf8'});
       if (output.output) {
@@ -245,14 +245,14 @@ export function hasCygwinOnWindows(project) {
         if (stdout && stdout.match(command)) return;
         if (expectError && stderr.match(expectError)) return;
       }
-      erroredCommands.push(command)
+      erroredCommands.push(command);
     }
     [{
       command: 'cygpath', args: ['--version'],
     }, {
-      command: 'ssh', args: ['-V'], expectError: 'OpenSSH' // ssh -V outputs to stderr
+      command: 'ssh', args: ['-V'], expectError: 'OpenSSH', // ssh -V outputs to stderr
     }, {
-      command: 'rsync', args: ['--version']
+      command: 'rsync', args: ['--version'],
     }].forEach(test);
     if (!erroredCommands.length) {
       console.info(chalk.green(`Your Windows has Cygwin and all the required modules!`));

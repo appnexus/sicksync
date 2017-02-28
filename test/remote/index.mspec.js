@@ -63,14 +63,14 @@ describe('Remote Entry (index.js)', function() {
     it('should log a message and exit if an unauthorized message happens', function() {
       wsStub.triggerEvent('unauthorized');
 
-      expect(processStub.exit.called).to.be.true;
+      expect(process.exit.called).to.be.true;
       expect(console.info.lastCall.args.join(' ')).to.contain('Unauthorized connection, shutting down');
     });
 
     it('should log a message and exit if the client disconnects', function() {
       wsStub.triggerEvent('connection-closed');
 
-      expect(processStub.exit.called).to.be.true;
+      expect(process.exit.called).to.be.true;
       expect(console.info.lastCall.args.join(' ')).to.contain('Connection closed, shutting down');
     });
 

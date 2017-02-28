@@ -36,6 +36,7 @@ describe('Project-Helper', function() {
         'prefersEncrypted',
         'websocketPort',
         'followSymLinks',
+        'forceReconnect',
         'debug'
       );
     });
@@ -54,6 +55,7 @@ describe('Project-Helper', function() {
         'excludes',
         'excludesFile',
         'prefersEncrypted',
+        'forceReconnect',
         'websocketPort',
         'followSymLinks'
       );

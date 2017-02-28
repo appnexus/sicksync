@@ -17,6 +17,7 @@ const testConfig = {
   sourceLocation: '/some/file/path',
   hostname: 'myCoolHost',
   destinationLocation: '/some/where/out/there',
+  delete: true,
 };
 
 describe('bigSync', function() {

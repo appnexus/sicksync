@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import _ from 'lodash';
 import proxyquire from 'proxyquire';
 
 import remoteHelperStub from '../stubs/remote-helper';
@@ -42,13 +41,13 @@ describe('ws-client', function() {
       expect(wsStub._api.on.getCall(0).args[1]).to.be.a('function');
     });
 
-    it('should register a callback for the `close` message', function() {
-      expect(wsStub._api.on.getCall(1).args[0]).to.equal('close');
+    it('should register a callback for the `error` message', function() {
+      expect(wsStub._api.on.getCall(1).args[0]).to.equal('error');
       expect(wsStub._api.on.getCall(1).args[1]).to.be.a('function');
     });
 
-    it('should register a callback for the `error` message', function() {
-      expect(wsStub._api.on.getCall(2).args[0]).to.equal('error');
+    it('should register a callback for the `close` message', function() {
+      expect(wsStub._api.on.getCall(2).args[0]).to.equal('close');
       expect(wsStub._api.on.getCall(2).args[1]).to.be.a('function');
     });
   });
@@ -83,7 +82,7 @@ describe('ws-client', function() {
       ws.on('reconnecting', done);
 
       // Trigger `error`
-      wsStub._api.on.getCall(2).args[1]();
+      wsStub._api.on.getCall(1).args[1]();
     });
 
     it('should start the remote devbox', function() {

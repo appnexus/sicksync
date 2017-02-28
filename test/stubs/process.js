@@ -1,28 +1,18 @@
-import _ from 'lodash';
 import sinon from 'sinon';
 
-const _process = global.process;
-
-const api = {
-  exit: sinon.spy(),
-};
-
 function resetAll() {
-  _.forIn(api, function(method) {
-    if (_.isFunction(method.reset)) method.reset();
-  });
+  if (process.exit.reset) process.exit.reset();
 }
 
 function inject() {
-  process.exit = api.exit;
+  sinon.stub(process, 'exit');
 }
 
 function restore() {
-  process.exit = _process.exit;
+  process.exit.restore();
   resetAll();
 }
 
-module.exports = api;
 module.exports.inject = inject;
 module.exports.restore = restore;
 module.exports.resetAll = resetAll;
