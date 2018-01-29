@@ -1,6 +1,8 @@
 ![sicksync](https://raw.githubusercontent.com/appnexus/sicksync/master/img/sicksync.png)
 `npm install -g sicksync`
 
+> SUNSET NOTICE: This project hasn't been used in a quite some time. I'd recommend using a text-editor that contains these types of features ([here's one!](https://nuclide.io/docs/quick-start/getting-started/#remote-connection)) before using sicksync. Thanks!
+
 [![npm version](https://badge.fury.io/js/sicksync.svg)](http://badge.fury.io/js/sicksync)
 [![Build Status](https://travis-ci.org/appnexus/sicksync.svg?branch=master)](https://travis-ci.org/appnexus/sicksync)
 [![Coverage Status](https://coveralls.io/repos/github/appnexus/sicksync/badge.svg?branch=feature%2Fcoveralls)](https://coveralls.io/github/appnexus/sicksync?branch=feature%2Fcoveralls)
